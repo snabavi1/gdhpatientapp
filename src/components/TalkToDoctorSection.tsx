@@ -51,7 +51,7 @@ const TalkToDoctorSection = () => {
           text: "Send Text",
           color: "bg-healthcare-ocean",
           hoverColor: "hover:bg-healthcare-ocean/90",
-          variant: "outline",
+          variant: "outline" as const,
           onClick: handleTextMessage
         }
       ],
