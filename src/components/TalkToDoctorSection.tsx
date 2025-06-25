@@ -111,21 +111,24 @@ const TalkToDoctorSection = () => {
                   {option.description}
                 </CardDescription>
                 <div className="space-y-3">
-                  {option.buttons.map((button, buttonIndex) => (
-                    <Button 
-                      key={buttonIndex}
-                      size="lg" 
-                      variant={(button.variant as "outline" | "default") || "default"}
-                      className={`w-full ${
-                        button.variant === 'outline' 
-                          ? `border-2 border-healthcare-ocean text-healthcare-ocean hover:bg-healthcare-ocean hover:text-white` 
-                          : `${button.color} ${button.hoverColor} text-white`
-                      } hover-lift`}
-                      onClick={button.onClick}
-                    >
-                      {button.text}
-                    </Button>
-                  ))}
+                  {option.buttons.map((button, buttonIndex) => {
+                    const isOutlineVariant = button.variant === 'outline';
+                    return (
+                      <Button 
+                        key={buttonIndex}
+                        size="lg" 
+                        variant={isOutlineVariant ? "outline" : "default"}
+                        className={`w-full ${
+                          isOutlineVariant
+                            ? `border-2 border-healthcare-ocean text-healthcare-ocean hover:bg-healthcare-ocean hover:text-white` 
+                            : `${button.color} ${button.hoverColor} text-white`
+                        } hover-lift`}
+                        onClick={button.onClick}
+                      >
+                        {button.text}
+                      </Button>
+                    );
+                  })}
                 </div>
               </CardContent>
             </Card>
