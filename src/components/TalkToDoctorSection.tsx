@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Video, MessageSquare, Phone } from "lucide-react";
@@ -51,7 +50,7 @@ const TalkToDoctorSection = () => {
           text: "Send Text",
           color: "bg-healthcare-ocean",
           hoverColor: "hover:bg-healthcare-ocean/90",
-          variant: "outline",
+          variant: "outline" as const,
           onClick: handleTextMessage
         }
       ],
@@ -116,7 +115,7 @@ const TalkToDoctorSection = () => {
                     <Button 
                       key={buttonIndex}
                       size="lg" 
-                      variant={button.variant || "default"}
+                      variant={(button.variant as "outline" | "default") || "default"}
                       className={`w-full ${
                         button.variant === 'outline' 
                           ? `border-2 border-healthcare-ocean text-healthcare-ocean hover:bg-healthcare-ocean hover:text-white` 
