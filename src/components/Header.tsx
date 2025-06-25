@@ -1,9 +1,22 @@
 
 import { Button } from "@/components/ui/button";
-import { UserCircle } from "lucide-react";
+import { UserCircle, LogOut } from "lucide-react";
 import MobileNavigation from "./MobileNavigation";
+import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSignOut = () => {
+    signOut();
+  };
+
+  const handleSignIn = () => {
+    navigate('/auth');
+  };
+
   return (
     <header className="bg-white shadow-sm border-b border-mint-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -20,38 +33,73 @@ const Header = () => {
             </div>
           </div>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex space-x-8">
-            <a href="#" className="text-gray-700 hover:text-healthcare-primary transition-colors duration-200">
-              Dashboard
-            </a>
-            <a href="#" className="text-gray-700 hover:text-healthcare-primary transition-colors duration-200">
-              Care Status
-            </a>
-            <a href="#" className="text-gray-700 hover:text-healthcare-primary transition-colors duration-200">
-              Appointments
-            </a>
-            <a href="#" className="text-gray-700 hover:text-healthcare-primary transition-colors duration-200">
-              Concierge
-            </a>
-          </nav>
+          {/* Desktop Navigation - Only show if authenticated */}
+          {user && (
+            <nav className="hidden md:flex space-x-8">
+              <a href="#" className="text-gray-700 hover:text-healthcare-primary transition-colors duration-200">
+                Dashboard
+              </a>
+              <a href="#" className="text-gray-700 hover:text-healthcare-primary transition-colors duration-200">
+                Care Status
+              </a>
+              <a href="#" className="text-gray-700 hover:text-healthcare-primary transition-colors duration-200">
+                Appointments
+              </a>
+              <a href="#" className="text-gray-700 hover:text-healthcare-primary transition-colors duration-200">
+                Concierge
+              </a>
+            </nav>
+          )}
 
           {/* User Actions */}
           <div className="flex items-center space-x-2 sm:space-x-4">
-            <Button variant="outline" className="hidden sm:inline-flex border-healthcare-primary text-healthcare-primary hover:bg-healthcare-primary hover:text-white">
-              Sign In
-            </Button>
-            <Button className="hidden sm:inline-flex bg-healthcare-primary hover:bg-healthcare-primary/90">
-              Sign Up
-            </Button>
+            {user ? (
+              <>
+                <div className="hidden sm:flex items-center space-x-3">
+                  <span className="text-sm text-gray-600">
+                    Welcome, {user.user_metadata?.full_name || user.email}
+                  </span>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={handleSignOut}
+                    className="border-healthcare-primary text-healthcare-primary hover:bg-healthcare-primary hover:text-white"
+                  >
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Sign Out
+                  </Button>
+                </div>
+                
+                {/* Mobile user button */}
+                <Button variant="ghost" size="icon" className="sm:hidden" onClick={handleSignOut}>
+                  <LogOut className="h-5 w-5" />
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button 
+                  variant="outline" 
+                  className="hidden sm:inline-flex border-healthcare-primary text-healthcare-primary hover:bg-healthcare-primary hover:text-white"
+                  onClick={handleSignIn}
+                >
+                  Sign In
+                </Button>
+                <Button 
+                  className="hidden sm:inline-flex bg-healthcare-primary hover:bg-healthcare-primary/90"
+                  onClick={handleSignIn}
+                >
+                  Sign Up
+                </Button>
+                
+                {/* Mobile user button */}
+                <Button variant="ghost" size="icon" className="sm:hidden" onClick={handleSignIn}>
+                  <UserCircle className="h-5 w-5" />
+                </Button>
+              </>
+            )}
             
-            {/* Mobile user button */}
-            <Button variant="ghost" size="icon" className="sm:hidden">
-              <UserCircle className="h-5 w-5" />
-            </Button>
-            
-            {/* Mobile Navigation */}
-            <MobileNavigation />
+            {/* Mobile Navigation - Only show if authenticated */}
+            {user && <MobileNavigation />}
           </div>
         </div>
       </div>
