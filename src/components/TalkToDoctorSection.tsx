@@ -9,7 +9,7 @@ const TalkToDoctorSection = () => {
   };
 
   const handleTextMessage = () => {
-    window.open('sms:815-greenmd', '_self');
+    window.open('sms:815-473-3663', '_self');
   };
 
   const handleSpruceMessaging = () => {
