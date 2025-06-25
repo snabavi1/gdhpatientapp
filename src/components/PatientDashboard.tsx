@@ -2,7 +2,7 @@
 import React from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Clock, CheckCircle, FileText, AlertCircle, Calendar, Heart } from 'lucide-react';
+import { Clock, CheckCircle, FileText, AlertCircle, Calendar, Heart, MessageSquare, Phone } from 'lucide-react';
 
 export type CareStatus = 
   | 'consultation-scheduled'
@@ -92,13 +92,59 @@ const PatientDashboard: React.FC<PatientDashboardProps> = ({
     });
   };
 
+  const handleTalkToDoctor = () => {
+    // Scroll to or navigate to the Talk to Doctor section
+    const talkToDoctorSection = document.querySelector('[data-section="talk-to-doctor"]');
+    if (talkToDoctorSection) {
+      talkToDoctorSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const handleConcierge = () => {
+    window.open('tel:470-470-9108', '_self');
+  };
+
   return (
     <div className="max-w-4xl mx-auto p-4 space-y-6">
       <div className="text-center mb-8">
-        <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+        <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">
           Welcome back, {patientName}
         </h1>
-        <p className="text-gray-600">Here's your current care status</p>
+        
+        {/* Quick Actions - Primary Focus */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+          <Card className="p-6 hover-lift cursor-pointer bg-healthcare-primary/5 border-healthcare-primary/20" onClick={handleTalkToDoctor}>
+            <div className="text-center">
+              <div className="w-16 h-16 bg-healthcare-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                <Heart className="h-8 w-8 text-white" />
+              </div>
+              <h4 className="font-semibold text-gray-900 mb-2 text-lg">Talk to Doctor</h4>
+              <p className="text-sm text-gray-600">Start a consultation now</p>
+            </div>
+          </Card>
+          
+          <Card className="p-6 hover-lift cursor-pointer bg-peach-50 border-peach-200" onClick={handleConcierge}>
+            <div className="text-center">
+              <div className="w-16 h-16 bg-peach-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                <MessageSquare className="h-8 w-8 text-white" />
+              </div>
+              <h4 className="font-semibold text-gray-900 mb-2 text-lg">Concierge</h4>
+              <p className="text-sm text-gray-600">Non-urgent assistance</p>
+            </div>
+          </Card>
+
+          {nextAppointment && (
+            <Card className="p-6 hover-lift cursor-pointer bg-mint-50 border-mint-200">
+              <div className="text-center">
+                <div className="w-16 h-16 bg-healthcare-ocean rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Calendar className="h-8 w-8 text-white" />
+                </div>
+                <h4 className="font-semibold text-gray-900 mb-2 text-lg">Next Appointment</h4>
+                <p className="text-xs text-gray-600">{formatDate(nextAppointment)}</p>
+              </div>
+            </Card>
+          )}
+        </div>
       </div>
 
       {/* Current Status Card */}
@@ -121,22 +167,6 @@ const PatientDashboard: React.FC<PatientDashboardProps> = ({
         </div>
       </Card>
 
-      {/* Next Appointment */}
-      {nextAppointment && (
-        <Card className="p-6">
-          <div className="flex items-center space-x-3 mb-4">
-            <Calendar className="h-5 w-5 text-healthcare-primary" />
-            <h3 className="text-lg font-semibold text-gray-900">Next Appointment</h3>
-          </div>
-          <p className="text-gray-700 mb-4">
-            {formatDate(nextAppointment)}
-          </p>
-          <Button variant="outline" className="w-full sm:w-auto">
-            View Appointment Details
-          </Button>
-        </Card>
-      )}
-
       {/* Care Instructions */}
       {careInstructions.length > 0 && (
         <Card className="p-6">
@@ -156,39 +186,12 @@ const PatientDashboard: React.FC<PatientDashboardProps> = ({
             <Button className="flex-1 sm:flex-none">
               Download Full Instructions
             </Button>
-            <Button variant="outline" className="flex-1 sm:flex-none">
+            <Button variant="outline" className="flex-1 sm:flex-none" onClick={handleTalkToDoctor}>
               Contact Your Doctor
             </Button>
           </div>
         </Card>
       )}
-
-      {/* Quick Actions */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <Card className="p-4 hover-lift cursor-pointer">
-          <div className="text-center">
-            <Heart className="h-8 w-8 text-healthcare-primary mx-auto mb-2" />
-            <h4 className="font-semibold text-gray-900 mb-1">Talk to Doctor</h4>
-            <p className="text-sm text-gray-600">Start a consultation</p>
-          </div>
-        </Card>
-        
-        <Card className="p-4 hover-lift cursor-pointer">
-          <div className="text-center">
-            <FileText className="h-8 w-8 text-healthcare-primary mx-auto mb-2" />
-            <h4 className="font-semibold text-gray-900 mb-1">Concierge</h4>
-            <p className="text-sm text-gray-600">Non-urgent assistance</p>
-          </div>
-        </Card>
-
-        <Card className="p-4 hover-lift cursor-pointer">
-          <div className="text-center">
-            <Calendar className="h-8 w-8 text-healthcare-primary mx-auto mb-2" />
-            <h4 className="font-semibold text-gray-900 mb-1">Appointments</h4>
-            <p className="text-sm text-gray-600">Schedule or view</p>
-          </div>
-        </Card>
-      </div>
     </div>
   );
 };

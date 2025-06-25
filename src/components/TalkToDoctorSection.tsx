@@ -19,7 +19,24 @@ const TalkToDoctorSection = () => {
     window.open('https://spruce.care/greendothealth', '_blank');
   };
 
-  const communicationOptions = [
+  interface CommunicationButton {
+    text: string;
+    color?: string;
+    hoverColor?: string;
+    variant?: "outline" | "default";
+    onClick: () => void;
+  }
+
+  interface CommunicationOption {
+    icon: typeof Video;
+    title: string;
+    description: string;
+    buttons: CommunicationButton[];
+    iconColor: string;
+    bgColor: string;
+  }
+
+  const communicationOptions: CommunicationOption[] = [
     {
       icon: Video,
       title: "Video Visit",
@@ -75,7 +92,7 @@ const TalkToDoctorSection = () => {
   ];
 
   return (
-    <section className="py-20 bg-gradient-to-br from-white via-mint-50 to-healthcare-sky/10">
+    <section className="py-20 bg-gradient-to-br from-white via-mint-50 to-healthcare-sky/10" data-section="talk-to-doctor">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
@@ -121,7 +138,7 @@ const TalkToDoctorSection = () => {
                         className={`w-full ${
                           isOutlineVariant
                             ? `border-2 border-healthcare-ocean text-healthcare-ocean hover:bg-healthcare-ocean hover:text-white` 
-                            : `${button.color} ${button.hoverColor} text-white`
+                            : `${button.color || ''} ${button.hoverColor || ''} text-white`
                         } hover-lift`}
                         onClick={button.onClick}
                       >
