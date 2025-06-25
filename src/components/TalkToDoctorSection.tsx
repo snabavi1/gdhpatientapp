@@ -8,6 +8,14 @@ const TalkToDoctorSection = () => {
     window.open('https://greendothealth.doxy.me/', '_blank');
   };
 
+  const handleTextMessage = () => {
+    window.open('sms:815-greenmd', '_self');
+  };
+
+  const handleSpruceMessaging = () => {
+    window.open('https://spruce.care/greendothealth', '_blank');
+  };
+
   const communicationOptions = [
     {
       icon: Video,
@@ -27,7 +35,7 @@ const TalkToDoctorSection = () => {
       color: "bg-healthcare-ocean",
       hoverColor: "hover:bg-healthcare-ocean/90",
       iconColor: "text-white",
-      onClick: () => console.log('Text message functionality')
+      onClick: handleTextMessage
     },
     {
       icon: MessageSquare,
@@ -37,7 +45,7 @@ const TalkToDoctorSection = () => {
       color: "bg-peach-500",
       hoverColor: "hover:bg-peach-500/90",
       iconColor: "text-white",
-      onClick: () => console.log('Spruce messaging functionality')
+      onClick: handleSpruceMessaging
     }
   ];
 
