@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,6 +62,50 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				mint: {
+					50: '#f0fdf9',
+					100: '#ccfbf1',
+					200: '#99f6e4',
+					300: '#5eead4',
+					400: '#2dd4bf',
+					500: '#14b8a6',
+					600: '#0d9488',
+					700: '#0f766e',
+					800: '#115e59',
+					900: '#134e4a',
+				},
+				olive: {
+					50: '#f7f8f3',
+					100: '#edeee4',
+					200: '#dbddca',
+					300: '#c3c6a8',
+					400: '#a9ae85',
+					500: '#92976b',
+					600: '#747753',
+					700: '#5c5e43',
+					800: '#4c4e39',
+					900: '#424432',
+				},
+				peach: {
+					50: '#fef7ed',
+					100: '#fdebd4',
+					200: '#f9d3a8',
+					300: '#f4b572',
+					400: '#ed8f3a',
+					500: '#e87317',
+					600: '#d9590d',
+					700: '#b4430e',
+					800: '#903412',
+					900: '#762c12',
+				},
+				healthcare: {
+					primary: '#18ae80',
+					mint: '#a7f3d0',
+					sage: '#84cc16',
+					ocean: '#0ea5e9',
+					sky: '#38bdf8',
+					lavender: '#a78bfa',
 				}
 			},
 			borderRadius: {
@@ -84,11 +129,33 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'fade-in': {
+					'0%': {
+						opacity: '0',
+						transform: 'translateY(10px)'
+					},
+					'100%': {
+						opacity: '1',
+						transform: 'translateY(0)'
+					}
+				},
+				'scale-in': {
+					'0%': {
+						transform: 'scale(0.95)',
+						opacity: '0'
+					},
+					'100%': {
+						transform: 'scale(1)',
+						opacity: '1'
+					}
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'fade-in': 'fade-in 0.3s ease-out',
+				'scale-in': 'scale-in 0.2s ease-out'
 			}
 		}
 	},
