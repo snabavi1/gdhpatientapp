@@ -4,6 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Video, MessageSquare, Phone } from "lucide-react";
 
 const TalkToDoctorSection = () => {
+  const handleVideoCall = () => {
+    window.open('https://greendothealth.doxy.me/', '_blank');
+  };
+
   const communicationOptions = [
     {
       icon: Video,
@@ -12,7 +16,8 @@ const TalkToDoctorSection = () => {
       buttonText: "Start Video Call",
       color: "bg-healthcare-primary",
       hoverColor: "hover:bg-healthcare-primary/90",
-      iconColor: "text-white"
+      iconColor: "text-white",
+      onClick: handleVideoCall
     },
     {
       icon: Phone,
@@ -21,7 +26,8 @@ const TalkToDoctorSection = () => {
       buttonText: "Send Text Message",
       color: "bg-healthcare-ocean",
       hoverColor: "hover:bg-healthcare-ocean/90",
-      iconColor: "text-white"
+      iconColor: "text-white",
+      onClick: () => console.log('Text message functionality')
     },
     {
       icon: MessageSquare,
@@ -30,7 +36,8 @@ const TalkToDoctorSection = () => {
       buttonText: "Open Spruce Chat",
       color: "bg-peach-500",
       hoverColor: "hover:bg-peach-500/90",
-      iconColor: "text-white"
+      iconColor: "text-white",
+      onClick: () => console.log('Spruce messaging functionality')
     }
   ];
 
@@ -67,6 +74,7 @@ const TalkToDoctorSection = () => {
                 <Button 
                   size="lg" 
                   className={`w-full ${option.color} ${option.hoverColor} text-white hover-lift`}
+                  onClick={option.onClick}
                 >
                   {option.buttonText}
                 </Button>
