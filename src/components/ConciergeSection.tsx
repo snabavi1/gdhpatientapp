@@ -1,9 +1,14 @@
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Pill, HelpCircle, Users, Calendar, MessageSquare } from "lucide-react";
+import { Pill, HelpCircle, Users, Calendar, MessageSquare, Phone } from "lucide-react";
 
 const ConciergeSection = () => {
-  const handleConciergeContact = () => {
+  const handleConciergeCall = () => {
+    window.open('tel:470-470-9108', '_self');
+  };
+
+  const handleConciergeText = () => {
     window.open('sms:470-470-9108', '_self');
   };
 
@@ -73,18 +78,36 @@ const ConciergeSection = () => {
                 <MessageSquare className="h-8 w-8 text-healthcare-primary mr-3" />
                 Contact Your Concierge
               </CardTitle>
-              <CardDescription className="text-lg text-gray-700">
+              <CardDescription className="text-lg text-gray-700 mb-4">
                 Ready to get started? Our concierge team is standing by to help with all your non-urgent healthcare needs.
               </CardDescription>
+              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+                <p className="text-sm text-yellow-800">
+                  <strong>Privacy Notice:</strong> Please do not text sensitive health information. 
+                  For confidential matters, call and leave a message with our HIPAA-compliant voicemail system.
+                </p>
+              </div>
             </CardHeader>
             <CardContent className="pt-0">
-              <Button 
-                size="lg" 
-                className="bg-healthcare-primary hover:bg-healthcare-primary/90 text-white px-8 py-3 text-lg hover-lift"
-                onClick={handleConciergeContact}
-              >
-                Reach Your Concierge Now
-              </Button>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button 
+                  size="lg" 
+                  className="bg-healthcare-primary hover:bg-healthcare-primary/90 text-white px-8 py-3 text-lg hover-lift"
+                  onClick={handleConciergeCall}
+                >
+                  <Phone className="h-5 w-5 mr-2" />
+                  Call Concierge
+                </Button>
+                <Button 
+                  size="lg" 
+                  variant="outline"
+                  className="border-healthcare-primary text-healthcare-primary hover:bg-healthcare-primary hover:text-white px-8 py-3 text-lg hover-lift"
+                  onClick={handleConciergeText}
+                >
+                  <MessageSquare className="h-5 w-5 mr-2" />
+                  Text Concierge
+                </Button>
+              </div>
             </CardContent>
           </Card>
         </div>

@@ -8,6 +8,10 @@ const TalkToDoctorSection = () => {
     window.open('https://greendothealth.doxy.me/', '_blank');
   };
 
+  const handlePhoneCall = () => {
+    window.open('tel:815-473-3663', '_self');
+  };
+
   const handleTextMessage = () => {
     window.open('sms:815-473-3663', '_self');
   };
@@ -21,31 +25,53 @@ const TalkToDoctorSection = () => {
       icon: Video,
       title: "Video Visit",
       description: "Face-to-face consultation with your healthcare provider from anywhere",
-      buttonText: "Start Video Call",
-      color: "bg-healthcare-primary",
-      hoverColor: "hover:bg-healthcare-primary/90",
+      buttons: [
+        {
+          text: "Start Video Call",
+          color: "bg-healthcare-primary",
+          hoverColor: "hover:bg-healthcare-primary/90",
+          onClick: handleVideoCall
+        }
+      ],
       iconColor: "text-white",
-      onClick: handleVideoCall
+      bgColor: "bg-healthcare-primary"
     },
     {
       icon: Phone,
-      title: "Text from Phone",
-      description: "Send a text message directly from your mobile device",
-      buttonText: "Send Text Message",
-      color: "bg-healthcare-ocean",
-      hoverColor: "hover:bg-healthcare-ocean/90",
+      title: "Phone Communication",
+      description: "Call directly or send a text message to your healthcare team",
+      buttons: [
+        {
+          text: "Call Doctor",
+          color: "bg-healthcare-ocean",
+          hoverColor: "hover:bg-healthcare-ocean/90",
+          onClick: handlePhoneCall
+        },
+        {
+          text: "Send Text",
+          color: "bg-healthcare-ocean",
+          hoverColor: "hover:bg-healthcare-ocean/90",
+          variant: "outline",
+          onClick: handleTextMessage
+        }
+      ],
       iconColor: "text-white",
-      onClick: handleTextMessage
+      bgColor: "bg-healthcare-ocean"
     },
     {
       icon: MessageSquare,
       title: "Spruce Messaging",
       description: "Secure HIPAA-compliant messaging through our Spruce platform",
-      buttonText: "Open Spruce Chat",
-      color: "bg-peach-500",
-      hoverColor: "hover:bg-peach-500/90",
+      buttons: [
+        {
+          text: "Open Spruce Chat",
+          color: "bg-peach-500",
+          hoverColor: "hover:bg-peach-500/90",
+          onClick: handleSpruceMessaging
+        }
+      ],
       iconColor: "text-white",
-      onClick: handleSpruceMessaging
+      bgColor: "bg-peach-500"
     }
   ];
 
@@ -62,13 +88,19 @@ const TalkToDoctorSection = () => {
             instantly through your preferred communication method. All options are 
             secure and HIPAA-compliant.
           </p>
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 max-w-2xl mx-auto mb-8">
+            <p className="text-sm text-yellow-800">
+              <strong>Privacy Notice:</strong> Please do not text sensitive health information via SMS. 
+              For confidential matters, use Spruce messaging, video calls, or call and leave a message with our HIPAA-compliant voicemail system.
+            </p>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
           {communicationOptions.map((option, index) => (
             <Card key={index} className="bg-white border-mint-200 hover-lift transition-all duration-300 overflow-hidden">
               <CardHeader className="text-center pb-6">
-                <div className={`w-20 h-20 ${option.color} rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg`}>
+                <div className={`w-20 h-20 ${option.bgColor} rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg`}>
                   <option.icon className={`h-10 w-10 ${option.iconColor}`} />
                 </div>
                 <CardTitle className="text-xl font-bold text-gray-900">
@@ -79,13 +111,19 @@ const TalkToDoctorSection = () => {
                 <CardDescription className="text-gray-600 mb-6 text-base leading-relaxed">
                   {option.description}
                 </CardDescription>
-                <Button 
-                  size="lg" 
-                  className={`w-full ${option.color} ${option.hoverColor} text-white hover-lift`}
-                  onClick={option.onClick}
-                >
-                  {option.buttonText}
-                </Button>
+                <div className="space-y-3">
+                  {option.buttons.map((button, buttonIndex) => (
+                    <Button 
+                      key={buttonIndex}
+                      size="lg" 
+                      variant={button.variant || "default"}
+                      className={`w-full ${button.variant === 'outline' ? `border-2 border-healthcare-ocean text-healthcare-ocean hover:bg-healthcare-ocean hover:text-white` : `${button.color} ${button.hoverColor} text-white`} hover-lift`}
+                      onClick={button.onClick}
+                    >
+                      {button.text}
+                    </Button>
+                  ))}
+                </div>
               </CardContent>
             </Card>
           ))}
