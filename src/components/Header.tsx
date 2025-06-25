@@ -1,6 +1,7 @@
 
 import { Button } from "@/components/ui/button";
-import { UserCircle, Menu } from "lucide-react";
+import { UserCircle } from "lucide-react";
+import MobileNavigation from "./MobileNavigation";
 
 const Header = () => {
   return (
@@ -19,33 +20,38 @@ const Header = () => {
             </div>
           </div>
 
-          {/* Navigation */}
+          {/* Desktop Navigation */}
           <nav className="hidden md:flex space-x-8">
             <a href="#" className="text-gray-700 hover:text-healthcare-primary transition-colors duration-200">
-              Home
+              Dashboard
             </a>
             <a href="#" className="text-gray-700 hover:text-healthcare-primary transition-colors duration-200">
-              Services
+              Care Status
             </a>
             <a href="#" className="text-gray-700 hover:text-healthcare-primary transition-colors duration-200">
-              About
+              Appointments
             </a>
             <a href="#" className="text-gray-700 hover:text-healthcare-primary transition-colors duration-200">
-              Contact
+              Concierge
             </a>
           </nav>
 
           {/* User Actions */}
-          <div className="flex items-center space-x-4">
-            <Button variant="outline" className="border-healthcare-primary text-healthcare-primary hover:bg-healthcare-primary hover:text-white">
+          <div className="flex items-center space-x-2 sm:space-x-4">
+            <Button variant="outline" className="hidden sm:inline-flex border-healthcare-primary text-healthcare-primary hover:bg-healthcare-primary hover:text-white">
               Sign In
             </Button>
-            <Button className="bg-healthcare-primary hover:bg-healthcare-primary/90">
+            <Button className="hidden sm:inline-flex bg-healthcare-primary hover:bg-healthcare-primary/90">
               Sign Up
             </Button>
-            <Button variant="ghost" size="icon" className="md:hidden">
-              <Menu className="h-5 w-5" />
+            
+            {/* Mobile user button */}
+            <Button variant="ghost" size="icon" className="sm:hidden">
+              <UserCircle className="h-5 w-5" />
             </Button>
+            
+            {/* Mobile Navigation */}
+            <MobileNavigation />
           </div>
         </div>
       </div>
