@@ -1,9 +1,12 @@
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Pill, HelpCircle, Users, Calendar, MessageSquare } from "lucide-react";
 
 const ConciergeSection = () => {
+  const handleConciergeContact = () => {
+    window.open('sms:470-470-9108', '_self');
+  };
+
   const conciergeServices = [
     {
       icon: Pill,
@@ -78,6 +81,7 @@ const ConciergeSection = () => {
               <Button 
                 size="lg" 
                 className="bg-healthcare-primary hover:bg-healthcare-primary/90 text-white px-8 py-3 text-lg hover-lift"
+                onClick={handleConciergeContact}
               >
                 Reach Your Concierge Now
               </Button>
