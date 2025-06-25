@@ -51,7 +51,7 @@ const TalkToDoctorSection = () => {
           text: "Send Text",
           color: "bg-healthcare-ocean",
           hoverColor: "hover:bg-healthcare-ocean/90",
-          variant: "outline" as const,
+          variant: "outline",
           onClick: handleTextMessage
         }
       ],
@@ -117,7 +117,11 @@ const TalkToDoctorSection = () => {
                       key={buttonIndex}
                       size="lg" 
                       variant={button.variant || "default"}
-                      className={`w-full ${button.variant === 'outline' ? `border-2 border-healthcare-ocean text-healthcare-ocean hover:bg-healthcare-ocean hover:text-white` : `${button.color} ${button.hoverColor} text-white`} hover-lift`}
+                      className={`w-full ${
+                        button.variant === 'outline' 
+                          ? `border-2 border-healthcare-ocean text-healthcare-ocean hover:bg-healthcare-ocean hover:text-white` 
+                          : `${button.color} ${button.hoverColor} text-white`
+                      } hover-lift`}
                       onClick={button.onClick}
                     >
                       {button.text}
