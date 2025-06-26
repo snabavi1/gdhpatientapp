@@ -1,8 +1,14 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Clock, CheckCircle, FileText, AlertCircle, Calendar, Heart, MessageSquare, Phone } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Clock, CheckCircle, FileText, AlertCircle, Calendar, Heart, MessageSquare, Phone, Video, Users } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import { blandAIService } from '@/services/blandAIService';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
+import FamilyContactManager from './FamilyContactManager';
 
 export type CareStatus = 
   | 'consultation-scheduled'
@@ -18,6 +24,15 @@ interface PatientDashboardProps {
   lastUpdated: Date;
   nextAppointment?: Date;
   careInstructions?: string[];
+}
+
+interface CommunicationLog {
+  id: string;
+  communication_type: string;
+  provider_type: string;
+  status: string;
+  created_at: string;
+  duration_seconds?: number;
 }
 
 const statusConfig = {
@@ -80,6 +95,33 @@ const PatientDashboard: React.FC<PatientDashboardProps> = ({
 }) => {
   const config = statusConfig[currentStatus];
   const IconComponent = config.icon;
+  const { toast } = useToast();
+  const { user } = useAuth();
+  const [loading, setLoading] = useState<{ [key: string]: boolean }>({});
+  const [recentCommunications, setRecentCommunications] = useState<CommunicationLog[]>([]);
+  const [showFamilyContacts, setShowFamilyContacts] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      loadRecentCommunications();
+    }
+  }, [user]);
+
+  const loadRecentCommunications = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('communication_logs')
+        .select('*')
+        .eq('profile_id', user?.id)
+        .order('created_at', { ascending: false })
+        .limit(5);
+
+      if (error) throw error;
+      setRecentCommunications(data || []);
+    } catch (error) {
+      console.error('Error loading communications:', error);
+    }
+  };
 
   const formatDate = (date: Date) => {
     return date.toLocaleDateString('en-US', {
@@ -92,16 +134,92 @@ const PatientDashboard: React.FC<PatientDashboardProps> = ({
     });
   };
 
-  const handleTalkToDoctor = () => {
-    // Scroll to or navigate to the Talk to Doctor section
-    const talkToDoctorSection = document.querySelector('[data-section="talk-to-doctor"]');
-    if (talkToDoctorSection) {
-      talkToDoctorSection.scrollIntoView({ behavior: 'smooth' });
+  const handleTalkToDoctor = async () => {
+    setLoading({ ...loading, doctor: true });
+    
+    try {
+      const result = await blandAIService.initiateProviderCall({
+        patientId: user?.id || '',
+        providerType: 'doctor',
+        urgency: 'medium'
+      });
+
+      if (result.success) {
+        toast({
+          title: "Connecting to Doctor",
+          description: "Please wait while we connect you with a healthcare provider.",
+        });
+        
+        // Refresh communications after a delay
+        setTimeout(() => {
+          loadRecentCommunications();
+        }, 2000);
+      } else {
+        toast({
+          title: "Connection Failed",
+          description: "Unable to connect right now. Please try again.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to initiate call. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading({ ...loading, doctor: false });
     }
   };
 
-  const handleConcierge = () => {
-    window.open('tel:470-470-9108', '_self');
+  const handleConcierge = async () => {
+    setLoading({ ...loading, concierge: true });
+    
+    try {
+      const result = await blandAIService.sendSMS({
+        patientPhone: user?.phone || '',
+        message: "Hello! This is Green Dot Health concierge. How can I assist you today?",
+        conversationType: 'concierge'
+      });
+
+      if (result.success) {
+        toast({
+          title: "Message Sent",
+          description: "Our concierge will respond to you shortly via SMS.",
+        });
+      } else {
+        // Fallback to phone call
+        window.open('tel:470-470-9108', '_self');
+      }
+    } catch (error) {
+      // Fallback to phone call
+      window.open('tel:470-470-9108', '_self');
+    } finally {
+      setLoading({ ...loading, concierge: false });
+    }
+  };
+
+  const handleVideoCall = () => {
+    // Integrate with Doxy.me or similar video platform
+    toast({
+      title: "Video Call",
+      description: "Video consultation feature coming soon!",
+    });
+  };
+
+  const getCommunicationIcon = (type: string) => {
+    switch (type) {
+      case 'voice_call': return Phone;
+      case 'sms': return MessageSquare;
+      case 'video_call': return Video;
+      default: return MessageSquare;
+    }
+  };
+
+  const formatDuration = (seconds?: number) => {
+    if (!seconds) return '';
+    const minutes = Math.floor(seconds / 60);
+    return `${minutes}m ${seconds % 60}s`;
   };
 
   return (
@@ -111,15 +229,16 @@ const PatientDashboard: React.FC<PatientDashboardProps> = ({
           Welcome back, {patientName}
         </h1>
         
-        {/* Quick Actions - Primary Focus */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+        {/* Enhanced Quick Actions */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           <Card className="p-6 hover-lift cursor-pointer bg-healthcare-primary/5 border-healthcare-primary/20" onClick={handleTalkToDoctor}>
             <div className="text-center">
               <div className="w-16 h-16 bg-healthcare-primary rounded-full flex items-center justify-center mx-auto mb-4">
                 <Heart className="h-8 w-8 text-white" />
               </div>
               <h4 className="font-semibold text-gray-900 mb-2 text-lg">Talk to Doctor</h4>
-              <p className="text-sm text-gray-600">Start a consultation now</p>
+              <p className="text-sm text-gray-600">Medical consultation</p>
+              {loading.doctor && <div className="mt-2 text-xs text-healthcare-primary">Connecting...</div>}
             </div>
           </Card>
           
@@ -128,24 +247,50 @@ const PatientDashboard: React.FC<PatientDashboardProps> = ({
               <div className="w-16 h-16 bg-peach-500 rounded-full flex items-center justify-center mx-auto mb-4">
                 <MessageSquare className="h-8 w-8 text-white" />
               </div>
-              <h4 className="font-semibold text-gray-900 mb-2 text-lg">Concierge</h4>
-              <p className="text-sm text-gray-600">Non-urgent assistance</p>
+              <h4 className="font-semibold text-gray-900 mb-2 text-lg">Text Concierge</h4>
+              <p className="text-sm text-gray-600">Administrative help</p>
+              {loading.concierge && <div className="mt-2 text-xs text-peach-500">Sending...</div>}
+            </div>
+          </Card>
+
+          <Card className="p-6 hover-lift cursor-pointer bg-mint-50 border-mint-200" onClick={handleVideoCall}>
+            <div className="text-center">
+              <div className="w-16 h-16 bg-healthcare-ocean rounded-full flex items-center justify-center mx-auto mb-4">
+                <Video className="h-8 w-8 text-white" />
+              </div>
+              <h4 className="font-semibold text-gray-900 mb-2 text-lg">Video Visit</h4>
+              <p className="text-sm text-gray-600">Face-to-face consultation</p>
+            </div>
+          </Card>
+
+          <Card className="p-6 hover-lift cursor-pointer bg-olive-50 border-olive-200" onClick={() => setShowFamilyContacts(!showFamilyContacts)}>
+            <div className="text-center">
+              <div className="w-16 h-16 bg-olive-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Users className="h-8 w-8 text-white" />
+              </div>
+              <h4 className="font-semibold text-gray-900 mb-2 text-lg">Family Access</h4>
+              <p className="text-sm text-gray-600">Authorized contacts</p>
             </div>
           </Card>
 
           {nextAppointment && (
-            <Card className="p-6 hover-lift cursor-pointer bg-mint-50 border-mint-200">
+            <Card className="p-6 hover-lift cursor-pointer bg-mint-50 border-mint-200 sm:col-span-2 lg:col-span-4">
               <div className="text-center">
                 <div className="w-16 h-16 bg-healthcare-ocean rounded-full flex items-center justify-center mx-auto mb-4">
                   <Calendar className="h-8 w-8 text-white" />
                 </div>
                 <h4 className="font-semibold text-gray-900 mb-2 text-lg">Next Appointment</h4>
-                <p className="text-xs text-gray-600">{formatDate(nextAppointment)}</p>
+                <p className="text-sm text-gray-600">{formatDate(nextAppointment)}</p>
               </div>
             </Card>
           )}
         </div>
       </div>
+
+      {/* Family Contact Management */}
+      {showFamilyContacts && (
+        <FamilyContactManager />
+      )}
 
       {/* Current Status Card */}
       <Card className={`p-6 ${config.bgColor} ${config.borderColor} border-2`}>
@@ -166,6 +311,49 @@ const PatientDashboard: React.FC<PatientDashboardProps> = ({
           </div>
         </div>
       </Card>
+
+      {/* Recent Communications */}
+      {recentCommunications.length > 0 && (
+        <Card className="p-6">
+          <div className="flex items-center space-x-3 mb-4">
+            <Phone className="h-5 w-5 text-healthcare-primary" />
+            <h3 className="text-lg font-semibold text-gray-900">Recent Communications</h3>
+          </div>
+          <div className="space-y-3">
+            {recentCommunications.map((comm) => {
+              const CommIcon = getCommunicationIcon(comm.communication_type);
+              return (
+                <div key={comm.id} className="flex items-center justify-between p-3 border rounded-lg">
+                  <div className="flex items-center space-x-3">
+                    <CommIcon className="h-4 w-4 text-gray-500" />
+                    <div>
+                      <span className="text-sm font-medium capitalize">
+                        {comm.communication_type.replace('_', ' ')} - {comm.provider_type}
+                      </span>
+                      <div className="text-xs text-gray-500">
+                        {new Date(comm.created_at).toLocaleDateString()}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    {comm.duration_seconds && (
+                      <span className="text-xs text-gray-500">
+                        {formatDuration(comm.duration_seconds)}
+                      </span>
+                    )}
+                    <Badge 
+                      variant={comm.status === 'completed' ? 'default' : 'secondary'}
+                      className="text-xs"
+                    >
+                      {comm.status}
+                    </Badge>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </Card>
+      )}
 
       {/* Care Instructions */}
       {careInstructions.length > 0 && (

@@ -9,6 +9,172 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      communication_logs: {
+        Row: {
+          communication_type: string
+          created_at: string
+          direction: string
+          duration_seconds: number | null
+          external_id: string | null
+          family_contact_id: string | null
+          id: string
+          metadata: Json | null
+          profile_id: string
+          provider_type: string | null
+          status: string
+          summary: string | null
+          updated_at: string
+        }
+        Insert: {
+          communication_type: string
+          created_at?: string
+          direction: string
+          duration_seconds?: number | null
+          external_id?: string | null
+          family_contact_id?: string | null
+          id?: string
+          metadata?: Json | null
+          profile_id: string
+          provider_type?: string | null
+          status: string
+          summary?: string | null
+          updated_at?: string
+        }
+        Update: {
+          communication_type?: string
+          created_at?: string
+          direction?: string
+          duration_seconds?: number | null
+          external_id?: string | null
+          family_contact_id?: string | null
+          id?: string
+          metadata?: Json | null
+          profile_id?: string
+          provider_type?: string | null
+          status?: string
+          summary?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "communication_logs_family_contact_id_fkey"
+            columns: ["family_contact_id"]
+            isOneToOne: false
+            referencedRelation: "family_contacts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "communication_logs_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      family_contacts: {
+        Row: {
+          created_at: string
+          email: string | null
+          full_name: string
+          id: string
+          permissions: Json
+          phone_number: string
+          profile_id: string
+          relationship: string
+          updated_at: string
+          verification_status: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          full_name: string
+          id?: string
+          permissions?: Json
+          phone_number: string
+          profile_id: string
+          relationship: string
+          updated_at?: string
+          verification_status?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          full_name?: string
+          id?: string
+          permissions?: Json
+          phone_number?: string
+          profile_id?: string
+          relationship?: string
+          updated_at?: string
+          verification_status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "family_contacts_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      hint_patients: {
+        Row: {
+          created_at: string
+          date_of_birth: string | null
+          email: string
+          first_name: string | null
+          hint_patient_id: string
+          hint_tags: string[] | null
+          id: string
+          last_name: string | null
+          last_sync_at: string | null
+          phone: string | null
+          profile_id: string | null
+          updated_at: string
+          verification_status: string
+        }
+        Insert: {
+          created_at?: string
+          date_of_birth?: string | null
+          email: string
+          first_name?: string | null
+          hint_patient_id: string
+          hint_tags?: string[] | null
+          id?: string
+          last_name?: string | null
+          last_sync_at?: string | null
+          phone?: string | null
+          profile_id?: string | null
+          updated_at?: string
+          verification_status?: string
+        }
+        Update: {
+          created_at?: string
+          date_of_birth?: string | null
+          email?: string
+          first_name?: string | null
+          hint_patient_id?: string
+          hint_tags?: string[] | null
+          id?: string
+          last_name?: string | null
+          last_sync_at?: string | null
+          phone?: string | null
+          profile_id?: string | null
+          updated_at?: string
+          verification_status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hint_patients_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           created_at: string
@@ -41,6 +207,97 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      sms_conversations: {
+        Row: {
+          conversation_id: string | null
+          created_at: string
+          id: string
+          last_message_at: string | null
+          message_count: number | null
+          phone_number: string
+          profile_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          conversation_id?: string | null
+          created_at?: string
+          id?: string
+          last_message_at?: string | null
+          message_count?: number | null
+          phone_number: string
+          profile_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          conversation_id?: string | null
+          created_at?: string
+          id?: string
+          last_message_at?: string | null
+          message_count?: number | null
+          phone_number?: string
+          profile_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sms_conversations_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sms_messages: {
+        Row: {
+          conversation_id: string
+          created_at: string
+          direction: string
+          external_message_id: string | null
+          id: string
+          message_content: string
+          metadata: Json | null
+          recipient_phone: string | null
+          sender_phone: string | null
+          status: string
+        }
+        Insert: {
+          conversation_id: string
+          created_at?: string
+          direction: string
+          external_message_id?: string | null
+          id?: string
+          message_content: string
+          metadata?: Json | null
+          recipient_phone?: string | null
+          sender_phone?: string | null
+          status?: string
+        }
+        Update: {
+          conversation_id?: string
+          created_at?: string
+          direction?: string
+          external_message_id?: string | null
+          id?: string
+          message_content?: string
+          metadata?: Json | null
+          recipient_phone?: string | null
+          sender_phone?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sms_messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "sms_conversations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
