@@ -1,9 +1,8 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Clock, CheckCircle, FileText, AlertCircle, Calendar, Heart, MessageSquare, Phone, Video, Users } from 'lucide-react';
+import { Clock, CheckCircle, FileText, AlertCircle, Calendar, Heart, MessageSquare, Phone, Video, Users, Circle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { blandAIService } from '@/services/blandAIService';
 import { useAuth } from '@/contexts/AuthContext';
@@ -18,12 +17,22 @@ export type CareStatus =
   | 'care-plan-updated'
   | 'care-completed';
 
+interface TimelineEvent {
+  id: string;
+  title: string;
+  description: string;
+  date: Date;
+  status: 'completed' | 'current' | 'upcoming';
+  type: 'appointment' | 'test' | 'result' | 'instruction' | 'followup';
+}
+
 interface PatientDashboardProps {
   patientName?: string;
   currentStatus: CareStatus;
   lastUpdated: Date;
   nextAppointment?: Date;
   careInstructions?: string[];
+  timelineEvents?: TimelineEvent[];
 }
 
 interface CommunicationLog {
@@ -91,7 +100,8 @@ const PatientDashboard: React.FC<PatientDashboardProps> = ({
   currentStatus,
   lastUpdated,
   nextAppointment,
-  careInstructions = []
+  careInstructions = [],
+  timelineEvents = []
 }) => {
   const config = statusConfig[currentStatus];
   const IconComponent = config.icon;
@@ -222,6 +232,37 @@ const PatientDashboard: React.FC<PatientDashboardProps> = ({
     return `${minutes}m ${seconds % 60}s`;
   };
 
+  const getTimelineStatusIcon = (status: TimelineEvent['status']) => {
+    switch (status) {
+      case 'completed':
+        return <CheckCircle className="h-4 w-4 text-green-600" />;
+      case 'current':
+        return <Clock className="h-4 w-4 text-healthcare-primary animate-pulse" />;
+      case 'upcoming':
+        return <Circle className="h-4 w-4 text-gray-400" />;
+    }
+  };
+
+  const getTimelineStatusColor = (status: TimelineEvent['status']) => {
+    switch (status) {
+      case 'completed':
+        return 'bg-green-600';
+      case 'current':
+        return 'bg-healthcare-primary';
+      case 'upcoming':
+        return 'bg-gray-400';
+    }
+  };
+
+  const formatTimelineDate = (date: Date) => {
+    return date.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
   return (
     <div className="max-w-4xl mx-auto p-4 space-y-6">
       <div className="text-center mb-8">
@@ -292,9 +333,9 @@ const PatientDashboard: React.FC<PatientDashboardProps> = ({
         <FamilyContactManager />
       )}
 
-      {/* Current Status Card */}
+      {/* Current Status Card with Timeline */}
       <Card className={`p-6 ${config.bgColor} ${config.borderColor} border-2`}>
-        <div className="flex items-start space-x-4">
+        <div className="flex items-start space-x-4 mb-6">
           <div className={`p-3 rounded-full bg-white ${config.color}`}>
             <IconComponent className="h-6 w-6" />
           </div>
@@ -310,6 +351,49 @@ const PatientDashboard: React.FC<PatientDashboardProps> = ({
             </div>
           </div>
         </div>
+
+        {/* Care Journey Timeline */}
+        {timelineEvents.length > 0 && (
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Your Care Journey</h3>
+            <div className="relative">
+              {/* Timeline line */}
+              <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gray-200" />
+              
+              {timelineEvents.map((event, index) => (
+                <div key={event.id} className="relative flex items-start space-x-4 pb-6 last:pb-0">
+                  {/* Timeline dot */}
+                  <div className={`relative z-10 flex items-center justify-center w-12 h-12 rounded-full border-4 border-white ${getTimelineStatusColor(event.status)}`}>
+                    {getTimelineStatusIcon(event.status)}
+                  </div>
+                  
+                  {/* Event content */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between mb-1">
+                      <h4 className="text-sm font-semibold text-gray-900">
+                        {event.title}
+                      </h4>
+                      <span className="text-xs text-gray-500">
+                        {formatTimelineDate(event.date)}
+                      </span>
+                    </div>
+                    <p className="text-sm text-gray-600">
+                      {event.description}
+                    </p>
+                    
+                    {event.status === 'current' && (
+                      <div className="mt-2">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-healthcare-primary text-white">
+                          In Progress
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </Card>
 
       {/* Recent Communications */}

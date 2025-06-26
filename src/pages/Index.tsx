@@ -2,7 +2,6 @@
 import Header from "@/components/Header";
 import WelcomeHero from "@/components/WelcomeHero";
 import PatientDashboard from "@/components/PatientDashboard";
-import CareTimeline from "@/components/CareTimeline";
 import ConciergeSection from "@/components/ConciergeSection";
 import TalkToDoctorSection from "@/components/TalkToDoctorSection";
 import Footer from "@/components/Footer";
@@ -77,26 +76,17 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-white">
       <Header />
-      <main className="pb-16 md:pb-0"> {/* Add bottom padding for mobile nav */}
+      <main className="pb-16 md:pb-0">
         {user ? (
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              {/* Main Dashboard */}
-              <div className="lg:col-span-2">
-                <PatientDashboard
-                  patientName={patientData.name}
-                  currentStatus={patientData.currentStatus}
-                  lastUpdated={patientData.lastUpdated}
-                  nextAppointment={patientData.nextAppointment}
-                  careInstructions={patientData.careInstructions}
-                />
-              </div>
-              
-              {/* Timeline Sidebar */}
-              <div className="lg:col-span-1">
-                <CareTimeline events={timelineEvents} />
-              </div>
-            </div>
+            <PatientDashboard
+              patientName={patientData.name}
+              currentStatus={patientData.currentStatus}
+              lastUpdated={patientData.lastUpdated}
+              nextAppointment={patientData.nextAppointment}
+              careInstructions={patientData.careInstructions}
+              timelineEvents={timelineEvents}
+            />
           </div>
         ) : (
           <>
