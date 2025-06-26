@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -56,7 +55,16 @@ const FamilyContactManager = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setContacts(data || []);
+      
+      // Transform the data to match our FamilyContact interface
+      const transformedContacts: FamilyContact[] = (data || []).map(contact => ({
+        ...contact,
+        permissions: typeof contact.permissions === 'string' 
+          ? JSON.parse(contact.permissions)
+          : contact.permissions || { may_call: false, may_receive_updates: false }
+      }));
+      
+      setContacts(transformedContacts);
     } catch (error) {
       console.error('Error loading family contacts:', error);
       toast({
