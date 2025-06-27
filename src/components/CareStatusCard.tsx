@@ -26,14 +26,6 @@ const statusConfig = {
     bgColor: 'bg-brand-light',
     borderColor: 'border-brand-secondary'
   },
-  'awaiting-results': {
-    icon: Clock,
-    title: 'Awaiting Test Results',
-    description: 'Your tests have been completed and results are pending',
-    color: 'text-yellow-600',
-    bgColor: 'bg-yellow-50',
-    borderColor: 'border-yellow-200'
-  },
   'additional-testing': {
     icon: Clock,
     title: 'Additional Testing Ordered',

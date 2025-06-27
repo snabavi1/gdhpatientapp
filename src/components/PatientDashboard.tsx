@@ -16,7 +16,6 @@ import FamilyContactsSection from './FamilyContactsSection';
 export type CareStatus = 
   | 'consultation-scheduled'
   | 'visit-in-progress'
-  | 'awaiting-results'
   | 'additional-testing'
   | 'care-plan-updated'
   | 'care-completed';
@@ -99,9 +98,6 @@ const PatientDashboard: React.FC<PatientDashboardProps> = ({
         
         {/* Secondary Column - Support and Additional Info */}
         <div className="space-y-8">
-          {/* Emergency Support - Always Available */}
-          <EmergencySupport />
-          
           {/* Upcoming Care - Important but Secondary */}
           <UpcomingCare />
           
@@ -111,6 +107,11 @@ const PatientDashboard: React.FC<PatientDashboardProps> = ({
           {/* Family Contacts - Support Network */}
           <FamilyContactsSection />
         </div>
+      </div>
+      
+      {/* Emergency Support - Moved to Bottom */}
+      <div className="mt-8">
+        <EmergencySupport />
       </div>
     </div>
   );
