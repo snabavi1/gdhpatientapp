@@ -10,58 +10,67 @@ const EmergencySupport: React.FC = () => {
   };
 
   return (
-    <Card className="p-6 bg-brand-pink border-brand-pink shadow-lg">
-      <div className="text-center mb-4">
-        <h3 className="text-xl font-semibold text-brand-teal mb-2 flex items-center justify-center gap-2">
-          🚨 Emergency Support - You're Never Alone
+    <Card className="p-6 bg-gradient-to-br from-red-50 to-pink-50 border-red-200 shadow-sm">
+      <div className="text-center mb-6">
+        <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-3">
+          <AlertTriangle className="h-6 w-6 text-red-600" />
+        </div>
+        <h3 className="text-xl font-semibold text-brand-teal mb-2">
+          Emergency Support
         </h3>
+        <p className="text-brand-teal/70 text-sm">
+          You're never alone - help is always available
+        </p>
       </div>
       
-      <div className="space-y-4">
-        <div>
-          <p className="font-medium text-brand-teal mb-3">For immediate emergencies:</p>
-          
-          <div className="space-y-2">
-            <Button 
-              variant="outline"
-              className="w-full justify-start border-red-200 text-red-700 hover:bg-red-50"
-              onClick={() => handleEmergencyCall('911', 'emergency')}
-            >
-              <Phone className="mr-3 h-4 w-4" />
-              🚑 Call 911 - Police, Fire, or Medical Emergency
-            </Button>
-            
-            <Button 
-              variant="outline"
-              className="w-full justify-start border-blue-200 text-blue-700 hover:bg-blue-50"
-              onClick={() => handleEmergencyCall('988', 'crisis')}
-            >
-              <Heart className="mr-3 h-4 w-4" />
-              💙 Call 988 - Suicide & Crisis Lifeline
-            </Button>
-            
-            <Button 
-              variant="outline"
-              className="w-full justify-start border-purple-200 text-purple-700 hover:bg-purple-50"
-              onClick={() => handleEmergencyCall('1-800-715-4225', 'mental-health')}
-            >
-              <HeartHandshake className="mr-3 h-4 w-4" />
-              🧠 Call GCAL - Georgia Mental Health Crisis
-            </Button>
+      <div className="space-y-3">
+        <Button 
+          variant="outline"
+          className="w-full justify-start border-red-200 text-red-700 hover:bg-red-50 hover:border-red-300 py-4 rounded-xl transition-all duration-200"
+          onClick={() => handleEmergencyCall('911', 'emergency')}
+        >
+          <Phone className="mr-3 h-5 w-5" />
+          <div className="flex flex-col items-start">
+            <span className="font-medium">🚑 Call 911</span>
+            <span className="text-xs opacity-70">Police, Fire, or Medical Emergency</span>
           </div>
-        </div>
+        </Button>
         
-        <div className="bg-white/50 p-4 rounded-lg text-center">
-          <p className="text-brand-teal font-medium mb-2">
-            💚 After help is on the way, call us too!
-          </p>
-          <p className="text-brand-teal/80 text-sm mb-2">
-            We're here to support you through everything.
-          </p>
-          <p className="text-brand-teal font-medium">
-            You're not alone - we've got you! ❤️
-          </p>
-        </div>
+        <Button 
+          variant="outline"
+          className="w-full justify-start border-blue-200 text-blue-700 hover:bg-blue-50 hover:border-blue-300 py-4 rounded-xl transition-all duration-200"
+          onClick={() => handleEmergencyCall('988', 'crisis')}
+        >
+          <Heart className="mr-3 h-5 w-5" />
+          <div className="flex flex-col items-start">
+            <span className="font-medium">💙 Call 988</span>
+            <span className="text-xs opacity-70">Suicide & Crisis Lifeline</span>
+          </div>
+        </Button>
+        
+        <Button 
+          variant="outline"
+          className="w-full justify-start border-purple-200 text-purple-700 hover:bg-purple-50 hover:border-purple-300 py-4 rounded-xl transition-all duration-200"
+          onClick={() => handleEmergencyCall('1-800-715-4225', 'mental-health')}
+        >
+          <HeartHandshake className="mr-3 h-5 w-5" />
+          <div className="flex flex-col items-start">
+            <span className="font-medium">🧠 Call GCAL</span>
+            <span className="text-xs opacity-70">Georgia Mental Health Crisis</span>
+          </div>
+        </Button>
+      </div>
+      
+      <div className="bg-gradient-to-r from-brand-light to-white p-4 rounded-xl text-center mt-6 border border-brand-secondary/20">
+        <p className="text-brand-teal font-medium mb-1">
+          💚 After help is on the way, call us too!
+        </p>
+        <p className="text-brand-teal/70 text-sm mb-2">
+          We're here to support you through everything.
+        </p>
+        <p className="text-brand-primary font-semibold">
+          You're not alone - we've got you! ❤️
+        </p>
       </div>
     </Card>
   );
