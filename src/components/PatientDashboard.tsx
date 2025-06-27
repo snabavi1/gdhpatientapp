@@ -11,7 +11,6 @@ import EmergencySupport from './EmergencySupport';
 import PersonalizedCareTips from './PersonalizedCareTips';
 import CareStatusCard from './CareStatusCard';
 import RecentCommunications from './RecentCommunications';
-import CareInstructions from './CareInstructions';
 import FamilyContactsSection from './FamilyContactsSection';
 
 export type CareStatus = 
@@ -22,22 +21,11 @@ export type CareStatus =
   | 'care-plan-updated'
   | 'care-completed';
 
-interface TimelineEvent {
-  id: string;
-  title: string;
-  description: string;
-  date: Date;
-  status: 'completed' | 'current' | 'upcoming';
-  type: 'appointment' | 'test' | 'result' | 'instruction' | 'followup';
-}
-
 interface PatientDashboardProps {
   patientName?: string;
   currentStatus: CareStatus;
   lastUpdated: Date;
   nextAppointment?: Date;
-  careInstructions?: string[];
-  timelineEvents?: TimelineEvent[];
 }
 
 interface CommunicationLog {
@@ -53,9 +41,7 @@ const PatientDashboard: React.FC<PatientDashboardProps> = ({
   patientName = 'Patient',
   currentStatus,
   lastUpdated,
-  nextAppointment,
-  careInstructions = [],
-  timelineEvents = []
+  nextAppointment
 }) => {
   const { toast } = useToast();
   const { user } = useAuth();
@@ -101,17 +87,11 @@ const PatientDashboard: React.FC<PatientDashboardProps> = ({
           {/* Health Status - Key Information */}
           <HealthStatusOverview />
           
-          {/* Care Status and Timeline */}
+          {/* Care Status */}
           <CareStatusCard
             currentStatus={currentStatus}
             lastUpdated={lastUpdated}
-            timelineEvents={timelineEvents}
           />
-          
-          {/* Care Instructions - When Present */}
-          {careInstructions.length > 0 && (
-            <CareInstructions instructions={careInstructions} />
-          )}
           
           {/* Recent Communications - Secondary Priority */}
           <RecentCommunications communications={recentCommunications} />

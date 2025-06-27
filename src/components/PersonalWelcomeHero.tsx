@@ -39,12 +39,9 @@ const PersonalWelcomeHero: React.FC<PersonalWelcomeHeroProps> = ({
   return (
     <Card className="bg-gradient-to-r from-brand-light to-white border-brand-secondary/20 p-8 mb-6">
       <div className="text-center">
-        <h1 className="text-3xl md:text-4xl font-bold text-brand-teal mb-3">
+        <h1 className="text-3xl md:text-4xl font-bold text-brand-teal mb-4">
           🌟 {getGreeting()}, {capitalizedFirstName}!
         </h1>
-        <p className="text-lg text-brand-teal/80 mb-4">
-          We're Here And Ready To Take Care Of You Today
-        </p>
         
         {/* Weather Widget */}
         <div className="inline-flex items-center gap-2 bg-white/60 rounded-full px-4 py-2 text-sm text-brand-teal">
