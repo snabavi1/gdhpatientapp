@@ -1,8 +1,8 @@
 
-import EnhancedAuth from '@/components/EnhancedAuth';
+import SimpleAuth from '@/components/SimpleAuth';
 
 const Auth = () => {
-  return <EnhancedAuth />;
+  return <SimpleAuth />;
 };
 
 export default Auth;
