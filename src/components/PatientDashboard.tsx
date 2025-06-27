@@ -8,6 +8,12 @@ import { blandAIService } from '@/services/blandAIService';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import FamilyContactManager from './FamilyContactManager';
+import PersonalWelcomeHero from './PersonalWelcomeHero';
+import QuickActionsCard from './QuickActionsCard';
+import HealthStatusOverview from './HealthStatusOverview';
+import UpcomingCare from './UpcomingCare';
+import EmergencySupport from './EmergencySupport';
+import PersonalizedCareTips from './PersonalizedCareTips';
 
 export type CareStatus = 
   | 'consultation-scheduled'
@@ -49,7 +55,7 @@ const statusConfig = {
     icon: Calendar,
     title: 'Initial Consultation Scheduled',
     description: 'Your appointment is confirmed and scheduled',
-    color: 'text-healthcare-ocean',
+    color: 'text-brand-blue',
     bgColor: 'bg-blue-50',
     borderColor: 'border-blue-200'
   },
@@ -57,33 +63,33 @@ const statusConfig = {
     icon: Heart,
     title: 'Visit In Progress',
     description: 'You are currently in consultation with your provider',
-    color: 'text-healthcare-primary',
-    bgColor: 'bg-mint-50',
-    borderColor: 'border-mint-200'
+    color: 'text-brand-primary',
+    bgColor: 'bg-brand-light',
+    borderColor: 'border-brand-secondary'
   },
   'awaiting-results': {
     icon: Clock,
     title: 'Awaiting Test Results',
     description: 'Your tests have been completed and results are pending',
-    color: 'text-peach-500',
-    bgColor: 'bg-peach-50',
-    borderColor: 'border-peach-200'
+    color: 'text-yellow-600',
+    bgColor: 'bg-yellow-50',
+    borderColor: 'border-yellow-200'
   },
   'additional-testing': {
     icon: AlertCircle,
     title: 'Additional Testing Ordered',
     description: 'Your doctor has ordered additional tests for your care',
-    color: 'text-olive-600',
-    bgColor: 'bg-olive-50',
-    borderColor: 'border-olive-200'
+    color: 'text-orange-600',
+    bgColor: 'bg-orange-50',
+    borderColor: 'border-orange-200'
   },
   'care-plan-updated': {
     icon: FileText,
     title: 'Care Plan Updated',
     description: 'Your treatment plan has been updated with new instructions',
-    color: 'text-healthcare-primary',
-    bgColor: 'bg-mint-50',
-    borderColor: 'border-mint-200'
+    color: 'text-brand-primary',
+    bgColor: 'bg-brand-light',
+    borderColor: 'border-brand-secondary'
   },
   'care-completed': {
     icon: CheckCircle,
@@ -144,79 +150,6 @@ const PatientDashboard: React.FC<PatientDashboardProps> = ({
     });
   };
 
-  const handleTalkToDoctor = async () => {
-    setLoading({ ...loading, doctor: true });
-    
-    try {
-      const result = await blandAIService.initiateProviderCall({
-        patientId: user?.id || '',
-        providerType: 'doctor',
-        urgency: 'medium'
-      });
-
-      if (result.success) {
-        toast({
-          title: "Connecting to Doctor",
-          description: "Please wait while we connect you with a healthcare provider.",
-        });
-        
-        // Refresh communications after a delay
-        setTimeout(() => {
-          loadRecentCommunications();
-        }, 2000);
-      } else {
-        toast({
-          title: "Connection Failed",
-          description: "Unable to connect right now. Please try again.",
-          variant: "destructive",
-        });
-      }
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to initiate call. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading({ ...loading, doctor: false });
-    }
-  };
-
-  const handleConcierge = async () => {
-    setLoading({ ...loading, concierge: true });
-    
-    try {
-      const result = await blandAIService.sendSMS({
-        patientPhone: user?.phone || '',
-        message: "Hello! This is Green Dot Health concierge. How can I assist you today?",
-        conversationType: 'concierge'
-      });
-
-      if (result.success) {
-        toast({
-          title: "Message Sent",
-          description: "Our concierge will respond to you shortly via SMS.",
-        });
-      } else {
-        // Fallback to phone call
-        window.open('tel:470-470-9108', '_self');
-      }
-    } catch (error) {
-      // Fallback to phone call
-      window.open('tel:470-470-9108', '_self');
-    } finally {
-      setLoading({ ...loading, concierge: false });
-    }
-  };
-
-  const handleVideoCall = () => {
-    // Integrate with Doxy.me or similar video platform
-    toast({
-      title: "Video Call",
-      description: "Video consultation feature coming soon!",
-    });
-  };
-
   const getCommunicationIcon = (type: string) => {
     switch (type) {
       case 'voice_call': return Phone;
@@ -237,7 +170,7 @@ const PatientDashboard: React.FC<PatientDashboardProps> = ({
       case 'completed':
         return <CheckCircle className="h-4 w-4 text-green-600" />;
       case 'current':
-        return <Clock className="h-4 w-4 text-healthcare-primary animate-pulse" />;
+        return <Clock className="h-4 w-4 text-brand-primary animate-pulse" />;
       case 'upcoming':
         return <Circle className="h-4 w-4 text-gray-400" />;
     }
@@ -248,7 +181,7 @@ const PatientDashboard: React.FC<PatientDashboardProps> = ({
       case 'completed':
         return 'bg-green-600';
       case 'current':
-        return 'bg-healthcare-primary';
+        return 'bg-brand-primary';
       case 'upcoming':
         return 'bg-gray-400';
     }
@@ -263,165 +196,147 @@ const PatientDashboard: React.FC<PatientDashboardProps> = ({
     });
   };
 
+  // Extract first name for personalization
+  const firstName = patientName.includes(' ') ? patientName.split(' ')[0] : patientName;
+
   return (
-    <div className="max-w-4xl mx-auto p-4 space-y-6">
-      <div className="text-center mb-8">
-        <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">
-          Welcome back, {patientName}
-        </h1>
+    <div className="max-w-6xl mx-auto p-4 space-y-6 bg-gray-50 min-h-screen">
+      {/* Personal Welcome Hero */}
+      <PersonalWelcomeHero firstName={firstName} />
+      
+      {/* Quick Actions Card */}
+      <QuickActionsCard />
+      
+      {/* Main Content Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Left Column */}
+        <div className="space-y-6">
+          <HealthStatusOverview />
+          <UpcomingCare />
+          <EmergencySupport />
+        </div>
         
-        {/* Enhanced Quick Actions */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <Card className="p-6 hover-lift cursor-pointer bg-healthcare-primary/5 border-healthcare-primary/20" onClick={handleTalkToDoctor}>
-            <div className="text-center">
-              <div className="w-16 h-16 bg-healthcare-primary rounded-full flex items-center justify-center mx-auto mb-4">
-                <Heart className="h-8 w-8 text-white" />
-              </div>
-              <h4 className="font-semibold text-gray-900 mb-2 text-lg">Talk to Doctor</h4>
-              <p className="text-sm text-gray-600">Medical consultation</p>
-              {loading.doctor && <div className="mt-2 text-xs text-healthcare-primary">Connecting...</div>}
+        {/* Right Column */}
+        <div className="space-y-6">
+          <PersonalizedCareTips firstName={firstName} />
+          
+          {/* Family Contact Management */}
+          <Card className="p-6 bg-white border-brand-secondary/20">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-brand-teal">Your support network</h3>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowFamilyContacts(!showFamilyContacts)}
+                className="border-brand-secondary text-brand-primary hover:bg-brand-light"
+              >
+                <Users className="h-4 w-4 mr-2" />
+                {showFamilyContacts ? 'Hide' : 'Manage'} Family Contacts
+              </Button>
             </div>
+            
+            {!showFamilyContacts && (
+              <div className="text-sm text-brand-teal/70">
+                <p className="mb-2">👨‍👩‍👧‍👦 Family contacts who can help coordinate your care:</p>
+                <p>• Mike (Husband) - Can call, receives updates</p>
+                <p>• Emma (Daughter) - Can call</p>
+              </div>
+            )}
+            
+            {showFamilyContacts && <FamilyContactManager />}
           </Card>
           
-          <Card className="p-6 hover-lift cursor-pointer bg-peach-50 border-peach-200" onClick={handleConcierge}>
-            <div className="text-center">
-              <div className="w-16 h-16 bg-peach-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                <MessageSquare className="h-8 w-8 text-white" />
+          {/* Current Status Card with Timeline */}
+          <Card className={`p-6 ${config.bgColor} ${config.borderColor} border-2`}>
+            <div className="flex items-start space-x-4 mb-6">
+              <div className={`p-3 rounded-full bg-white ${config.color}`}>
+                <IconComponent className="h-6 w-6" />
               </div>
-              <h4 className="font-semibold text-gray-900 mb-2 text-lg">Text Concierge</h4>
-              <p className="text-sm text-gray-600">Administrative help</p>
-              {loading.concierge && <div className="mt-2 text-xs text-peach-500">Sending...</div>}
-            </div>
-          </Card>
-
-          <Card className="p-6 hover-lift cursor-pointer bg-mint-50 border-mint-200" onClick={handleVideoCall}>
-            <div className="text-center">
-              <div className="w-16 h-16 bg-healthcare-ocean rounded-full flex items-center justify-center mx-auto mb-4">
-                <Video className="h-8 w-8 text-white" />
-              </div>
-              <h4 className="font-semibold text-gray-900 mb-2 text-lg">Video Visit</h4>
-              <p className="text-sm text-gray-600">Face-to-face consultation</p>
-            </div>
-          </Card>
-
-          <Card className="p-6 hover-lift cursor-pointer bg-olive-50 border-olive-200" onClick={() => setShowFamilyContacts(!showFamilyContacts)}>
-            <div className="text-center">
-              <div className="w-16 h-16 bg-olive-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Users className="h-8 w-8 text-white" />
-              </div>
-              <h4 className="font-semibold text-gray-900 mb-2 text-lg">Family Access</h4>
-              <p className="text-sm text-gray-600">Authorized contacts</p>
-            </div>
-          </Card>
-
-          {nextAppointment && (
-            <Card className="p-6 hover-lift cursor-pointer bg-mint-50 border-mint-200 sm:col-span-2 lg:col-span-4">
-              <div className="text-center">
-                <div className="w-16 h-16 bg-healthcare-ocean rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Calendar className="h-8 w-8 text-white" />
+              <div className="flex-1">
+                <h2 className="text-xl font-semibold text-brand-teal mb-2">
+                  {config.title}
+                </h2>
+                <p className="text-brand-teal/80 mb-4">
+                  {config.description}
+                </p>
+                <div className="text-sm text-brand-teal/60">
+                  Last updated: {formatDate(lastUpdated)}
                 </div>
-                <h4 className="font-semibold text-gray-900 mb-2 text-lg">Next Appointment</h4>
-                <p className="text-sm text-gray-600">{formatDate(nextAppointment)}</p>
               </div>
-            </Card>
-          )}
+            </div>
+
+            {/* Care Journey Timeline */}
+            {timelineEvents.length > 0 && (
+              <div>
+                <h3 className="text-lg font-semibold text-brand-teal mb-4">Your Care Journey</h3>
+                <div className="relative">
+                  {/* Timeline line */}
+                  <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gray-200" />
+                  
+                  {timelineEvents.map((event, index) => (
+                    <div key={event.id} className="relative flex items-start space-x-4 pb-6 last:pb-0">
+                      {/* Timeline dot */}
+                      <div className={`relative z-10 flex items-center justify-center w-12 h-12 rounded-full border-4 border-white ${getTimelineStatusColor(event.status)}`}>
+                        {getTimelineStatusIcon(event.status)}
+                      </div>
+                      
+                      {/* Event content */}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between mb-1">
+                          <h4 className="text-sm font-semibold text-brand-teal">
+                            {event.title}
+                          </h4>
+                          <span className="text-xs text-brand-teal/60">
+                            {formatTimelineDate(event.date)}
+                          </span>
+                        </div>
+                        <p className="text-sm text-brand-teal/70">
+                          {event.description}
+                        </p>
+                        
+                        {event.status === 'current' && (
+                          <div className="mt-2">
+                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-brand-primary text-white">
+                              In Progress
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </Card>
         </div>
       </div>
 
-      {/* Family Contact Management */}
-      {showFamilyContacts && (
-        <FamilyContactManager />
-      )}
-
-      {/* Current Status Card with Timeline */}
-      <Card className={`p-6 ${config.bgColor} ${config.borderColor} border-2`}>
-        <div className="flex items-start space-x-4 mb-6">
-          <div className={`p-3 rounded-full bg-white ${config.color}`}>
-            <IconComponent className="h-6 w-6" />
-          </div>
-          <div className="flex-1">
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">
-              {config.title}
-            </h2>
-            <p className="text-gray-700 mb-4">
-              {config.description}
-            </p>
-            <div className="text-sm text-gray-600">
-              Last updated: {formatDate(lastUpdated)}
-            </div>
-          </div>
-        </div>
-
-        {/* Care Journey Timeline */}
-        {timelineEvents.length > 0 && (
-          <div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Your Care Journey</h3>
-            <div className="relative">
-              {/* Timeline line */}
-              <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gray-200" />
-              
-              {timelineEvents.map((event, index) => (
-                <div key={event.id} className="relative flex items-start space-x-4 pb-6 last:pb-0">
-                  {/* Timeline dot */}
-                  <div className={`relative z-10 flex items-center justify-center w-12 h-12 rounded-full border-4 border-white ${getTimelineStatusColor(event.status)}`}>
-                    {getTimelineStatusIcon(event.status)}
-                  </div>
-                  
-                  {/* Event content */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between mb-1">
-                      <h4 className="text-sm font-semibold text-gray-900">
-                        {event.title}
-                      </h4>
-                      <span className="text-xs text-gray-500">
-                        {formatTimelineDate(event.date)}
-                      </span>
-                    </div>
-                    <p className="text-sm text-gray-600">
-                      {event.description}
-                    </p>
-                    
-                    {event.status === 'current' && (
-                      <div className="mt-2">
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-healthcare-primary text-white">
-                          In Progress
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-      </Card>
-
       {/* Recent Communications */}
       {recentCommunications.length > 0 && (
-        <Card className="p-6">
+        <Card className="p-6 bg-white border-brand-secondary/20">
           <div className="flex items-center space-x-3 mb-4">
-            <Phone className="h-5 w-5 text-healthcare-primary" />
-            <h3 className="text-lg font-semibold text-gray-900">Recent Communications</h3>
+            <Phone className="h-5 w-5 text-brand-primary" />
+            <h3 className="text-lg font-semibold text-brand-teal">Recent Communications</h3>
           </div>
           <div className="space-y-3">
             {recentCommunications.map((comm) => {
               const CommIcon = getCommunicationIcon(comm.communication_type);
               return (
-                <div key={comm.id} className="flex items-center justify-between p-3 border rounded-lg">
+                <div key={comm.id} className="flex items-center justify-between p-3 border border-brand-secondary/20 rounded-lg">
                   <div className="flex items-center space-x-3">
-                    <CommIcon className="h-4 w-4 text-gray-500" />
+                    <CommIcon className="h-4 w-4 text-brand-secondary" />
                     <div>
-                      <span className="text-sm font-medium capitalize">
+                      <span className="text-sm font-medium capitalize text-brand-teal">
                         {comm.communication_type.replace('_', ' ')} - {comm.provider_type}
                       </span>
-                      <div className="text-xs text-gray-500">
+                      <div className="text-xs text-brand-teal/60">
                         {new Date(comm.created_at).toLocaleDateString()}
                       </div>
                     </div>
                   </div>
                   <div className="flex items-center space-x-2">
                     {comm.duration_seconds && (
-                      <span className="text-xs text-gray-500">
+                      <span className="text-xs text-brand-teal/60">
                         {formatDuration(comm.duration_seconds)}
                       </span>
                     )}
@@ -441,24 +356,27 @@ const PatientDashboard: React.FC<PatientDashboardProps> = ({
 
       {/* Care Instructions */}
       {careInstructions.length > 0 && (
-        <Card className="p-6">
+        <Card className="p-6 bg-white border-brand-secondary/20">
           <div className="flex items-center space-x-3 mb-4">
-            <FileText className="h-5 w-5 text-healthcare-primary" />
-            <h3 className="text-lg font-semibold text-gray-900">Care Instructions</h3>
+            <FileText className="h-5 w-5 text-brand-primary" />
+            <h3 className="text-lg font-semibold text-brand-teal">Care Instructions</h3>
           </div>
           <div className="space-y-3">
             {careInstructions.map((instruction, index) => (
               <div key={index} className="flex items-start space-x-3">
-                <div className="w-2 h-2 bg-healthcare-primary rounded-full mt-2 flex-shrink-0" />
-                <p className="text-gray-700">{instruction}</p>
+                <div className="w-2 h-2 bg-brand-primary rounded-full mt-2 flex-shrink-0" />
+                <p className="text-brand-teal/80">{instruction}</p>
               </div>
             ))}
           </div>
           <div className="mt-6 flex flex-col sm:flex-row gap-3">
-            <Button className="flex-1 sm:flex-none">
+            <Button className="flex-1 sm:flex-none bg-brand-primary hover:bg-brand-primary/90">
               Download Full Instructions
             </Button>
-            <Button variant="outline" className="flex-1 sm:flex-none" onClick={handleTalkToDoctor}>
+            <Button 
+              variant="outline" 
+              className="flex-1 sm:flex-none border-brand-secondary text-brand-primary hover:bg-brand-light"
+            >
               Contact Your Doctor
             </Button>
           </div>

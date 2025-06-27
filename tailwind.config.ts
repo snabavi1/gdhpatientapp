@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -63,6 +62,14 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
+				// New Green Dot Health brand colors
+				'brand-primary': '#18ae80',
+				'brand-secondary': '#47c69c',
+				'brand-light': '#d0f4e2',
+				'brand-pink': '#fde4ec',
+				'brand-blue': '#3c9fd3',
+				'brand-teal': '#00282d',
+				// Keep existing healthcare colors for backward compatibility
 				mint: {
 					50: '#f0fdf9',
 					100: '#ccfbf1',
