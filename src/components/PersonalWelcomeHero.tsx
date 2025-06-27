@@ -8,13 +8,13 @@ interface PersonalWelcomeHeroProps {
 }
 
 const PersonalWelcomeHero: React.FC<PersonalWelcomeHeroProps> = ({ 
-  firstName = "there" 
+  firstName = "There" 
 }) => {
   const getGreeting = () => {
     const hour = new Date().getHours();
-    if (hour < 12) return "Good morning";
-    if (hour < 17) return "Good afternoon";
-    return "Good evening";
+    if (hour < 12) return "Good Morning";
+    if (hour < 17) return "Good Afternoon";
+    return "Good Evening";
   };
 
   // Mock weather data - in a real app this would come from a weather API
@@ -33,20 +33,23 @@ const PersonalWelcomeHero: React.FC<PersonalWelcomeHeroProps> = ({
     }
   };
 
+  // Capitalize the first name
+  const capitalizedFirstName = firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
+
   return (
     <Card className="bg-gradient-to-r from-brand-light to-white border-brand-secondary/20 p-8 mb-6">
       <div className="text-center">
         <h1 className="text-3xl md:text-4xl font-bold text-brand-teal mb-3">
-          🌟 {getGreeting()}, {firstName}!
+          🌟 {getGreeting()}, {capitalizedFirstName}!
         </h1>
         <p className="text-lg text-brand-teal/80 mb-4">
-          We're here and ready to take care of you today
+          We're Here And Ready To Take Care Of You Today
         </p>
         
         {/* Weather Widget */}
         <div className="inline-flex items-center gap-2 bg-white/60 rounded-full px-4 py-2 text-sm text-brand-teal">
           {getWeatherIcon(mockWeather.condition)}
-          <span>{mockWeather.temp}°F in {mockWeather.location}</span>
+          <span>{mockWeather.temp}°F In {mockWeather.location}</span>
         </div>
       </div>
     </Card>
