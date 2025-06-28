@@ -41,14 +41,14 @@ const WaitTime: React.FC<WaitTimeProps> = ({
 
   const getWaitTimeColor = () => {
     if (isTriageSection) {
-      if (waitMins >= 7) return 'text-red-600 font-bold animate-pulse';
-      if (waitMins >= 5) return 'text-orange-600 font-semibold';
-      if (waitMins >= 3) return 'text-yellow-600 font-medium';
-      return 'text-green-600 font-medium';
+      if (waitMins >= 7) return 'text-amber-600 font-medium';
+      if (waitMins >= 5) return 'text-yellow-600 font-normal';
+      if (waitMins >= 3) return 'text-slate-600 font-normal';
+      return 'text-green-600 font-normal';
     }
     if (isConciergeSection) {
-      if (waitHours >= 24) return 'text-red-600 font-bold';
-      if (waitHours >= 18) return 'text-orange-600 font-semibold';
+      if (waitHours >= 24) return 'text-amber-600 font-medium';
+      if (waitHours >= 18) return 'text-yellow-600 font-normal';
       return darkMode ? 'text-slate-400' : 'text-slate-600';
     }
     return darkMode ? 'text-slate-400' : 'text-slate-600';
@@ -58,15 +58,15 @@ const WaitTime: React.FC<WaitTimeProps> = ({
     <div className="col-span-6 lg:col-span-1 text-center min-w-0">
       <Badge 
         variant="outline" 
-        className={`${getWaitTimeColor()} border-current text-xs px-2 py-1 font-semibold bg-white/80 whitespace-nowrap`}
+        className={`${getWaitTimeColor()} border-current text-xs px-2 py-1 font-normal bg-white/60 whitespace-nowrap`}
       >
         <Clock className="w-3 h-3 mr-1" />
         {getWaitTime()}
       </Badge>
       {(isUrgentWait || isOverdueMessage) && (
-        <div className="text-xs text-red-600 font-semibold mt-1 flex items-center justify-center gap-1">
+        <div className="text-xs text-amber-600 font-normal mt-1 flex items-center justify-center gap-1">
           <AlertTriangle className="w-3 h-3" />
-          <span>Alert</span>
+          <span>Attention</span>
         </div>
       )}
     </div>

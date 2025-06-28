@@ -60,41 +60,41 @@ const PatientCard: React.FC<PatientCardProps> = ({
   const getRowBackgroundColor = () => {
     if (isUrgentWait) {
       return darkMode 
-        ? 'bg-gradient-to-r from-red-900/40 to-red-800/20 border-red-400/50 border-l-4 border-l-red-500' 
-        : 'bg-gradient-to-r from-red-50 to-red-25 border-red-200 border-l-4 border-l-red-500';
+        ? 'bg-gradient-to-r from-orange-900/20 to-orange-800/10 border-orange-300/30 border-l-2 border-l-orange-400' 
+        : 'bg-gradient-to-r from-orange-50/70 to-orange-25/50 border-orange-100/60 border-l-2 border-l-orange-400';
     }
     
     if (isOverdueMessage) {
       return darkMode 
-        ? 'bg-gradient-to-r from-orange-900/30 to-orange-800/15 border-orange-400/50 border-l-4 border-l-orange-500' 
-        : 'bg-gradient-to-r from-orange-50 to-orange-25 border-orange-200 border-l-4 border-l-orange-500';
+        ? 'bg-gradient-to-r from-amber-900/20 to-amber-800/10 border-amber-300/30 border-l-2 border-l-amber-400' 
+        : 'bg-gradient-to-r from-amber-50/70 to-amber-25/50 border-amber-100/60 border-l-2 border-l-amber-400';
     }
     
-    // Acuity-based colors for triaged patients
+    // Acuity-based colors for triaged patients - softer tones
     if (patient.acuity) {
       const acuityColors = {
-        1: darkMode ? 'border-l-purple-400 border-l-4' : 'border-l-purple-400 border-l-4',
-        2: darkMode ? 'border-l-red-400 border-l-4' : 'border-l-red-400 border-l-4',
-        3: darkMode ? 'border-l-yellow-400 border-l-4' : 'border-l-yellow-400 border-l-4',
-        4: darkMode ? 'border-l-green-400 border-l-4' : 'border-l-green-400 border-l-4',
-        5: darkMode ? 'border-l-blue-400 border-l-4' : 'border-l-blue-400 border-l-4'
+        1: darkMode ? 'border-l-purple-300 border-l-2' : 'border-l-purple-300 border-l-2',
+        2: darkMode ? 'border-l-coral-300 border-l-2' : 'border-l-red-300 border-l-2',
+        3: darkMode ? 'border-l-yellow-300 border-l-2' : 'border-l-yellow-300 border-l-2',
+        4: darkMode ? 'border-l-green-300 border-l-2' : 'border-l-green-300 border-l-2',
+        5: darkMode ? 'border-l-blue-300 border-l-2' : 'border-l-blue-300 border-l-2'
       };
-      const acuityBorder = acuityColors[patient.acuity as keyof typeof acuityColors] || 'border-l-gray-400 border-l-2';
+      const acuityBorder = acuityColors[patient.acuity as keyof typeof acuityColors] || 'border-l-gray-300 border-l-2';
       
       return darkMode 
-        ? `bg-gradient-to-r from-gray-800/90 to-gray-700/70 border-gray-600/50 hover:from-gray-700/90 hover:to-gray-600/70 ${acuityBorder}` 
-        : `bg-white border-gray-200/60 hover:bg-gradient-to-r hover:from-gray-50 hover:to-white ${acuityBorder}`;
+        ? `bg-slate-800/50 border-slate-600/30 hover:bg-slate-700/50 ${acuityBorder}` 
+        : `bg-white/80 border-slate-200/40 hover:bg-slate-50/50 ${acuityBorder}`;
     }
     
     return darkMode 
-      ? 'bg-gradient-to-r from-gray-800/90 to-gray-700/70 border-gray-600/50 hover:from-gray-700/90 hover:to-gray-600/70 border-l-2 border-l-gray-500' 
-      : 'bg-white border-gray-200/60 hover:bg-gradient-to-r hover:from-gray-50 hover:to-white border-l-2 border-l-gray-400';
+      ? 'bg-slate-800/50 border-slate-600/30 hover:bg-slate-700/50 border-l-2 border-l-slate-400' 
+      : 'bg-white/80 border-slate-200/40 hover:bg-slate-50/50 border-l-2 border-l-slate-300';
   };
 
   return (
-    <div className={`group p-3 rounded-lg border transition-all duration-200 hover:shadow-md overflow-hidden ${getRowBackgroundColor()}`}>
+    <div className={`group p-4 rounded-lg border transition-all duration-500 hover:shadow-sm overflow-hidden ${getRowBackgroundColor()}`}>
       {/* Single Row Layout - Desktop and Mobile */}
-      <div className="grid grid-cols-12 gap-2 lg:gap-4 items-center min-h-[60px]">
+      <div className="grid grid-cols-12 gap-3 lg:gap-4 items-center min-h-[50px]">
         {/* Column 1-2: Patient Info */}
         <PatientInfo 
           patient={patient}
@@ -104,7 +104,7 @@ const PatientCard: React.FC<PatientCardProps> = ({
 
         {/* Column 3-5: Complaint/Message */}
         <div className="col-span-12 lg:col-span-3 min-w-0">
-          <div className={`text-sm lg:text-base leading-relaxed ${darkMode ? 'text-gray-200' : 'text-gray-800'} line-clamp-2`}>
+          <div className={`text-sm leading-relaxed ${darkMode ? 'text-slate-300' : 'text-slate-700'} line-clamp-2`}>
             {patient.complaint}
           </div>
         </div>

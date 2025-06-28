@@ -75,17 +75,17 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
   
   return (
     <div 
-      className={`${bgColor} ${borderColor} border-l-6 rounded-t-lg px-3 sm:px-4 py-3 shadow-sm animate-fade-in overflow-hidden`}
+      className={`${bgColor} ${borderColor} border-l-4 rounded-t-lg px-4 py-3 shadow-sm animate-fade-in overflow-hidden`}
       style={{ animationDelay }}
     >
       {/* Mobile Layout - Compact Stacked */}
       <div className="flex flex-col space-y-2 lg:hidden">
         {/* Row 1: Title and Patient Count */}
         <div className="flex items-center justify-between gap-2 min-w-0">
-          <h3 className={`text-base font-bold tracking-tight ${textColor} truncate flex-1`}>
+          <h3 className={`text-sm font-medium tracking-tight ${textColor} truncate flex-1`}>
             {title}
           </h3>
-          <Badge className={`${darkMode ? 'bg-white/20 text-white' : 'bg-white/80 text-gray-800'} border-0 text-xs px-2 py-1 font-semibold flex-shrink-0 whitespace-nowrap`}>
+          <Badge className={`${darkMode ? 'bg-white/15 text-white border-white/20' : 'bg-white/70 text-slate-700 border-slate-200/50'} text-xs px-2 py-0.5 font-normal flex-shrink-0 whitespace-nowrap`}>
             {count} {isConciergeSection ? 'message' : 'patient'}{count !== 1 ? 's' : ''}
           </Badge>
         </div>
@@ -94,14 +94,14 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
         {((longWaitPatients > 0 || overdueMessages > 0) || (isTriageSection || isConciergeSection)) && (
           <div className="flex items-center justify-between gap-2 min-w-0">
             {longWaitPatients > 0 && (
-              <Badge className="bg-red-100 text-red-800 border-red-200 border px-2 py-1 font-medium text-xs flex-shrink-0 whitespace-nowrap animate-pulse">
+              <Badge className="bg-amber-100 text-amber-700 border-amber-200/50 border px-2 py-0.5 font-normal text-xs flex-shrink-0 whitespace-nowrap">
                 <AlertTriangle className="w-3 h-3 mr-1" />
-                {longWaitPatients} urgent
+                {longWaitPatients} needs attention
               </Badge>
             )}
             
             {overdueMessages > 0 && (
-              <Badge className="bg-orange-100 text-orange-800 border-orange-200 border px-2 py-1 font-medium text-xs flex-shrink-0 whitespace-nowrap">
+              <Badge className="bg-amber-100 text-amber-700 border-amber-200/50 border px-2 py-0.5 font-normal text-xs flex-shrink-0 whitespace-nowrap">
                 <MessageSquare className="w-3 h-3 mr-1" />
                 {overdueMessages} overdue
               </Badge>
@@ -110,9 +110,9 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
             {(isTriageSection || isConciergeSection) && (
               <div className={`flex items-center gap-1 ${
                 isTriageSection 
-                  ? (darkMode ? 'text-red-200' : 'text-red-700')
-                  : (darkMode ? 'text-purple-200' : 'text-purple-700')
-              } text-xs font-medium flex-shrink-0 whitespace-nowrap ml-auto`}>
+                  ? (darkMode ? 'text-orange-200' : 'text-orange-600')
+                  : (darkMode ? 'text-purple-200' : 'text-purple-600')
+              } text-xs font-normal flex-shrink-0 whitespace-nowrap ml-auto`}>
                 <Clock className="w-3 h-3" />
                 <span>{getTargetTime()}</span>
               </div>
@@ -124,20 +124,20 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
       {/* Desktop Layout - Compact Horizontal */}
       <div className="hidden lg:flex items-center justify-between gap-4 min-w-0">
         <div className="flex items-center gap-3 min-w-0 flex-1">
-          <h3 className={`text-lg font-bold tracking-tight ${textColor} truncate`}>
+          <h3 className={`text-base font-medium tracking-tight ${textColor} truncate`}>
             {title}
           </h3>
-          <Badge className={`${darkMode ? 'bg-white/20 text-white' : 'bg-white/80 text-gray-800'} border-0 text-sm px-2 py-1 font-semibold flex-shrink-0 whitespace-nowrap`}>
+          <Badge className={`${darkMode ? 'bg-white/15 text-white border-white/20' : 'bg-white/70 text-slate-700 border-slate-200/50'} text-sm px-2 py-0.5 font-normal flex-shrink-0 whitespace-nowrap`}>
             {count}
           </Badge>
           {longWaitPatients > 0 && (
-            <Badge className="bg-red-100 text-red-800 border-red-200 border px-2 py-1 font-medium text-sm flex-shrink-0 whitespace-nowrap animate-pulse">
+            <Badge className="bg-amber-100 text-amber-700 border-amber-200/50 border px-2 py-0.5 font-normal text-sm flex-shrink-0 whitespace-nowrap">
               <AlertTriangle className="w-3 h-3 mr-1" />
-              {longWaitPatients} urgent
+              {longWaitPatients} needs attention
             </Badge>
           )}
           {overdueMessages > 0 && (
-            <Badge className="bg-orange-100 text-orange-800 border-orange-200 border px-2 py-1 font-medium text-sm flex-shrink-0 whitespace-nowrap">
+            <Badge className="bg-amber-100 text-amber-700 border-amber-200/50 border px-2 py-0.5 font-normal text-sm flex-shrink-0 whitespace-nowrap">
               <MessageSquare className="w-3 h-3 mr-1" />
               {overdueMessages} overdue
             </Badge>
@@ -146,9 +146,9 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
         {(isTriageSection || isConciergeSection) && (
           <div className={`flex items-center gap-2 ${
             isTriageSection 
-              ? (darkMode ? 'text-red-200' : 'text-red-700')
-              : (darkMode ? 'text-purple-200' : 'text-purple-700')
-          } text-sm font-medium flex-shrink-0 whitespace-nowrap`}>
+              ? (darkMode ? 'text-orange-200' : 'text-orange-600')
+              : (darkMode ? 'text-purple-200' : 'text-purple-600')
+          } text-sm font-normal flex-shrink-0 whitespace-nowrap`}>
             <Clock className="w-4 h-4" />
             <span>{getTargetTime()}</span>
           </div>

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import PatientSection from './PatientSection';
 import { mockPatients } from '@/services/mockData';
@@ -67,18 +66,18 @@ const TrackingBoard: React.FC<TrackingBoardProps> = ({ darkMode }) => {
   const conciergePatients = sortPatientsByPriority(patients.filter(p => p.section === 'concierge'));
 
   return (
-    <div className={`p-3 sm:p-4 lg:p-5 space-y-4 max-w-7xl mx-auto ${darkMode ? 'bg-gray-900' : 'bg-slate-50'} min-h-screen overflow-hidden`}>
+    <div className={`p-4 lg:p-6 space-y-6 max-w-7xl mx-auto ${darkMode ? 'bg-slate-900' : 'bg-slate-50'} min-h-screen overflow-hidden`}>
       {/* Level 1: Untriaged - Waiting Room (Highest Priority) */}
       <PatientSection
-        title="🚨 UNTRIAGED - WAITING ROOM"
+        title="⏱️ UNTRIAGED - WAITING ROOM"
         patients={untriagedPatients}
         emptyMessage="No patients in waiting room"
         bgColor={darkMode 
-          ? "bg-gradient-to-r from-red-900/40 to-red-800/30" 
-          : "bg-gradient-to-r from-red-50 to-red-25"
+          ? "bg-gradient-to-r from-orange-900/20 to-orange-800/15" 
+          : "bg-gradient-to-r from-orange-50/60 to-orange-25/40"
         }
-        borderColor="border-l-red-600"
-        textColor={darkMode ? "text-red-200" : "text-red-800"}
+        borderColor="border-l-orange-400"
+        textColor={darkMode ? "text-orange-200" : "text-orange-700"}
         isTriageSection={true}
         animationDelay="0s"
         darkMode={darkMode}
@@ -86,15 +85,15 @@ const TrackingBoard: React.FC<TrackingBoardProps> = ({ darkMode }) => {
 
       {/* Level 2: Triaged - Awaiting Full Evaluation */}
       <PatientSection
-        title="🔄 TRIAGED - AWAITING FULL EVALUATION"
+        title="📋 TRIAGED - AWAITING FULL EVALUATION"
         patients={triagedAwaitingPatients}
         emptyMessage="No patients awaiting full evaluation"
         bgColor={darkMode 
-          ? "bg-gradient-to-r from-orange-900/30 to-orange-800/20" 
-          : "bg-gradient-to-r from-orange-50 to-orange-25"
+          ? "bg-gradient-to-r from-amber-900/20 to-amber-800/15" 
+          : "bg-gradient-to-r from-amber-50/60 to-amber-25/40"
         }
-        borderColor="border-l-orange-600"
-        textColor={darkMode ? "text-orange-200" : "text-orange-800"}
+        borderColor="border-l-amber-400"
+        textColor={darkMode ? "text-amber-200" : "text-amber-700"}
         animationDelay="0.05s"
         darkMode={darkMode}
       />
@@ -105,26 +104,26 @@ const TrackingBoard: React.FC<TrackingBoardProps> = ({ darkMode }) => {
         patients={testsOrderedPatients}
         emptyMessage="No tests in progress"
         bgColor={darkMode 
-          ? "bg-gradient-to-r from-blue-900/30 to-blue-800/20" 
-          : "bg-gradient-to-r from-blue-50 to-blue-25"
+          ? "bg-gradient-to-r from-blue-900/20 to-blue-800/15" 
+          : "bg-gradient-to-r from-blue-50/60 to-blue-25/40"
         }
-        borderColor="border-l-blue-600"
-        textColor={darkMode ? "text-blue-200" : "text-blue-800"}
+        borderColor="border-l-blue-400"
+        textColor={darkMode ? "text-blue-200" : "text-blue-700"}
         animationDelay="0.1s"
         darkMode={darkMode}
       />
 
       {/* Level 4: Results Ready - Awaiting Disposition */}
       <PatientSection
-        title="📋 RESULTS READY - AWAITING DISPOSITION"
+        title="✓ RESULTS READY - AWAITING DISPOSITION"
         patients={resultsReadyPatients}
         emptyMessage="No results awaiting review"
         bgColor={darkMode 
-          ? "bg-gradient-to-r from-emerald-900/30 to-emerald-800/20" 
-          : "bg-gradient-to-r from-emerald-50 to-emerald-25"
+          ? "bg-gradient-to-r from-emerald-900/20 to-emerald-800/15" 
+          : "bg-gradient-to-r from-emerald-50/60 to-emerald-25/40"
         }
-        borderColor="border-l-emerald-600"
-        textColor={darkMode ? "text-emerald-200" : "text-emerald-800"}
+        borderColor="border-l-emerald-400"
+        textColor={darkMode ? "text-emerald-200" : "text-emerald-700"}
         animationDelay="0.15s"
         darkMode={darkMode}
       />
@@ -135,11 +134,11 @@ const TrackingBoard: React.FC<TrackingBoardProps> = ({ darkMode }) => {
         patients={conciergePatients}
         emptyMessage="No patient messages"
         bgColor={darkMode 
-          ? "bg-gradient-to-r from-purple-900/30 to-purple-800/20" 
-          : "bg-gradient-to-r from-purple-50 to-purple-25"
+          ? "bg-gradient-to-r from-purple-900/20 to-purple-800/15" 
+          : "bg-gradient-to-r from-purple-50/60 to-purple-25/40"
         }
-        borderColor="border-l-purple-600"
-        textColor={darkMode ? "text-purple-200" : "text-purple-800"}
+        borderColor="border-l-purple-400"
+        textColor={darkMode ? "text-purple-200" : "text-purple-700"}
         isConciergeSection={true}
         animationDelay="0.2s"
         darkMode={darkMode}
