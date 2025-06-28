@@ -33,7 +33,7 @@ interface PatientCardProps {
 
 const PatientCard: React.FC<PatientCardProps> = ({ patient, darkMode }) => {
   const waitMins = (Date.now() - new Date(patient.arrivalTimestamp).getTime()) / 60000;
-  const isApproachingBackup = patient.section === 'triage' && waitMins >= 6;
+  const isLongerWait = patient.section === 'triage' && waitMins >= 6;
 
   const getWaitTime = () => {
     if (waitMins >= 60) {
@@ -46,9 +46,9 @@ const PatientCard: React.FC<PatientCardProps> = ({ patient, darkMode }) => {
 
   const getWaitTimeColor = () => {
     if (patient.section !== 'triage') return darkMode ? 'text-gray-400' : 'text-gray-600';
-    if (waitMins >= 6) return 'text-red-500';
-    if (waitMins >= 4) return 'text-yellow-500';
-    return 'text-green-500';
+    if (waitMins >= 6) return 'text-orange-600';
+    if (waitMins >= 4) return 'text-amber-600';
+    return 'text-blue-600';
   };
 
   const getAcuityColor = () => {
@@ -85,10 +85,10 @@ const PatientCard: React.FC<PatientCardProps> = ({ patient, darkMode }) => {
 
   return (
     <div className={`p-4 rounded-lg border transition-all duration-200 ${
-      isApproachingBackup 
+      isLongerWait 
         ? darkMode 
-          ? 'bg-red-900/20 border-red-500/50 shadow-lg animate-pulse' 
-          : 'bg-red-50 border-red-200 shadow-lg animate-pulse'
+          ? 'bg-orange-900/10 border-orange-300/30 shadow-md border-l-4 border-l-orange-400' 
+          : 'bg-orange-50 border-orange-200 shadow-md border-l-4 border-l-orange-400'
         : darkMode 
           ? 'bg-gray-700 border-gray-600 hover:bg-gray-600' 
           : 'bg-gray-50 border-gray-200 hover:bg-gray-100'
@@ -143,9 +143,9 @@ const PatientCard: React.FC<PatientCardProps> = ({ patient, darkMode }) => {
               <Clock className="w-3 h-3 mr-1" />
               {getWaitTime()}
             </Badge>
-            {isApproachingBackup && (
-              <div className="text-xs text-red-500 font-semibold mt-1">
-                BACKUP DUE
+            {isLongerWait && (
+              <div className="text-xs text-orange-600 font-medium mt-1">
+                Longer wait
               </div>
             )}
           </div>

@@ -33,6 +33,7 @@ const TrackingBoard: React.FC<TrackingBoardProps> = ({ darkMode }) => {
         const aWaitMins = (Date.now() - new Date(a.arrivalTimestamp).getTime()) / 60000;
         const bWaitMins = (Date.now() - new Date(b.arrivalTimestamp).getTime()) / 60000;
         
+        // Prioritize by wait time without using alarming colors
         if (aWaitMins >= 6 && bWaitMins < 6) return -1;
         if (bWaitMins >= 6 && aWaitMins < 6) return 1;
         
@@ -66,10 +67,10 @@ const TrackingBoard: React.FC<TrackingBoardProps> = ({ darkMode }) => {
 
   const getSectionColor = (section: string) => {
     switch (section) {
-      case 'triage': return 'bg-purple-600';
+      case 'triage': return 'bg-blue-600';
       case 'pending': return 'bg-cyan-600';
       case 'disposition': return 'bg-green-600';
-      case 'followup': return 'bg-slate-600';
+      case 'followup': return 'bg-amber-600';
       default: return 'bg-gray-600';
     }
   };
@@ -97,7 +98,7 @@ const TrackingBoard: React.FC<TrackingBoardProps> = ({ darkMode }) => {
     patients: typeof mockPatients; 
     isTriageSection?: boolean; 
   }) => {
-    const approachingBackup = isTriageSection ? 
+    const longWaitPatients = isTriageSection ? 
       patients.filter(p => (Date.now() - new Date(p.arrivalTimestamp).getTime()) / 60000 >= 6).length : 0;
     
     return (
@@ -108,9 +109,9 @@ const TrackingBoard: React.FC<TrackingBoardProps> = ({ darkMode }) => {
             <Badge variant="secondary" className="bg-white/20 text-white">
               {count}
             </Badge>
-            {approachingBackup > 0 && (
-              <Badge className="bg-red-500 text-white animate-pulse">
-                🚨 {approachingBackup} BACKUP NEEDED
+            {longWaitPatients > 0 && (
+              <Badge className="bg-orange-500 text-white">
+                ⏱️ {longWaitPatients} longer wait
               </Badge>
             )}
           </div>
@@ -133,7 +134,7 @@ const TrackingBoard: React.FC<TrackingBoardProps> = ({ darkMode }) => {
           <SectionHeader 
             title="⏳ AWAITING TRIAGE" 
             count={triagePatients.length} 
-            color="bg-purple-600" 
+            color="bg-blue-600" 
             patients={triagePatients} 
             isTriageSection={true}
           />
@@ -194,7 +195,7 @@ const TrackingBoard: React.FC<TrackingBoardProps> = ({ darkMode }) => {
           <SectionHeader 
             title="📞 FOLLOW-UP DUE" 
             count={followUp.length} 
-            color="bg-slate-600" 
+            color="bg-amber-600" 
             patients={followUp}
           />
           <div className="p-4 space-y-3">

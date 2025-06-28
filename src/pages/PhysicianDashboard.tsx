@@ -3,10 +3,9 @@ import React, { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Bell, User, Sun, Moon, Video, Phone, MessageSquare, Clock, AlertTriangle, Users, CheckCircle, Inbox } from 'lucide-react';
+import { Bell, User, Sun, Moon, Video, Phone, MessageSquare, Clock, AlertTriangle, Users, CheckCircle, Inbox, ArrowLeft } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import TrackingBoard from '@/components/physician/TrackingBoard';
-import WelcomeStats from '@/components/physician/WelcomeStats';
 import NotificationCenter from '@/components/physician/NotificationCenter';
 
 const PhysicianDashboard: React.FC = () => {
@@ -53,6 +52,10 @@ const PhysicianDashboard: React.FC = () => {
 
   const physicianName = user?.user_metadata?.full_name || 'Dr. Taylor';
 
+  const handleCardClick = (cardType: string) => {
+    setActiveView('tracking');
+  };
+
   return (
     <div className={`min-h-screen transition-colors duration-300 ${
       darkMode ? 'bg-gray-900' : 'bg-gray-50'
@@ -65,6 +68,17 @@ const PhysicianDashboard: React.FC = () => {
           <div className="flex items-center justify-between">
             {/* Logo and Title */}
             <div className="flex items-center space-x-3">
+              {activeView === 'tracking' && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setActiveView('welcome')}
+                  className="mr-2"
+                >
+                  <ArrowLeft className="w-4 h-4 mr-1" />
+                  Back to Dashboard
+                </Button>
+              )}
               <div className="w-8 h-8 bg-healthcare-primary rounded-full flex items-center justify-center">
                 <div className="w-4 h-4 bg-white rounded-full"></div>
               </div>
@@ -87,7 +101,7 @@ const PhysicianDashboard: React.FC = () => {
                 </span>
               </div>
               <div className="flex items-center space-x-2">
-                <AlertTriangle className="w-4 h-4 text-orange-500" />
+                <Users className="w-4 h-4 text-blue-500" />
                 <span className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
                   Queue: {mockStats.activePatients}
                 </span>
@@ -110,7 +124,7 @@ const PhysicianDashboard: React.FC = () => {
               >
                 <Bell className="w-4 h-4" />
                 {mockNotifications.length > 0 && (
-                  <Badge className="absolute -top-1 -right-1 w-5 h-5 p-0 flex items-center justify-center bg-red-500 text-white text-xs">
+                  <Badge className="absolute -top-1 -right-1 w-5 h-5 p-0 flex items-center justify-center bg-orange-500 text-white text-xs">
                     {mockNotifications.length}
                   </Badge>
                 )}
@@ -128,183 +142,177 @@ const PhysicianDashboard: React.FC = () => {
       </div>
 
       {/* Main Content */}
-      <div className="flex">
-        {/* Sidebar Navigation */}
-        <div className={`w-64 min-h-screen border-r transition-colors duration-300 ${
-          darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
-        }`}>
-          <div className="p-4 space-y-2">
-            <Button
-              variant={activeView === 'welcome' ? 'default' : 'ghost'}
-              className="w-full justify-start"
-              onClick={() => setActiveView('welcome')}
-            >
-              Welcome Dashboard
-            </Button>
-            <Button
-              variant={activeView === 'tracking' ? 'default' : 'ghost'}
-              className="w-full justify-start"
-              onClick={() => setActiveView('tracking')}
-            >
-              Patient Tracking Board
-            </Button>
-          </div>
-        </div>
+      <div className="w-full">
+        {showNotifications && (
+          <NotificationCenter
+            notifications={mockNotifications}
+            onClose={() => setShowNotifications(false)}
+            darkMode={darkMode}
+          />
+        )}
 
-        {/* Main Content Area */}
-        <div className="flex-1">
-          {showNotifications && (
-            <NotificationCenter
-              notifications={mockNotifications}
-              onClose={() => setShowNotifications(false)}
-              darkMode={darkMode}
-            />
-          )}
+        {activeView === 'welcome' ? (
+          <div className="p-6 space-y-8 max-w-6xl mx-auto">
+            {/* Welcome Header */}
+            <Card className={`p-6 ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
+              <div className="text-center">
+                <h2 className={`text-2xl font-bold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                  🌟 Good {new Date().getHours() < 12 ? 'Morning' : new Date().getHours() < 17 ? 'Afternoon' : 'Evening'}, {physicianName}!
+                </h2>
+                <p className={`${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                  You are a boss and a pillar to your community. Care for your community with intention today.
+                </p>
+              </div>
+            </Card>
 
-          {activeView === 'welcome' ? (
-            <div className="p-6 space-y-6">
-              {/* Welcome Header */}
-              <Card className={`p-6 ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
-                <div className="text-center">
-                  <h2 className={`text-2xl font-bold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                    🌟 Good {new Date().getHours() < 12 ? 'Morning' : new Date().getHours() < 17 ? 'Afternoon' : 'Evening'}, {physicianName}!
-                  </h2>
-                  <p className={`${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                    You are a boss and a pillar to your community. Care for your community with intention today.
-                  </p>
-                </div>
-              </Card>
-
-              {/* TOP PRIORITY - Critical Patient Metrics */}
-              <Card className={`p-6 border-2 border-red-200 ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
-                <h3 className={`text-lg font-semibold mb-4 flex items-center ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                  🚨 TOP PRIORITY
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className={`p-4 rounded-lg ${darkMode ? 'bg-red-900/20' : 'bg-red-50'} border border-red-200`}>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className={`text-sm font-medium ${darkMode ? 'text-red-300' : 'text-red-700'}`}>
-                          Awaiting Triage
-                        </p>
-                        <p className={`text-3xl font-bold ${darkMode ? 'text-red-400' : 'text-red-600'}`}>
-                          {mockStats.awaitingTriage}
-                        </p>
-                        <p className="text-xs text-red-500">Patients waiting</p>
-                      </div>
-                      <AlertTriangle className="w-8 h-8 text-red-500" />
-                    </div>
-                  </div>
-                  <div className={`p-4 rounded-lg ${darkMode ? 'bg-orange-900/20' : 'bg-orange-50'} border border-orange-200`}>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className={`text-sm font-medium ${darkMode ? 'text-orange-300' : 'text-orange-700'}`}>
-                          Needs Disposition
-                        </p>
-                        <p className={`text-3xl font-bold ${darkMode ? 'text-orange-400' : 'text-orange-600'}`}>
-                          {mockStats.needsDisposition}
-                        </p>
-                        <p className="text-xs text-orange-500">Ready for discharge</p>
-                      </div>
-                      <CheckCircle className="w-8 h-8 text-orange-500" />
-                    </div>
-                  </div>
-                </div>
-                <div className="mt-4">
-                  <Button
-                    onClick={() => setActiveView('tracking')}
-                    className="w-full bg-red-600 hover:bg-red-700 text-white"
-                  >
-                    <AlertTriangle className="w-4 h-4 mr-2" />
-                    Go to Patient Tracking Board
-                  </Button>
-                </div>
-              </Card>
-
-              {/* SECOND PRIORITY - Concierge Inbox */}
-              <Card className={`p-6 border-2 border-blue-200 ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
-                <h3 className={`text-lg font-semibold mb-4 flex items-center ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                  📬 CONCIERGE INBOX
-                </h3>
-                <div className={`p-4 rounded-lg ${darkMode ? 'bg-blue-900/20' : 'bg-blue-50'} border border-blue-200`}>
+            {/* TOP PRIORITY - Larger Cards with Emphasis */}
+            <div className="space-y-4">
+              <h3 className={`text-xl font-semibold ${darkMode ? 'text-white' : 'text-gray-900'} mb-4`}>
+                🔥 Immediate Attention
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Card 
+                  className={`p-8 cursor-pointer transition-all duration-200 hover:shadow-lg transform hover:-translate-y-1 border-2 border-blue-200 ${darkMode ? 'bg-gray-800 hover:bg-gray-700' : 'bg-white hover:bg-blue-50'}`}
+                  onClick={() => handleCardClick('triage')}
+                >
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className={`text-sm font-medium ${darkMode ? 'text-blue-300' : 'text-blue-700'}`}>
-                        Unread Messages
+                      <p className={`text-lg font-semibold ${darkMode ? 'text-blue-300' : 'text-blue-700'} mb-2`}>
+                        ⏳ Awaiting Triage
                       </p>
-                      <p className={`text-3xl font-bold ${darkMode ? 'text-blue-400' : 'text-blue-600'}`}>
+                      <p className={`text-4xl font-bold ${darkMode ? 'text-blue-400' : 'text-blue-600'} mb-2`}>
+                        {mockStats.awaitingTriage}
+                      </p>
+                      <p className="text-sm text-blue-500">Patients waiting for initial assessment</p>
+                      <div className="mt-4 flex items-center text-sm text-blue-600">
+                        <Clock className="w-4 h-4 mr-1" />
+                        Click to review queue
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <AlertTriangle className="w-12 h-12 text-blue-500 mb-2" />
+                      <Badge className="bg-blue-100 text-blue-800 border-blue-300">
+                        High Priority
+                      </Badge>
+                    </div>
+                  </div>
+                </Card>
+
+                <Card 
+                  className={`p-8 cursor-pointer transition-all duration-200 hover:shadow-lg transform hover:-translate-y-1 border-2 border-green-200 ${darkMode ? 'bg-gray-800 hover:bg-gray-700' : 'bg-white hover:bg-green-50'}`}
+                  onClick={() => handleCardClick('disposition')}
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className={`text-lg font-semibold ${darkMode ? 'text-green-300' : 'text-green-700'} mb-2`}>
+                        📋 Needs Disposition
+                      </p>
+                      <p className={`text-4xl font-bold ${darkMode ? 'text-green-400' : 'text-green-600'} mb-2`}>
+                        {mockStats.needsDisposition}
+                      </p>
+                      <p className="text-sm text-green-500">Ready for discharge planning</p>
+                      <div className="mt-4 flex items-center text-sm text-green-600">
+                        <CheckCircle className="w-4 h-4 mr-1" />
+                        Click to finalize care
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <CheckCircle className="w-12 h-12 text-green-500 mb-2" />
+                      <Badge className="bg-green-100 text-green-800 border-green-300">
+                        High Priority
+                      </Badge>
+                    </div>
+                  </div>
+                </Card>
+              </div>
+            </div>
+
+            {/* SECOND PRIORITY - Concierge Inbox */}
+            <div className="space-y-4">
+              <h3 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-900'} mb-4`}>
+                📬 Patient Communications
+              </h3>
+              <Card className={`p-6 ${darkMode ? 'bg-gray-800' : 'bg-white'} border border-cyan-200`}>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-4">
+                    <Inbox className="w-10 h-10 text-cyan-500" />
+                    <div>
+                      <p className={`text-lg font-semibold ${darkMode ? 'text-cyan-300' : 'text-cyan-700'}`}>
+                        Concierge Inbox
+                      </p>
+                      <p className={`text-3xl font-bold ${darkMode ? 'text-cyan-400' : 'text-cyan-600'}`}>
                         {mockStats.conciergeInbox}
                       </p>
-                      <p className="text-xs text-blue-500">Patient inquiries</p>
+                      <p className="text-sm text-cyan-500">Unread patient inquiries</p>
                     </div>
-                    <Inbox className="w-8 h-8 text-blue-500" />
                   </div>
-                </div>
-                <div className="mt-4">
                   <Button
                     variant="outline"
-                    className="w-full border-blue-500 text-blue-600 hover:bg-blue-50"
+                    className="border-cyan-500 text-cyan-600 hover:bg-cyan-50"
                   >
                     <MessageSquare className="w-4 h-4 mr-2" />
-                    Review Concierge Messages (Coming Soon)
+                    Review Messages (Coming Soon)
                   </Button>
                 </div>
               </Card>
+            </div>
 
-              {/* THIRD PRIORITY - Pending Follow-ups */}
-              <Card className={`p-6 ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
-                <h3 className={`text-lg font-semibold mb-4 flex items-center ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                  📞 PENDING FOLLOW-UPS
-                </h3>
-                <div className={`p-4 rounded-lg ${darkMode ? 'bg-yellow-900/20' : 'bg-yellow-50'} border border-yellow-200`}>
-                  <div className="flex items-center justify-between">
+            {/* THIRD PRIORITY - Pending Follow-ups */}
+            <div className="space-y-4">
+              <h3 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-900'} mb-4`}>
+                📞 Scheduled Follow-ups
+              </h3>
+              <Card 
+                className={`p-6 cursor-pointer transition-all duration-200 hover:shadow-md ${darkMode ? 'bg-gray-800 hover:bg-gray-700' : 'bg-white hover:bg-amber-50'} border border-amber-200`}
+                onClick={() => handleCardClick('followup')}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-4">
+                    <Phone className="w-10 h-10 text-amber-500" />
                     <div>
-                      <p className={`text-sm font-medium ${darkMode ? 'text-yellow-300' : 'text-yellow-700'}`}>
-                        Follow-ups Due
+                      <p className={`text-lg font-semibold ${darkMode ? 'text-amber-300' : 'text-amber-700'}`}>
+                        Pending Follow-ups
                       </p>
-                      <p className={`text-3xl font-bold ${darkMode ? 'text-yellow-400' : 'text-yellow-600'}`}>
+                      <p className={`text-3xl font-bold ${darkMode ? 'text-amber-400' : 'text-amber-600'}`}>
                         {mockStats.pendingFollowups}
                       </p>
-                      <p className="text-xs text-yellow-500">Patients to contact</p>
+                      <p className="text-sm text-amber-500">Patients to contact today</p>
                     </div>
-                    <Phone className="w-8 h-8 text-yellow-500" />
                   </div>
-                </div>
-                <div className="mt-4">
                   <Button
                     variant="outline"
-                    className="w-full border-yellow-500 text-yellow-600 hover:bg-yellow-50"
+                    className="border-amber-500 text-amber-600 hover:bg-amber-50"
                   >
                     <Phone className="w-4 h-4 mr-2" />
                     Review Follow-ups
                   </Button>
                 </div>
               </Card>
-
-              {/* ENCOURAGEMENT - Consultations Completed */}
-              <Card className={`p-6 border-2 border-green-200 ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
-                <div className="text-center">
-                  <div className={`p-4 rounded-lg ${darkMode ? 'bg-green-900/20' : 'bg-green-50'} border border-green-200`}>
-                    <h3 className={`text-lg font-semibold mb-2 ${darkMode ? 'text-green-300' : 'text-green-700'}`}>
-                      🎉 Consultations Completed Today
-                    </h3>
-                    <p className={`text-4xl font-bold ${darkMode ? 'text-green-400' : 'text-green-600'}`}>
-                      {mockStats.consultationsToday}
-                    </p>
-                    <p className={`text-lg font-medium ${darkMode ? 'text-green-300' : 'text-green-700'} mt-2`}>
-                      Go you! 🌟
-                    </p>
-                    <p className="text-sm text-green-500 mt-1">
-                      You're making a real difference in your community
-                    </p>
-                  </div>
-                </div>
-              </Card>
             </div>
-          ) : (
-            <TrackingBoard darkMode={darkMode} />
-          )}
-        </div>
+
+            {/* ENCOURAGEMENT - Consultations Completed */}
+            <Card className={`p-8 border-2 border-emerald-200 ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
+              <div className="text-center">
+                <div className={`p-6 rounded-lg ${darkMode ? 'bg-emerald-900/20' : 'bg-emerald-50'} border border-emerald-200`}>
+                  <h3 className={`text-2xl font-bold mb-2 ${darkMode ? 'text-emerald-300' : 'text-emerald-700'}`}>
+                    🎉 Consultations Completed Today
+                  </h3>
+                  <p className={`text-5xl font-bold ${darkMode ? 'text-emerald-400' : 'text-emerald-600'} mb-4`}>
+                    {mockStats.consultationsToday}
+                  </p>
+                  <p className={`text-xl font-semibold ${darkMode ? 'text-emerald-300' : 'text-emerald-700'} mb-2`}>
+                    Go you! 🌟
+                  </p>
+                  <p className="text-emerald-500">
+                    You're making a real difference in your community
+                  </p>
+                </div>
+              </div>
+            </Card>
+          </div>
+        ) : (
+          <TrackingBoard darkMode={darkMode} />
+        )}
       </div>
     </div>
   );
