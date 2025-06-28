@@ -57,74 +57,86 @@ const PhysicianDashboard: React.FC = () => {
   };
 
   return (
-    <div className={`min-h-screen transition-colors duration-300 ${
-      darkMode ? 'bg-gray-900' : 'bg-gray-50'
+    <div className={`min-h-screen transition-all duration-300 ${
+      darkMode ? 'bg-gray-900' : 'bg-slate-50'
     }`}>
       {/* Top Navigation */}
-      <div className={`sticky top-0 z-50 border-b transition-colors duration-300 ${
-        darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
+      <div className={`sticky top-0 z-50 border-b transition-all duration-300 backdrop-blur-sm ${
+        darkMode ? 'bg-gray-800/95 border-gray-700' : 'bg-white/95 border-slate-200'
       }`}>
-        <div className="px-6 py-4">
+        <div className="px-8 py-5">
           <div className="flex items-center justify-between">
             {/* Logo and Title */}
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-4">
               {activeView === 'tracking' && (
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => setActiveView('welcome')}
-                  className="mr-2"
+                  className="mr-3 hover:bg-slate-100 transition-colors duration-200"
                 >
-                  <ArrowLeft className="w-4 h-4 mr-1" />
+                  <ArrowLeft className="w-4 h-4 mr-2" />
                   Back to Dashboard
                 </Button>
               )}
-              <div className="w-8 h-8 bg-healthcare-primary rounded-full flex items-center justify-center">
-                <div className="w-4 h-4 bg-white rounded-full"></div>
+              <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center shadow-lg">
+                <div className="w-5 h-5 bg-white rounded-full"></div>
               </div>
               <div>
-                <h1 className={`text-lg font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                <h1 className={`text-xl font-bold tracking-tight ${darkMode ? 'text-white' : 'text-slate-900'}`}>
                   Green Dot Health
                 </h1>
-                <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-slate-500'}`}>
                   Physician Portal
                 </p>
               </div>
             </div>
 
             {/* Center Stats */}
-            <div className="hidden md:flex items-center space-x-6">
-              <div className="flex items-center space-x-2">
-                <User className="w-4 h-4 text-healthcare-primary" />
-                <span className={`text-sm font-medium ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+            <div className="hidden md:flex items-center space-x-8">
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center">
+                  <User className="w-4 h-4 text-emerald-600" />
+                </div>
+                <span className={`text-sm font-medium ${darkMode ? 'text-white' : 'text-slate-900'}`}>
                   {physicianName}
                 </span>
               </div>
-              <div className="flex items-center space-x-2">
-                <Users className="w-4 h-4 text-green-600" />
-                <span className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                  Queue: {mockStats.activePatients}
-                </span>
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                  <Users className="w-4 h-4 text-blue-600" />
+                </div>
+                <div>
+                  <span className={`text-xs ${darkMode ? 'text-gray-400' : 'text-slate-500'}`}>Queue</span>
+                  <div className={`text-sm font-semibold ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>
+                    {mockStats.activePatients}
+                  </div>
+                </div>
               </div>
-              <div className="flex items-center space-x-2">
-                <Clock className="w-4 h-4 text-green-600" />
-                <span className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                  {currentTime.toLocaleTimeString()}
-                </span>
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center">
+                  <Clock className="w-4 h-4 text-amber-600" />
+                </div>
+                <div>
+                  <span className={`text-xs ${darkMode ? 'text-gray-400' : 'text-slate-500'}`}>Time</span>
+                  <div className={`text-sm font-semibold ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>
+                    {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  </div>
+                </div>
               </div>
             </div>
 
             {/* Right Controls */}
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-3">
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => setShowNotifications(!showNotifications)}
-                className="relative"
+                className="relative hover:bg-slate-100 transition-colors duration-200"
               >
-                <Bell className="w-4 h-4" />
+                <Bell className="w-5 h-5" />
                 {mockNotifications.length > 0 && (
-                  <Badge className="absolute -top-1 -right-1 w-5 h-5 p-0 flex items-center justify-center bg-orange-500 text-white text-xs">
+                  <Badge className="absolute -top-1 -right-1 w-5 h-5 p-0 flex items-center justify-center bg-orange-500 text-white text-xs animate-pulse">
                     {mockNotifications.length}
                   </Badge>
                 )}
@@ -133,8 +145,9 @@ const PhysicianDashboard: React.FC = () => {
                 variant="ghost"
                 size="sm"
                 onClick={() => setDarkMode(!darkMode)}
+                className="hover:bg-slate-100 transition-colors duration-200"
               >
-                {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+                {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
               </Button>
             </div>
           </div>
@@ -152,173 +165,244 @@ const PhysicianDashboard: React.FC = () => {
         )}
 
         {activeView === 'welcome' ? (
-          <div className="p-6 space-y-8 max-w-6xl mx-auto">
+          <div className="px-8 py-10 space-y-12 max-w-7xl mx-auto">
             {/* Welcome Header */}
-            <Card className={`p-6 ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
-              <div className="text-center">
-                <h2 className={`text-2xl font-bold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                  🌟 Good {new Date().getHours() < 12 ? 'Morning' : new Date().getHours() < 17 ? 'Afternoon' : 'Evening'}, {physicianName}!
-                </h2>
-                <p className={`${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                  You are a boss and a pillar to your community. Care for your community with intention today.
-                </p>
+            <div className="text-center space-y-6">
+              <div className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-medium ${
+                darkMode ? 'bg-emerald-900/20 text-emerald-300' : 'bg-emerald-50 text-emerald-700'
+              }`}>
+                <div className="w-2 h-2 bg-emerald-500 rounded-full mr-2 animate-pulse"></div>
+                Online & Ready
               </div>
-            </Card>
+              <h2 className={`text-4xl font-bold tracking-tight ${darkMode ? 'text-white' : 'text-slate-900'}`}>
+                Good {new Date().getHours() < 12 ? 'Morning' : new Date().getHours() < 17 ? 'Afternoon' : 'Evening'}, {physicianName}! 👋
+              </h2>
+              <p className={`text-xl max-w-2xl mx-auto leading-relaxed ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>
+                You are a pillar to your community. Let's provide exceptional care with intention today.
+              </p>
+            </div>
 
-            {/* Current Priorities - Redesigned for visual hierarchy */}
-            <div className="space-y-6">
-              <h3 className={`text-xl font-semibold ${darkMode ? 'text-white' : 'text-gray-900'} mb-4`}>
-                ⭐ Current Priorities
-              </h3>
-              
-              {/* Top Priority - Awaiting Triage (Larger, Dark Green) */}
-              <Card 
-                className={`p-8 cursor-pointer transition-all duration-300 hover:shadow-xl transform hover:-translate-y-1 border-2 bg-gradient-to-br from-green-800 to-green-700 text-white ${darkMode ? 'hover:from-green-700 hover:to-green-600' : ''}`}
-                onClick={() => handleCardClick('triage')}
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center space-x-3 mb-3">
-                      <Hourglass className="w-8 h-8" />
-                      <Badge className="bg-white/20 text-white border-white/30">
-                        Priority 1
-                      </Badge>
-                    </div>
-                    <p className="text-xl font-semibold mb-2">
-                      Awaiting Triage
-                    </p>
-                    <p className="text-5xl font-bold mb-3">
-                      {mockStats.awaitingTriage}
-                    </p>
-                    <p className="text-green-100 mb-4">Patients waiting for initial assessment</p>
-                    <div className="flex items-center text-green-100">
-                      <Clock className="w-4 h-4 mr-2" />
-                      Click to review and prioritize
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mb-4">
-                      <Hourglass className="w-8 h-8" />
-                    </div>
-                  </div>
+            {/* Priority Focus Area */}
+            <div className="space-y-8">
+              <div className="flex items-center justify-between">
+                <h3 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-slate-900'}`}>
+                  ⭐ Your Focus Areas
+                </h3>
+                <div className={`text-sm ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+                  Prioritized by urgency and wait time
                 </div>
-              </Card>
+              </div>
+              
+              {/* Priority Cards Grid */}
+              <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+                {/* Awaiting Triage - Highest Priority (Takes 3 columns) */}
+                <Card 
+                  className={`lg:col-span-3 p-8 cursor-pointer transition-all duration-300 hover:shadow-2xl hover:scale-[1.02] border-l-8 border-l-emerald-700 ${
+                    darkMode 
+                      ? 'bg-gradient-to-br from-emerald-900/10 to-emerald-800/5 hover:from-emerald-900/20 hover:to-emerald-800/10 border-slate-700' 
+                      : 'bg-gradient-to-br from-emerald-50 to-emerald-25 hover:from-emerald-100 hover:to-emerald-50 border-emerald-100 shadow-emerald-100/50'
+                  } animate-fade-in`}
+                  onClick={() => handleCardClick('triage')}
+                >
+                  <div className="flex items-start justify-between h-full">
+                    <div className="flex-1 space-y-6">
+                      <div className="flex items-center space-x-4">
+                        <div className="w-16 h-16 bg-emerald-600 rounded-2xl flex items-center justify-center shadow-lg">
+                          <Hourglass className="w-8 h-8 text-white" />
+                        </div>
+                        <div>
+                          <Badge className="bg-emerald-700 text-white border-0 text-sm px-3 py-1">
+                            Priority 1
+                          </Badge>
+                          <h4 className={`text-2xl font-bold mt-2 ${darkMode ? 'text-white' : 'text-slate-900'}`}>
+                            Awaiting Triage
+                          </h4>
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-4">
+                        <div className="flex items-baseline space-x-3">
+                          <span className={`text-6xl font-bold ${darkMode ? 'text-emerald-300' : 'text-emerald-700'}`}>
+                            {mockStats.awaitingTriage}
+                          </span>
+                          <span className={`text-lg ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+                            patients
+                          </span>
+                        </div>
+                        
+                        <p className={`text-lg ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>
+                          New patients ready for initial assessment
+                        </p>
+                        
+                        <div className={`flex items-center space-x-2 text-emerald-600 font-medium`}>
+                          <Clock className="w-5 h-5" />
+                          <span>Target: &lt;7 minutes</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="text-right space-y-4">
+                      <div className={`text-sm ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+                        Highest Priority
+                      </div>
+                      <div className="w-24 h-24 bg-emerald-100 rounded-full flex items-center justify-center">
+                        <Hourglass className="w-12 h-12 text-emerald-600" />
+                      </div>
+                    </div>
+                  </div>
+                </Card>
 
-              {/* Second Priority - Needs Disposition (Medium size, Mint Green) */}
-              <Card 
-                className={`p-6 cursor-pointer transition-all duration-300 hover:shadow-lg transform hover:-translate-y-1 border-2 bg-gradient-to-br from-green-400 to-green-500 text-white ${darkMode ? 'hover:from-green-300 hover:to-green-400' : ''}`}
-                onClick={() => handleCardClick('disposition')}
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center space-x-3 mb-2">
-                      <ClipboardCheck className="w-6 h-6" />
-                      <Badge className="bg-white/20 text-white border-white/30">
+                {/* Needs Disposition - Second Priority (Takes 2 columns) */}
+                <Card 
+                  className={`lg:col-span-2 p-6 cursor-pointer transition-all duration-300 hover:shadow-xl hover:scale-[1.02] border-l-6 border-l-mint-500 ${
+                    darkMode 
+                      ? 'bg-gradient-to-br from-mint-900/10 to-mint-800/5 hover:from-mint-900/20 hover:to-mint-800/10 border-slate-700' 
+                      : 'bg-gradient-to-br from-mint-50 to-mint-25 hover:from-mint-100 hover:to-mint-50 border-mint-100 shadow-mint-100/50'
+                  } animate-fade-in`}
+                  onClick={() => handleCardClick('disposition')}
+                  style={{ animationDelay: '0.1s' }}
+                >
+                  <div className="space-y-6">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-12 h-12 bg-mint-500 rounded-xl flex items-center justify-center shadow-md">
+                        <ClipboardCheck className="w-6 h-6 text-white" />
+                      </div>
+                      <Badge className="bg-mint-600 text-white border-0 px-3 py-1">
                         Priority 2
                       </Badge>
                     </div>
-                    <p className="text-lg font-semibold mb-2">
-                      Ready for Disposition
-                    </p>
-                    <p className="text-3xl font-bold mb-2">
-                      {mockStats.needsDisposition}
-                    </p>
-                    <p className="text-green-100 mb-3">Complete care and discharge planning</p>
-                    <div className="flex items-center text-green-100">
-                      <CheckCircle className="w-4 h-4 mr-2" />
-                      Click to finalize patient care
+                    
+                    <div>
+                      <h4 className={`text-xl font-bold mb-3 ${darkMode ? 'text-white' : 'text-slate-900'}`}>
+                        Ready for Disposition
+                      </h4>
+                      <div className="flex items-baseline space-x-2 mb-3">
+                        <span className={`text-4xl font-bold ${darkMode ? 'text-mint-300' : 'text-mint-600'}`}>
+                          {mockStats.needsDisposition}
+                        </span>
+                        <span className={`text-sm ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+                          patients
+                        </span>
+                      </div>
+                      <p className={`text-sm mb-4 ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>
+                        Complete care and discharge planning
+                      </p>
+                      <div className={`flex items-center text-mint-600 text-sm font-medium`}>
+                        <CheckCircle className="w-4 h-4 mr-2" />
+                        Click to finalize care plans
+                      </div>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <div className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center">
-                      <ClipboardCheck className="w-6 h-6" />
-                    </div>
-                  </div>
-                </div>
-              </Card>
+                </Card>
+              </div>
             </div>
 
-            {/* Patient Communications - Clean, Professional */}
-            <div className="space-y-4">
-              <h3 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                📬 Patient Communications
-              </h3>
-              <Card className={`p-6 ${darkMode ? 'bg-gray-800' : 'bg-white'} border-2 border-cyan-200 hover:shadow-md transition-shadow duration-200`}>
+            {/* Secondary Actions */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Patient Communications */}
+              <Card className={`p-8 transition-all duration-300 hover:shadow-lg border-l-4 border-l-sky-400 ${
+                darkMode ? 'bg-gray-800 hover:bg-gray-750' : 'bg-white hover:bg-sky-25 shadow-sky-100/30'
+              } animate-fade-in`} style={{ animationDelay: '0.2s' }}>
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 bg-cyan-100 rounded-full flex items-center justify-center">
-                      <Inbox className="w-6 h-6 text-cyan-600" />
+                  <div className="flex items-center space-x-6">
+                    <div className="w-16 h-16 bg-sky-100 rounded-2xl flex items-center justify-center shadow-md">
+                      <Inbox className="w-8 h-8 text-sky-600" />
                     </div>
-                    <div>
-                      <p className={`text-lg font-semibold ${darkMode ? 'text-cyan-300' : 'text-cyan-700'}`}>
-                        Concierge Inbox
+                    <div className="space-y-2">
+                      <div className="flex items-center space-x-3">
+                        <h4 className={`text-xl font-bold ${darkMode ? 'text-sky-300' : 'text-sky-700'}`}>
+                          Concierge Inbox
+                        </h4>
+                        <Badge className="bg-sky-100 text-sky-700 border-sky-200">
+                          New Messages
+                        </Badge>
+                      </div>
+                      <div className="flex items-baseline space-x-2">
+                        <span className={`text-3xl font-bold ${darkMode ? 'text-sky-400' : 'text-sky-600'}`}>
+                          {mockStats.conciergeInbox}
+                        </span>
+                        <span className={`text-sm ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+                          patient inquiries
+                        </span>
+                      </div>
+                      <p className={`text-sm ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>
+                        Messages awaiting your response
                       </p>
-                      <p className={`text-2xl font-bold ${darkMode ? 'text-cyan-400' : 'text-cyan-600'}`}>
-                        {mockStats.conciergeInbox}
-                      </p>
-                      <p className="text-cyan-500 text-sm">Patient inquiries awaiting response</p>
                     </div>
                   </div>
                   <Button
                     variant="outline"
-                    className="border-cyan-500 text-cyan-600 hover:bg-cyan-50"
+                    className="border-sky-300 text-sky-700 hover:bg-sky-50 transition-colors duration-200"
+                    disabled
                   >
-                    Review Messages (Coming Soon)
+                    Coming Soon
                   </Button>
                 </div>
               </Card>
-            </div>
 
-            {/* Follow-ups - Warm, Friendly */}
-            <div className="space-y-4">
-              <h3 className={`text-lg font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                📞 Scheduled Follow-ups
-              </h3>
+              {/* Follow-ups */}
               <Card 
-                className={`p-6 cursor-pointer transition-all duration-200 hover:shadow-md ${darkMode ? 'bg-gray-800 hover:bg-gray-700' : 'bg-white hover:bg-amber-50'} border-2 border-amber-200`}
+                className={`p-8 cursor-pointer transition-all duration-300 hover:shadow-lg border-l-4 border-l-amber-400 ${
+                  darkMode ? 'bg-gray-800 hover:bg-gray-750' : 'bg-white hover:bg-amber-25 shadow-amber-100/30'
+                } animate-fade-in`}
                 onClick={() => handleCardClick('followup')}
+                style={{ animationDelay: '0.3s' }}
               >
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center">
-                      <Phone className="w-6 h-6 text-amber-600" />
+                  <div className="flex items-center space-x-6">
+                    <div className="w-16 h-16 bg-amber-100 rounded-2xl flex items-center justify-center shadow-md">
+                      <Phone className="w-8 h-8 text-amber-600" />
                     </div>
-                    <div>
-                      <p className={`text-lg font-semibold ${darkMode ? 'text-amber-300' : 'text-amber-700'}`}>
-                        Pending Follow-ups
+                    <div className="space-y-2">
+                      <h4 className={`text-xl font-bold ${darkMode ? 'text-amber-300' : 'text-amber-700'}`}>
+                        Scheduled Follow-ups
+                      </h4>
+                      <div className="flex items-baseline space-x-2">
+                        <span className={`text-3xl font-bold ${darkMode ? 'text-amber-400' : 'text-amber-600'}`}>
+                          {mockStats.pendingFollowups}
+                        </span>
+                        <span className={`text-sm ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+                          due today
+                        </span>
+                      </div>
+                      <p className={`text-sm ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>
+                        Patients to contact for check-ins
                       </p>
-                      <p className={`text-2xl font-bold ${darkMode ? 'text-amber-400' : 'text-amber-600'}`}>
-                        {mockStats.pendingFollowups}
-                      </p>
-                      <p className="text-amber-600 text-sm">Patients to contact today</p>
                     </div>
                   </div>
                   <Button
                     variant="outline"
-                    className="border-amber-500 text-amber-600 hover:bg-amber-50"
+                    className="border-amber-300 text-amber-700 hover:bg-amber-50 transition-colors duration-200"
                   >
                     <Phone className="w-4 h-4 mr-2" />
-                    Review Follow-ups
+                    Review
                   </Button>
                 </div>
               </Card>
             </div>
 
-            {/* Encouragement Section - Celebration */}
-            <Card className={`p-8 border-2 border-emerald-200 ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
-              <div className="text-center">
-                <div className={`p-6 rounded-xl ${darkMode ? 'bg-emerald-900/20' : 'bg-emerald-50'} border border-emerald-200`}>
-                  <h3 className={`text-2xl font-bold mb-2 ${darkMode ? 'text-emerald-300' : 'text-emerald-700'}`}>
+            {/* Today's Achievement */}
+            <Card className={`p-10 border-0 ${
+              darkMode 
+                ? 'bg-gradient-to-r from-emerald-900/20 via-teal-900/20 to-cyan-900/20' 
+                : 'bg-gradient-to-r from-emerald-50 via-teal-50 to-cyan-50'
+            } animate-fade-in`} style={{ animationDelay: '0.4s' }}>
+              <div className="text-center space-y-6">
+                <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full shadow-2xl">
+                  <CheckCircle className="w-10 h-10 text-white" />
+                </div>
+                <div>
+                  <h3 className={`text-3xl font-bold mb-3 ${darkMode ? 'text-emerald-300' : 'text-emerald-700'}`}>
                     🎉 Consultations Completed Today
                   </h3>
-                  <p className={`text-5xl font-bold ${darkMode ? 'text-emerald-400' : 'text-emerald-600'} mb-4`}>
+                  <div className={`text-6xl font-bold ${darkMode ? 'text-emerald-400' : 'text-emerald-600'} mb-4`}>
                     {mockStats.consultationsToday}
-                  </p>
+                  </div>
                   <p className={`text-xl font-semibold ${darkMode ? 'text-emerald-300' : 'text-emerald-700'} mb-2`}>
-                    Go you! 🌟
+                    Outstanding work! 🌟
                   </p>
-                  <p className="text-emerald-600">
-                    You're making a real difference in your community
+                  <p className={`text-lg ${darkMode ? 'text-slate-300' : 'text-slate-600'} max-w-md mx-auto`}>
+                    You're making a real difference in your community with every patient interaction
                   </p>
                 </div>
               </div>
