@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -32,7 +31,7 @@ const PhysicianDashboard: React.FC = () => {
   const mockNotifications = [
     {
       id: '1',
-      type: 'urgent',
+      type: 'urgent' as const,
       title: 'Patient Backup Due',
       message: 'Michael Torres - 6min wait time',
       timestamp: new Date(Date.now() - 60000),
@@ -40,7 +39,7 @@ const PhysicianDashboard: React.FC = () => {
     },
     {
       id: '2',
-      type: 'results',
+      type: 'results' as const,
       title: 'Lab Results Available',
       message: 'Lisa Park - CT scan results ready',
       timestamp: new Date(Date.now() - 300000),
