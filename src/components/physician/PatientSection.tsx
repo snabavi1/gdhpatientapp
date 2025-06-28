@@ -16,7 +16,7 @@ interface Patient {
   arrivalTime: string;
   arrivalTimestamp: string;
   lastUpdate: string;
-  phone: string;
+  phone: string;  
   status: string;
   physicianSeen: boolean;
   family: string;
@@ -68,7 +68,7 @@ const PatientSection: React.FC<PatientSectionProps> = ({
         darkMode={darkMode}
       />
       {patients.length > 0 && (
-        <div className={`p-3 sm:p-4 lg:p-6 space-y-3 sm:space-y-4 ${darkMode ? 'bg-gray-800/40' : 'bg-gray-50/50'}`}>
+        <div className={`p-2 sm:p-3 lg:p-4 space-y-2 sm:space-y-3 ${darkMode ? 'bg-gray-800/40' : 'bg-gray-50/50'}`}>
           {patients.map((patient, index) => (
             <div 
               key={patient.id} 
