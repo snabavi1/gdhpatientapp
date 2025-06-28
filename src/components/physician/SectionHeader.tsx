@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Badge } from '@/components/ui/badge';
-import { Clock, AlertTriangle } from 'lucide-react';
+import { Clock, AlertTriangle, MessageSquare } from 'lucide-react';
 
 interface Patient {
   id: string;
@@ -19,10 +19,21 @@ interface Patient {
   status: string;
   physicianSeen: boolean;
   family: string;
-  acuity: number;
+  acuity?: number;
   section: string;
   test?: string;
   results?: string;
+  triageTimestamp?: string;
+  expectedTestCompletion?: string;
+  vitalSigns?: {
+    bloodPressure?: string;
+    heartRate?: number;
+    temperature?: number;
+    oxygenSaturation?: number;
+    painScale?: number;
+    respiratoryRate?: number;
+  };
+  messageType?: 'request' | 'question' | 'concern';
 }
 
 interface SectionHeaderProps {
@@ -33,6 +44,7 @@ interface SectionHeaderProps {
   textColor: string;
   patients: Patient[];
   isTriageSection?: boolean;
+  isConciergeSection?: boolean;
   animationDelay?: string;
   darkMode: boolean;
 }
@@ -45,11 +57,21 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
   textColor,
   patients,
   isTriageSection = false,
+  isConciergeSection = false,
   animationDelay = '0s',
   darkMode
 }) => {
   const longWaitPatients = isTriageSection ? 
-    patients.filter(p => (Date.now() - new Date(p.arrivalTimestamp).getTime()) / 60000 >= 6).length : 0;
+    patients.filter(p => (Date.now() - new Date(p.arrivalTimestamp).getTime()) / 60000 >= 7).length : 0;
+  
+  const overdueMessages = isConciergeSection ?
+    patients.filter(p => (Date.now() - new Date(p.arrivalTimestamp).getTime()) / (60000 * 60) >= 24).length : 0;
+  
+  const getTargetTime = () => {
+    if (isTriageSection) return "Target: <7 min";
+    if (isConciergeSection) return "Target: <24 hrs";
+    return "";
+  };
   
   return (
     <div 
@@ -64,24 +86,35 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
             {title}
           </h3>
           <Badge className={`${darkMode ? 'bg-white/20 text-white' : 'bg-white/80 text-gray-800'} border-0 text-xs px-2 py-1 font-semibold flex-shrink-0 whitespace-nowrap`}>
-            {count} patient{count !== 1 ? 's' : ''}
+            {count} {isConciergeSection ? 'message' : 'patient'}{count !== 1 ? 's' : ''}
           </Badge>
         </div>
         
         {/* Row 2: Alerts and Target Time - Only if needed */}
-        {(longWaitPatients > 0 || isTriageSection) && (
+        {((longWaitPatients > 0 || overdueMessages > 0) || (isTriageSection || isConciergeSection)) && (
           <div className="flex items-center justify-between gap-2 min-w-0">
             {longWaitPatients > 0 && (
-              <Badge className="bg-orange-100 text-orange-800 border-orange-200 border px-2 py-1 font-medium text-xs flex-shrink-0 whitespace-nowrap">
+              <Badge className="bg-red-100 text-red-800 border-red-200 border px-2 py-1 font-medium text-xs flex-shrink-0 whitespace-nowrap animate-pulse">
                 <AlertTriangle className="w-3 h-3 mr-1" />
-                {longWaitPatients} alert{longWaitPatients !== 1 ? 's' : ''}
+                {longWaitPatients} urgent
               </Badge>
             )}
             
-            {isTriageSection && (
-              <div className={`flex items-center gap-1 ${darkMode ? 'text-emerald-100' : 'text-emerald-700'} text-xs font-medium flex-shrink-0 whitespace-nowrap ml-auto`}>
+            {overdueMessages > 0 && (
+              <Badge className="bg-orange-100 text-orange-800 border-orange-200 border px-2 py-1 font-medium text-xs flex-shrink-0 whitespace-nowrap">
+                <MessageSquare className="w-3 h-3 mr-1" />
+                {overdueMessages} overdue
+              </Badge>
+            )}
+            
+            {(isTriageSection || isConciergeSection) && (
+              <div className={`flex items-center gap-1 ${
+                isTriageSection 
+                  ? (darkMode ? 'text-red-200' : 'text-red-700')
+                  : (darkMode ? 'text-purple-200' : 'text-purple-700')
+              } text-xs font-medium flex-shrink-0 whitespace-nowrap ml-auto`}>
                 <Clock className="w-3 h-3" />
-                <span>Target: &lt;7 min</span>
+                <span>{getTargetTime()}</span>
               </div>
             )}
           </div>
@@ -98,16 +131,26 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
             {count}
           </Badge>
           {longWaitPatients > 0 && (
-            <Badge className="bg-orange-100 text-orange-800 border-orange-200 border px-2 py-1 font-medium text-sm flex-shrink-0 whitespace-nowrap">
+            <Badge className="bg-red-100 text-red-800 border-red-200 border px-2 py-1 font-medium text-sm flex-shrink-0 whitespace-nowrap animate-pulse">
               <AlertTriangle className="w-3 h-3 mr-1" />
-              {longWaitPatients} alert{longWaitPatients !== 1 ? 's' : ''}
+              {longWaitPatients} urgent
+            </Badge>
+          )}
+          {overdueMessages > 0 && (
+            <Badge className="bg-orange-100 text-orange-800 border-orange-200 border px-2 py-1 font-medium text-sm flex-shrink-0 whitespace-nowrap">
+              <MessageSquare className="w-3 h-3 mr-1" />
+              {overdueMessages} overdue
             </Badge>
           )}
         </div>
-        {isTriageSection && (
-          <div className={`flex items-center gap-2 ${darkMode ? 'text-emerald-100' : 'text-emerald-700'} text-sm font-medium flex-shrink-0 whitespace-nowrap`}>
+        {(isTriageSection || isConciergeSection) && (
+          <div className={`flex items-center gap-2 ${
+            isTriageSection 
+              ? (darkMode ? 'text-red-200' : 'text-red-700')
+              : (darkMode ? 'text-purple-200' : 'text-purple-700')
+          } text-sm font-medium flex-shrink-0 whitespace-nowrap`}>
             <Clock className="w-4 h-4" />
-            <span>Target: &lt;7 min</span>
+            <span>{getTargetTime()}</span>
           </div>
         )}
       </div>
