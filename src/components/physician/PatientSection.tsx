@@ -68,16 +68,19 @@ const PatientSection: React.FC<PatientSectionProps> = ({
         darkMode={darkMode}
       />
       {patients.length > 0 && (
-        <div className={`p-2 sm:p-3 lg:p-4 space-y-2 sm:space-y-3 ${darkMode ? 'bg-gray-800/40' : 'bg-gray-50/50'}`}>
-          {patients.map((patient, index) => (
-            <div 
-              key={patient.id} 
-              className="animate-fade-in"
-              style={{ animationDelay: `${0.1 * (index + 1)}s` }}
-            >
-              <PatientCard patient={patient} darkMode={darkMode} />
-            </div>
-          ))}
+        <div className={`p-2 space-y-2 ${darkMode ? 'bg-gray-800/40' : 'bg-gray-50/50'}`}>
+          {/* Multi-column layout for desktop, single column for mobile */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 lg:gap-3">
+            {patients.map((patient, index) => (
+              <div 
+                key={patient.id} 
+                className="animate-fade-in"
+                style={{ animationDelay: `${0.05 * (index + 1)}s` }}
+              >
+                <PatientCard patient={patient} darkMode={darkMode} />
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </SectionCard>

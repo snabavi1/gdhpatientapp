@@ -53,14 +53,14 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
   
   return (
     <div 
-      className={`${bgColor} ${borderColor} border-l-8 rounded-t-xl px-3 sm:px-4 lg:px-6 py-3 sm:py-4 lg:py-5 shadow-sm animate-fade-in overflow-hidden`}
+      className={`${bgColor} ${borderColor} border-l-6 rounded-t-lg px-3 sm:px-4 py-3 shadow-sm animate-fade-in overflow-hidden`}
       style={{ animationDelay }}
     >
-      {/* Mobile Layout - Stacked */}
-      <div className="flex flex-col space-y-3 lg:hidden">
+      {/* Mobile Layout - Compact Stacked */}
+      <div className="flex flex-col space-y-2 lg:hidden">
         {/* Row 1: Title and Patient Count */}
         <div className="flex items-center justify-between gap-2 min-w-0">
-          <h3 className={`text-base sm:text-lg font-bold tracking-tight ${textColor} truncate flex-1`}>
+          <h3 className={`text-base font-bold tracking-tight ${textColor} truncate flex-1`}>
             {title}
           </h3>
           <Badge className={`${darkMode ? 'bg-white/20 text-white' : 'bg-white/80 text-gray-800'} border-0 text-xs px-2 py-1 font-semibold flex-shrink-0 whitespace-nowrap`}>
@@ -68,13 +68,13 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
           </Badge>
         </div>
         
-        {/* Row 2: Alerts and Target Time */}
+        {/* Row 2: Alerts and Target Time - Only if needed */}
         {(longWaitPatients > 0 || isTriageSection) && (
           <div className="flex items-center justify-between gap-2 min-w-0">
             {longWaitPatients > 0 && (
               <Badge className="bg-orange-100 text-orange-800 border-orange-200 border px-2 py-1 font-medium text-xs flex-shrink-0 whitespace-nowrap">
                 <AlertTriangle className="w-3 h-3 mr-1" />
-                {longWaitPatients} longer wait
+                {longWaitPatients} alert{longWaitPatients !== 1 ? 's' : ''}
               </Badge>
             )}
             
@@ -88,19 +88,19 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
         )}
       </div>
 
-      {/* Desktop Layout - Horizontal */}
+      {/* Desktop Layout - Compact Horizontal */}
       <div className="hidden lg:flex items-center justify-between gap-4 min-w-0">
-        <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
-          <h3 className={`text-xl xl:text-2xl font-bold tracking-tight ${textColor} truncate`}>
+        <div className="flex items-center gap-3 min-w-0 flex-1">
+          <h3 className={`text-lg font-bold tracking-tight ${textColor} truncate`}>
             {title}
           </h3>
-          <Badge className={`${darkMode ? 'bg-white/20 text-white' : 'bg-white/80 text-gray-800'} border-0 text-sm px-3 py-1 font-semibold flex-shrink-0 whitespace-nowrap`}>
-            {count} patient{count !== 1 ? 's' : ''}
+          <Badge className={`${darkMode ? 'bg-white/20 text-white' : 'bg-white/80 text-gray-800'} border-0 text-sm px-2 py-1 font-semibold flex-shrink-0 whitespace-nowrap`}>
+            {count}
           </Badge>
           {longWaitPatients > 0 && (
-            <Badge className="bg-orange-100 text-orange-800 border-orange-200 border px-3 py-1 font-medium flex-shrink-0 whitespace-nowrap">
+            <Badge className="bg-orange-100 text-orange-800 border-orange-200 border px-2 py-1 font-medium text-sm flex-shrink-0 whitespace-nowrap">
               <AlertTriangle className="w-3 h-3 mr-1" />
-              {longWaitPatients} longer wait
+              {longWaitPatients} alert{longWaitPatients !== 1 ? 's' : ''}
             </Badge>
           )}
         </div>

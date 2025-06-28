@@ -46,7 +46,7 @@ const TrackingBoard: React.FC<TrackingBoardProps> = ({ darkMode }) => {
   const followUp = sortPatients(patients.filter(p => p.section === 'followup'));
 
   return (
-    <div className={`p-3 sm:p-4 lg:p-6 xl:p-8 space-y-4 sm:space-y-6 lg:space-y-8 max-w-7xl mx-auto ${darkMode ? 'bg-gray-900' : 'bg-slate-50'} min-h-screen overflow-hidden`}>
+    <div className={`p-3 sm:p-4 lg:p-5 space-y-4 max-w-7xl mx-auto ${darkMode ? 'bg-gray-900' : 'bg-slate-50'} min-h-screen overflow-hidden`}>
       {/* Triage Section - Priority 1 */}
       <PatientSection
         title="⏳ AWAITING TRIAGE"
@@ -74,7 +74,7 @@ const TrackingBoard: React.FC<TrackingBoardProps> = ({ darkMode }) => {
         }
         borderColor="border-l-sky-600"
         textColor={darkMode ? "text-sky-200" : "text-sky-800"}
-        animationDelay="0.1s"
+        animationDelay="0.05s"
         darkMode={darkMode}
       />
 
@@ -89,7 +89,7 @@ const TrackingBoard: React.FC<TrackingBoardProps> = ({ darkMode }) => {
         }
         borderColor="border-l-mint-500"
         textColor={darkMode ? "text-mint-200" : "text-mint-700"}
-        animationDelay="0.2s"
+        animationDelay="0.1s"
         darkMode={darkMode}
       />
 
@@ -104,7 +104,7 @@ const TrackingBoard: React.FC<TrackingBoardProps> = ({ darkMode }) => {
         }
         borderColor="border-l-amber-600"
         textColor={darkMode ? "text-amber-200" : "text-amber-800"}
-        animationDelay="0.3s"
+        animationDelay="0.15s"
         darkMode={darkMode}
       />
     </div>
