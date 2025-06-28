@@ -1,17 +1,17 @@
 
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import TrackingBoard from '@/components/physician/TrackingBoard';
 import NotificationCenter from '@/components/physician/NotificationCenter';
 import TopNavigation from '@/components/physician/TopNavigation';
 import WelcomeView from '@/components/physician/WelcomeView';
 
 const PhysicianDashboard: React.FC = () => {
   const { user } = useAuth();
-  const navigate = useNavigate();
   const [currentTime, setCurrentTime] = useState(new Date());
   const [darkMode, setDarkMode] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [activeView, setActiveView] = useState<'welcome' | 'tracking'>('welcome');
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 60000);
@@ -53,7 +53,7 @@ const PhysicianDashboard: React.FC = () => {
   const physicianName = user?.user_metadata?.full_name || 'Dr. Taylor';
 
   const handleCardClick = (cardType: string) => {
-    navigate('/physician/trackingboard');
+    setActiveView('tracking');
   };
 
   return (
@@ -68,10 +68,10 @@ const PhysicianDashboard: React.FC = () => {
         showNotifications={showNotifications}
         untriagedPatients={mockStats.untriagedPatients}
         notificationCount={mockNotifications.length}
-        activeView='welcome'
+        activeView={activeView}
         onToggleDarkMode={() => setDarkMode(!darkMode)}
         onToggleNotifications={() => setShowNotifications(!showNotifications)}
-        onBackToDashboard={() => {}}
+        onBackToDashboard={() => setActiveView('welcome')}
       />
 
       {/* Main Content */}
@@ -84,12 +84,16 @@ const PhysicianDashboard: React.FC = () => {
           />
         )}
 
-        <WelcomeView
-          physicianName={physicianName}
-          mockStats={mockStats}
-          darkMode={darkMode}
-          onCardClick={handleCardClick}
-        />
+        {activeView === 'welcome' ? (
+          <WelcomeView
+            physicianName={physicianName}
+            mockStats={mockStats}
+            darkMode={darkMode}
+            onCardClick={handleCardClick}
+          />
+        ) : (
+          <TrackingBoard darkMode={darkMode} />
+        )}
       </div>
     </div>
   );
