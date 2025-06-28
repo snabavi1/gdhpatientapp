@@ -46,7 +46,7 @@ const TrackingBoard: React.FC<TrackingBoardProps> = ({ darkMode }) => {
   const followUp = sortPatients(patients.filter(p => p.section === 'followup'));
 
   return (
-    <div className={`p-8 space-y-8 max-w-7xl mx-auto ${darkMode ? 'bg-gray-900' : 'bg-slate-50'} min-h-screen`}>
+    <div className={`p-4 sm:p-6 lg:p-8 space-y-6 sm:space-y-8 max-w-7xl mx-auto ${darkMode ? 'bg-gray-900' : 'bg-slate-50'} min-h-screen`}>
       {/* Triage Section - Priority 1 */}
       <PatientSection
         title="⏳ AWAITING TRIAGE"

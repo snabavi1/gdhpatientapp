@@ -84,7 +84,7 @@ const PatientCard: React.FC<PatientCardProps> = ({ patient, darkMode }) => {
   };
 
   return (
-    <div className={`group p-6 rounded-xl border transition-all duration-300 hover:shadow-lg hover:scale-[1.01] ${
+    <div className={`group p-3 sm:p-4 lg:p-6 rounded-xl border transition-all duration-300 hover:shadow-lg hover:scale-[1.01] ${
       isLongerWait 
         ? darkMode 
           ? 'bg-gradient-to-r from-orange-900/20 to-orange-800/10 border-orange-300/30 shadow-md border-l-4 border-l-orange-400' 
@@ -93,7 +93,92 @@ const PatientCard: React.FC<PatientCardProps> = ({ patient, darkMode }) => {
           ? 'bg-gradient-to-r from-gray-800/80 to-gray-700/60 border-gray-600/50 hover:from-gray-700/80 hover:to-gray-600/60' 
           : 'bg-white border-gray-200/60 hover:bg-gradient-to-r hover:from-gray-50 hover:to-white shadow-sm'
     }`}>
-      <div className="flex items-center justify-between">
+      {/* Mobile Layout - Stacked */}
+      <div className="flex flex-col space-y-3 sm:space-y-4 lg:hidden">
+        {/* Top Row - Acuity, Name, Room */}
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex items-center gap-2 min-w-0 flex-1">
+            <Badge 
+              className={`${getAcuityColor()} text-white text-xs font-semibold px-2 py-1 transition-colors duration-200 shadow-sm flex-shrink-0`}
+            >
+              {getAcuityLabel()}
+            </Badge>
+            <div className="min-w-0 flex-1">
+              <div className={`font-bold text-sm leading-tight ${darkMode ? 'text-white' : 'text-gray-900'} truncate`}>
+                {patient.entry} {patient.name}, {patient.age}{patient.gender}
+              </div>
+              <div className={`text-xs font-medium ${darkMode ? 'text-gray-300' : 'text-gray-600'} mt-0.5`}>
+                Room #{patient.room}
+              </div>
+            </div>
+          </div>
+          <Badge 
+            variant="outline" 
+            className={`${getWaitTimeColor()} border-current text-xs px-2 py-1 font-semibold bg-white/80 flex-shrink-0`}
+          >
+            <Clock className="w-3 h-3 mr-1" />
+            {getWaitTime()}
+          </Badge>
+        </div>
+
+        {/* Complaint */}
+        <div className={`text-sm font-medium leading-relaxed ${darkMode ? 'text-gray-200' : 'text-gray-800'} break-words`}>
+          {patient.complaint}
+        </div>
+
+        {/* Status and Tests */}
+        <div className="flex items-center justify-between">
+          <div className="text-left">
+            <div className={`text-sm font-semibold ${darkMode ? 'text-gray-200' : 'text-gray-800'}`}>
+              {patient.status}
+            </div>
+            {patient.test && (
+              <div className={`text-xs ${darkMode ? 'text-blue-300' : 'text-blue-600'} font-medium mt-1`}>
+                🧪 {patient.test}
+              </div>
+            )}
+            {patient.results && (
+              <div className="text-xs text-emerald-600 font-medium mt-1">
+                ✅ {patient.results}
+              </div>
+            )}
+          </div>
+          {isLongerWait && (
+            <div className="text-xs text-orange-600 font-semibold flex items-center">
+              <AlertTriangle className="w-3 h-3 mr-1" />
+              Longer wait
+            </div>
+          )}
+        </div>
+
+        {/* Action Buttons - Stacked on mobile */}
+        <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
+          <Button 
+            size="sm"
+            onClick={handleStartVideoCall}
+            className="bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white font-semibold px-3 py-2 transition-all duration-200 shadow-md hover:shadow-lg text-xs"
+          >
+            <Video className="w-3 h-3 mr-2" />
+            Video Call
+          </Button>
+          
+          <Button 
+            size="sm"
+            onClick={handleRespond}
+            className="bg-gradient-to-r from-sky-600 to-sky-700 hover:from-sky-700 hover:to-sky-800 text-white font-semibold px-3 py-2 transition-all duration-200 shadow-md hover:shadow-lg text-xs"
+          >
+            {patient.entryMethod === 'phone' ? (
+              <Phone className="w-3 h-3 mr-2" />
+            ) : (
+              <MessageSquare className="w-3 h-3 mr-2" />
+            )}
+            Respond
+          </Button>
+        </div>
+      </div>
+
+      {/* Desktop Layout - Horizontal */}
+      <div className="hidden lg:flex items-center justify-between">
         {/* Patient Info */}
         <div className="flex items-center space-x-6 flex-grow min-w-0">
           <div className="flex items-center space-x-4">
