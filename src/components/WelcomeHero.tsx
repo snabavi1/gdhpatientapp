@@ -13,9 +13,9 @@ const WelcomeHero = () => {
             <span className="block md:inline">in Your Pocket</span>
           </h1>
           <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto animate-fade-in">
-            Skip the urgent care waiting room. Get expert emergency care from your couch. 
-            Our board-certified ER doctors provide prescriptions, reassurance, labs, imaging, 
-            and care coordination—all at a fraction of the cost of an ER visit.
+            Skip the Waiting Room. 
+            Get Expert Care When You Need it Most.
+            Our ER Doctors can not only conduct virtual visits but arrange labs, imaging and care coordination—all the convenience of telehealth without the limitations.
           </p>
           
           <div className="bg-white/60 backdrop-blur-sm rounded-lg p-6 max-w-2xl mx-auto mb-12 animate-fade-in">
