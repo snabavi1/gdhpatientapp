@@ -2,8 +2,6 @@
 import Header from "@/components/Header";
 import WelcomeHero from "@/components/WelcomeHero";
 import PatientDashboard from "@/components/PatientDashboard";
-import ConciergeSection from "@/components/ConciergeSection";
-import TalkToDoctorSection from "@/components/TalkToDoctorSection";
 import Footer from "@/components/Footer";
 import { useAuth } from "@/contexts/AuthContext";
 import { useState } from "react";
@@ -44,11 +42,7 @@ const Index = () => {
             nextAppointment={patientData.nextAppointment}
           />
         ) : (
-          <>
-            <WelcomeHero />
-            <ConciergeSection />
-            <TalkToDoctorSection />
-          </>
+          <WelcomeHero />
         )}
       </main>
       <Footer />
