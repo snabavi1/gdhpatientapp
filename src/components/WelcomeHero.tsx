@@ -9,11 +9,12 @@ const WelcomeHero = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center">
           <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6 animate-fade-in">
-            <span className="text-healthcare-primary">Skip the Waiting Room.</span>{" "}
-            <span className="block md:inline">Get Expert Care Wherever you Are.</span>
+            <span className="text-healthcare-primary">ER Doctors</span>{" "}
+            <span className="block md:inline">in Your Pocket</span>
           </h1>
           <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto animate-fade-in">
-            Our ER Doctors can not only conduct virtual visits but arrange labs, imaging 
+            Skip the urgent care waiting room. Get expert emergency care from your couch. 
+            Our board-certified ER doctors provide prescriptions, reassurance, labs, imaging, 
             and care coordination—all at a fraction of the cost of an ER visit.
           </p>
           
