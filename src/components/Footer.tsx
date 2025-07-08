@@ -15,8 +15,8 @@ const Footer = () => {
               <span className="ml-3 text-xl font-bold">Green Dot Health</span>
             </div>
             <p className="text-gray-300 mb-6 max-w-md">
-              Providing compassionate, convenient healthcare services through innovative 
-              technology and personalized care. Your health is our priority.
+              Board-certified ER doctors in your pocket. Get expert emergency care 
+              without the wait, cost, or stress of traditional urgent care visits.
             </p>
             <div className="flex space-x-4">
               <a href="#" className="text-gray-400 hover:text-healthcare-primary transition-colors">
@@ -30,23 +30,23 @@ const Footer = () => {
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Services</h3>
+            <h3 className="text-lg font-semibold mb-4">Expert Care</h3>
             <ul className="space-y-2">
-              <li><a href="#" className="text-gray-400 hover:text-healthcare-primary transition-colors">Concierge Services</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-healthcare-primary transition-colors">Video Consultations</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-healthcare-primary transition-colors">Prescription Refills</a></li>
+              <li><a href="#" className="text-gray-400 hover:text-healthcare-primary transition-colors">Instant Consultations</a></li>
+              <li><a href="#" className="text-gray-400 hover:text-healthcare-primary transition-colors">Prescriptions & Refills</a></li>
+              <li><a href="#" className="text-gray-400 hover:text-healthcare-primary transition-colors">Lab & Imaging Orders</a></li>
               <li><a href="#" className="text-gray-400 hover:text-healthcare-primary transition-colors">Care Coordination</a></li>
             </ul>
           </div>
 
           {/* Contact Info */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Contact</h3>
+            <h3 className="text-lg font-semibold mb-4">Get Started</h3>
             <ul className="space-y-2">
-              <li className="text-gray-400">24/7 Support Available</li>
-              <li><a href="#" className="text-gray-400 hover:text-healthcare-primary transition-colors">help@greendothealth.com</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-healthcare-primary transition-colors">1-800-GREENDOT</a></li>
-              <li className="text-gray-400">HIPAA Compliant Platform</li>
+              <li className="text-gray-400">Board-Certified ER Doctors</li>
+              <li><a href="#" className="text-gray-400 hover:text-healthcare-primary transition-colors">Call or Text Anytime</a></li>
+              <li><a href="#" className="text-gray-400 hover:text-healthcare-primary transition-colors">HSA/FSA Eligible</a></li>
+              <li className="text-gray-400">Fraction of ER Costs</li>
             </ul>
           </div>
         </div>
