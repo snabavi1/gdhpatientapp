@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,15 +6,17 @@ import { Label } from '@/components/ui/label';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
-import { Loader2, ArrowLeft, User, Stethoscope } from 'lucide-react';
+import { Loader2, Stethoscope, UserPlus, LogIn } from 'lucide-react';
 
 type AuthMode = 'signin' | 'signup';
 
-const SimpleAuth = () => {
+const PhysicianAuth = () => {
   const [mode, setMode] = useState<AuthMode>('signin');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
+  const [medicalLicense, setMedicalLicense] = useState('');
+  const [specialty, setSpecialty] = useState('');
   const [loading, setLoading] = useState(false);
 
   const { signIn, signUp, user } = useAuth();
@@ -24,31 +25,26 @@ const SimpleAuth = () => {
 
   useEffect(() => {
     if (user) {
-      navigate('/');
+      navigate('/physician');
     }
   }, [user, navigate]);
 
-  const handleTestLogin = async (email: string, password: string, userType: 'patient' | 'physician') => {
+  const handleTestLogin = async () => {
     setLoading(true);
     try {
-      const result = await signIn(email, password);
+      const result = await signIn('physician@test.com', 'testpass123');
       if (result.error) {
         toast({
           title: "Test login failed",
-          description: "Test account may not exist yet. Try creating it first.",
+          description: "Test physician account may not exist yet. Try creating it first.",
           variant: "destructive",
         });
       } else {
         toast({
           title: "Test login successful!",
-          description: `Logged in as test ${userType}`,
+          description: "Logged in as test physician",
         });
-        // Navigate based on user type
-        if (userType === 'physician') {
-          navigate('/physician');
-        } else {
-          navigate('/');
-        }
+        navigate('/physician');
       }
     } catch (error) {
       toast({
@@ -82,9 +78,11 @@ const SimpleAuth = () => {
       } else {
         toast({
           title: "Success!",
-          description: mode === 'signin' ? "Welcome back!" : "Account created successfully!",
+          description: mode === 'signin' ? "Welcome back, Doctor!" : "Physician account created successfully!",
         });
-        if (mode === 'signup') {
+        if (mode === 'signin') {
+          navigate('/physician');
+        } else {
           toast({
             title: "Check your email",
             description: "Please check your email to confirm your account.",
@@ -107,18 +105,21 @@ const SimpleAuth = () => {
     setEmail('');
     setPassword('');
     setFullName('');
+    setMedicalLicense('');
+    setSpecialty('');
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4">
       <div className="max-w-md w-full">
         <div className="text-center mb-8">
           <div className="flex items-center justify-center mb-4">
-            <div className="w-12 h-12 bg-healthcare-primary rounded-full flex items-center justify-center">
-              <div className="w-5 h-5 bg-white rounded-full"></div>
+            <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center">
+              <Stethoscope className="w-6 h-6 text-white" />
             </div>
           </div>
           <h1 className="text-2xl font-bold text-gray-900">Green Dot Health</h1>
+          <p className="text-gray-600 mt-2">Physician Portal</p>
         </div>
 
         {/* Test Credentials Section */}
@@ -126,51 +127,77 @@ const SimpleAuth = () => {
           <CardHeader>
             <CardTitle className="text-center text-lg">Quick Test Access</CardTitle>
             <p className="text-center text-sm text-gray-600">
-              Use test credentials for easy navigation
+              Use test credentials for easy access
             </p>
           </CardHeader>
-          <CardContent className="space-y-3">
+          <CardContent>
             <Button
-              onClick={() => handleTestLogin('patient@test.com', 'testpass123', 'patient')}
+              onClick={handleTestLogin}
               disabled={loading}
               className="w-full bg-blue-600 hover:bg-blue-700 text-white"
             >
-              <User className="w-4 h-4 mr-2" />
-              Sign in as Test Patient
+              <Stethoscope className="w-4 h-4 mr-2" />
+              Sign in as Test Physician
             </Button>
             <div className="text-xs text-gray-500 text-center mt-2">
-              <p><strong>Patient:</strong> patient@test.com / testpass123</p>
+              <p><strong>Test Physician:</strong> physician@test.com / testpass123</p>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="max-w-md mx-auto">
+        <Card>
           <CardHeader>
             <CardTitle className="text-center">
-              {mode === 'signin' ? 'Welcome Back' : 'Create Account'}
+              {mode === 'signin' ? 'Welcome Back, Doctor' : 'Join Our Medical Team'}
             </CardTitle>
             <p className="text-center text-gray-600">
               {mode === 'signin' 
-                ? 'Sign in to access your dashboard' 
-                : 'Join Green Dot Health today'
+                ? 'Sign in to access your physician dashboard' 
+                : 'Create your physician account'
               }
             </p>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               {mode === 'signup' && (
-                <div>
-                  <Label htmlFor="fullName">Full Name</Label>
-                  <Input
-                    id="fullName"
-                    type="text"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    required
-                    placeholder="Enter your full name"
-                    className="mt-1"
-                  />
-                </div>
+                <>
+                  <div>
+                    <Label htmlFor="fullName">Full Name</Label>
+                    <Input
+                      id="fullName"
+                      type="text"
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      required
+                      placeholder="Dr. John Smith"
+                      className="mt-1"
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="medicalLicense">Medical License Number</Label>
+                    <Input
+                      id="medicalLicense"
+                      type="text"
+                      value={medicalLicense}
+                      onChange={(e) => setMedicalLicense(e.target.value)}
+                      placeholder="Enter your medical license number"
+                      className="mt-1"
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="specialty">Specialty</Label>
+                    <Input
+                      id="specialty"
+                      type="text"
+                      value={specialty}
+                      onChange={(e) => setSpecialty(e.target.value)}
+                      placeholder="Internal Medicine, Cardiology, etc."
+                      className="mt-1"
+                    />
+                  </div>
+                </>
               )}
               
               <div>
@@ -181,7 +208,7 @@ const SimpleAuth = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  placeholder="Enter your email"
+                  placeholder="doctor@hospital.com"
                   className="mt-1"
                 />
               </div>
@@ -202,24 +229,34 @@ const SimpleAuth = () => {
               
               <Button 
                 type="submit" 
-                className="w-full bg-healthcare-primary hover:bg-healthcare-primary/90"
+                className="w-full bg-blue-600 hover:bg-blue-700"
                 disabled={loading}
               >
                 {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
-                {mode === 'signin' ? 'Sign In' : 'Create Account'}
+                {mode === 'signin' ? (
+                  <>
+                    <LogIn className="w-4 h-4 mr-2" />
+                    Sign In
+                  </>
+                ) : (
+                  <>
+                    <UserPlus className="w-4 h-4 mr-2" />
+                    Create Account
+                  </>
+                )}
               </Button>
             </form>
             
             <div className="mt-6 text-center">
               <p className="text-sm text-gray-600">
                 {mode === 'signin' 
-                  ? "Don't have an account? " 
+                  ? "Don't have a physician account? " 
                   : "Already have an account? "
                 }
                 <button
                   type="button"
                   onClick={toggleMode}
-                  className="text-healthcare-primary hover:underline font-medium"
+                  className="text-blue-600 hover:underline font-medium"
                 >
                   {mode === 'signin' ? 'Sign up' : 'Sign in'}
                 </button>
@@ -228,13 +265,13 @@ const SimpleAuth = () => {
             
             <div className="mt-4 text-center">
               <p className="text-sm text-gray-600">
-                Are you a healthcare provider?{' '}
+                Looking for patient access?{' '}
                 <button
                   type="button"
-                  onClick={() => navigate('/physician/auth')}
-                  className="text-blue-600 hover:underline font-medium"
+                  onClick={() => navigate('/auth')}
+                  className="text-healthcare-primary hover:underline font-medium"
                 >
-                  Go to Physician Portal
+                  Go to Patient Portal
                 </button>
               </p>
             </div>
@@ -245,4 +282,4 @@ const SimpleAuth = () => {
   );
 };
 
-export default SimpleAuth;
+export default PhysicianAuth;

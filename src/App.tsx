@@ -8,6 +8,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import PhysicianDashboard from "./pages/PhysicianDashboard";
+import PhysicianAuth from "./components/PhysicianAuth";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -20,10 +21,15 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
+            {/* Patient-facing routes */}
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
+            
+            {/* Physician-facing routes */}
+            <Route path="/physician/auth" element={<PhysicianAuth />} />
             <Route path="/physician" element={<PhysicianDashboard />} />
             <Route path="/physician/dashboard" element={<PhysicianDashboard />} />
+            
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
