@@ -2,6 +2,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
+import { completeUnifiedSignup, UnifiedSignupData } from '../services/backendApi';
 
 interface AuthContextType {
   user: User | null;
@@ -9,6 +10,7 @@ interface AuthContextType {
   loading: boolean;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
   signUp: (email: string, password: string, fullName: string) => Promise<{ error: any }>;
+  signUpWithUnifiedBackend: (signupData: UnifiedSignupData) => Promise<any>;
   signOut: () => Promise<void>;
 }
 
@@ -71,6 +73,35 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return { error };
   };
 
+  const signUpWithUnifiedBackend = async (signupData: UnifiedSignupData) => {
+    try {
+      setLoading(true);
+      
+      // Step 1: Create user in all systems via backend
+      const backendResult = await completeUnifiedSignup(signupData);
+      
+      // Step 2: Sign in the user to Supabase
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: signupData.email,
+        password: signupData.password
+      });
+
+      if (error) throw error;
+
+      // Step 3: Set user in context
+      setUser(data.user);
+      setSession(data.session);
+      
+      return { ...backendResult, user: data.user };
+      
+    } catch (error) {
+      console.error('Unified signup failed:', error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const signOut = async () => {
     await supabase.auth.signOut();
     window.location.href = '/auth';
@@ -82,6 +113,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     loading,
     signIn,
     signUp,
+    signUpWithUnifiedBackend,
     signOut,
   };
 
