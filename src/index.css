@@ -60,6 +60,15 @@
     --healthcare-calm: 150 60% 96%;
     --healthcare-warm: 25 85% 95%;
     --healthcare-cool: 199 20% 95%;
+    
+    /* Green Dot Health brand colors */
+    --brand-purple: 280 60% 70%;
+    --brand-purple-light: 280 40% 90%;
+    --brand-peach: 25 95% 75%;
+    --brand-peach-light: 25 90% 90%;
+    --brand-blue: 210 80% 60%;
+    --brand-blue-light: 210 60% 85%;
+    --brand-green-dot: 162 82% 40%;
   }
 
   .dark {
@@ -130,6 +139,94 @@
 
 .warm-accent-gradient {
   background: linear-gradient(135deg, hsl(25 85% 95%) 0%, hsl(33 100% 98%) 100%);
+}
+
+/* Green Dot Health brand gradients */
+.brand-purple-gradient {
+  background: linear-gradient(135deg, hsl(var(--brand-purple-light)) 0%, hsl(var(--brand-purple)) 100%);
+}
+
+.brand-peach-gradient {
+  background: linear-gradient(135deg, hsl(var(--brand-peach-light)) 0%, hsl(var(--brand-peach)) 100%);
+}
+
+.brand-blue-gradient {
+  background: linear-gradient(135deg, hsl(var(--brand-blue-light)) 0%, hsl(var(--brand-blue)) 100%);
+}
+
+.brand-mixed-gradient {
+  background: linear-gradient(135deg, 
+    hsl(var(--brand-purple-light)) 0%, 
+    hsl(var(--brand-peach-light)) 35%, 
+    hsl(var(--brand-blue-light)) 65%, 
+    hsl(162 82% 85%) 100%);
+}
+
+/* Green Dot Logo Components */
+.green-dot-logo {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.green-dot-rings {
+  position: relative;
+  width: 40px;
+  height: 40px;
+}
+
+.green-dot-rings::before,
+.green-dot-rings::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  border: 3px solid;
+}
+
+.green-dot-rings::before {
+  width: 100%;
+  height: 100%;
+  border-color: hsl(162 60% 70%);
+  top: 0;
+  left: 0;
+}
+
+.green-dot-rings::after {
+  width: 65%;
+  height: 65%;
+  border-color: hsl(var(--brand-green-dot));
+  top: 17.5%;
+  left: 17.5%;
+}
+
+.green-dot-center {
+  position: absolute;
+  width: 35%;
+  height: 35%;
+  background: hsl(var(--brand-green-dot));
+  border-radius: 50%;
+  top: 32.5%;
+  left: 32.5%;
+}
+
+.green-dot-sm .green-dot-rings {
+  width: 24px;
+  height: 24px;
+}
+
+.green-dot-lg .green-dot-rings {
+  width: 56px;
+  height: 56px;
+}
+
+.green-dot-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
 }
 
 /* Enhanced interactive animations */

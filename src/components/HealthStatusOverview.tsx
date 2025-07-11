@@ -3,16 +3,25 @@ import React, { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { TrendingUp, Heart, Activity, ArrowRight, ChevronDown, ChevronUp } from 'lucide-react';
+import GreenDotLogo from './GreenDotLogo';
 
 const HealthStatusOverview: React.FC = () => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <Card className="p-6 bg-white border-brand-secondary/20 shadow-sm hover:shadow-md transition-shadow duration-200">
+    <Card className="p-6 bg-white border-brand-secondary/20 shadow-sm hover:shadow-md transition-shadow duration-200 relative overflow-hidden">
+      {/* Brand decoration */}
+      <div className="absolute top-2 right-2 opacity-5">
+        <GreenDotLogo size="lg" />
+      </div>
+      
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-xl font-semibold text-brand-teal">
-          Your Health at a Glance
-        </h3>
+        <div className="flex items-center gap-3">
+          <GreenDotLogo size="sm" />
+          <h3 className="text-xl font-semibold text-foreground">
+            Your Health at a Glance
+          </h3>
+        </div>
         <Button
           variant="ghost"
           size="sm"
@@ -24,40 +33,40 @@ const HealthStatusOverview: React.FC = () => {
       </div>
       
       <div className="space-y-3">
-        <div className="flex items-center gap-3 p-4 bg-green-50 rounded-xl border border-green-100">
-          <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-          <span className="text-brand-teal font-medium">All systems looking great!</span>
+        <div className="flex items-center gap-3 p-4 bg-healthcare-calm rounded-xl border border-brand-secondary/20">
+          <GreenDotLogo size="sm" />
+          <span className="text-foreground font-medium">All systems looking great!</span>
         </div>
         
-        <div className="flex items-center gap-3 p-4 bg-blue-50 rounded-xl border border-blue-100">
-          <TrendingUp className="h-5 w-5 text-brand-blue" />
-          <span className="text-brand-teal">Blood pressure: Excellent trend this month</span>
+        <div className="flex items-center gap-3 p-4 brand-blue-gradient rounded-xl border-0 text-white">
+          <TrendingUp className="h-5 w-5" />
+          <span>Blood pressure: Excellent trend this month</span>
         </div>
         
-        <div className="flex items-center gap-3 p-4 bg-brand-light/50 rounded-xl border border-brand-secondary/20">
-          <Activity className="h-5 w-5 text-brand-primary" />
-          <span className="text-brand-teal">Activity: You're crushing your goals! 🎯</span>
+        <div className="flex items-center gap-3 p-4 brand-peach-gradient rounded-xl border-0 text-white">
+          <Activity className="h-5 w-5" />
+          <span>Activity: You're crushing your goals! 🎯</span>
         </div>
       </div>
       
       {isExpanded && (
         <div className="mt-4 pt-4 border-t border-brand-light space-y-3 animate-fade-in">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="p-4 bg-purple-50 rounded-xl border border-purple-100">
+            <div className="p-4 brand-purple-gradient rounded-xl border-0 text-white">
               <div className="flex items-center gap-2 mb-2">
-                <Heart className="h-4 w-4 text-purple-600" />
-                <span className="font-medium text-brand-teal">Heart Rate</span>
+                <Heart className="h-4 w-4" />
+                <span className="font-medium">Heart Rate</span>
               </div>
-              <p className="text-2xl font-bold text-brand-teal">72 BPM</p>
-              <p className="text-sm text-brand-teal/60">Normal range</p>
+              <p className="text-2xl font-bold">72 BPM</p>
+              <p className="text-sm opacity-80">Normal range</p>
             </div>
-            <div className="p-4 bg-orange-50 rounded-xl border border-orange-100">
+            <div className="p-4 bg-healthcare-warm rounded-xl border border-brand-secondary/20">
               <div className="flex items-center gap-2 mb-2">
-                <Activity className="h-4 w-4 text-orange-600" />
-                <span className="font-medium text-brand-teal">Steps Today</span>
+                <Activity className="h-4 w-4 text-foreground" />
+                <span className="font-medium text-foreground">Steps Today</span>
               </div>
-              <p className="text-2xl font-bold text-brand-teal">8,247</p>
-              <p className="text-sm text-brand-teal/60">Goal: 8,000</p>
+              <p className="text-2xl font-bold text-foreground">8,247</p>
+              <p className="text-sm text-muted-foreground">Goal: 8,000</p>
             </div>
           </div>
         </div>

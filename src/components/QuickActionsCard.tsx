@@ -3,18 +3,30 @@ import React, { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import ConciergeDropdown from './ConciergeDropdown';
 import DoctorDropdown from './DoctorDropdown';
+import GreenDotLogo from './GreenDotLogo';
 
 const QuickActionsCard: React.FC = () => {
   const [isProcessing, setIsProcessing] = useState(false);
 
   return (
     <div className="space-y-6">
-      <Card className="p-8 bg-gradient-to-br from-white to-brand-light/30 border-brand-secondary/20 shadow-sm">
-        <div className="text-center mb-6">
-          <h2 className="text-2xl font-semibold text-brand-teal mb-2">
-            How can we help you today?
-          </h2>
-          <p className="text-brand-teal/70">
+      <Card className="p-8 brand-mixed-gradient border-0 shadow-lg relative overflow-hidden">
+        {/* Floating decorations */}
+        <div className="absolute -top-4 -right-4 opacity-10">
+          <GreenDotLogo size="lg" floating />
+        </div>
+        <div className="absolute -bottom-2 -left-2 opacity-5">
+          <GreenDotLogo size="md" />
+        </div>
+        
+        <div className="text-center mb-6 relative z-10">
+          <div className="flex items-center justify-center mb-4">
+            <GreenDotLogo size="sm" className="mr-2" />
+            <h2 className="text-2xl font-semibold text-foreground">
+              How can we help you today?
+            </h2>
+          </div>
+          <p className="text-foreground/80">
             Your care team is ready to assist you with anything you need
           </p>
         </div>

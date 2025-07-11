@@ -2,6 +2,7 @@
 import React from 'react';
 import { Card } from '@/components/ui/card';
 import { Sun, Cloud, CloudRain } from 'lucide-react';
+import GreenDotLogo from './GreenDotLogo';
 
 interface PersonalWelcomeHeroProps {
   firstName?: string;
@@ -37,14 +38,25 @@ const PersonalWelcomeHero: React.FC<PersonalWelcomeHeroProps> = ({
   const capitalizedFirstName = firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
 
   return (
-    <Card className="calm-gradient border-0 p-8 mb-6 card-hover shadow-lg animate-fade-in">
-      <div className="text-center">
-        <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4 animate-fade-in-up">
-          🌟 {getGreeting()}, {capitalizedFirstName}!
-        </h1>
+    <Card className="brand-mixed-gradient border-0 p-8 mb-6 card-hover shadow-xl animate-fade-in relative overflow-hidden">
+      {/* Floating Green Dot Decorations */}
+      <div className="absolute top-4 right-4 opacity-20">
+        <GreenDotLogo size="lg" floating />
+      </div>
+      <div className="absolute bottom-4 left-4 opacity-10">
+        <GreenDotLogo size="md" />
+      </div>
+      
+      <div className="text-center relative z-10">
+        <div className="flex items-center justify-center mb-4">
+          <GreenDotLogo size="md" className="mr-3" />
+          <h1 className="text-3xl md:text-4xl font-bold text-foreground animate-fade-in-up">
+            {getGreeting()}, {capitalizedFirstName}!
+          </h1>
+        </div>
         
         {/* Weather Widget */}
-        <div className="inline-flex items-center gap-3 bg-card/80 backdrop-blur-sm rounded-full px-6 py-3 text-sm text-foreground shadow-md hover-lift animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+        <div className="inline-flex items-center gap-3 bg-white/90 backdrop-blur-sm rounded-full px-6 py-3 text-sm text-foreground shadow-lg hover-lift animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
           <div className="animate-bounce-gentle">
             {getWeatherIcon(mockWeather.condition)}
           </div>

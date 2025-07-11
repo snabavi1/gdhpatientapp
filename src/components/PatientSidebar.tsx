@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import GreenDotLogo from './GreenDotLogo';
 
 interface PatientSidebarProps {
   activeSection: string;
@@ -78,21 +79,34 @@ const PatientSidebar: React.FC<PatientSidebarProps> = ({
     )}>
       {/* Header with toggle */}
       <div className="p-4 flex items-center justify-between border-b border-sidebar-border">
-        {!isCollapsed && (
-          <h2 className="text-lg font-semibold text-sidebar-foreground animate-fade-in">Your Health Hub</h2>
+        {!isCollapsed ? (
+          <div className="flex items-center gap-2 animate-fade-in">
+            <GreenDotLogo size="sm" />
+            <h2 className="text-lg font-semibold text-sidebar-foreground">Your Health Hub</h2>
+          </div>
+        ) : (
+          <GreenDotLogo size="sm" className="mx-auto" />
         )}
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={onToggleCollapse}
-          className="p-1 h-8 w-8 hover:bg-sidebar-accent text-sidebar-foreground button-press"
-        >
-          {isCollapsed ? (
-            <ChevronRight className="h-4 w-4" />
-          ) : (
+        {!isCollapsed && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onToggleCollapse}
+            className="p-1 h-8 w-8 hover:bg-sidebar-accent text-sidebar-foreground button-press"
+          >
             <ChevronLeft className="h-4 w-4" />
-          )}
-        </Button>
+          </Button>
+        )}
+        {isCollapsed && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onToggleCollapse}
+            className="absolute -right-3 top-4 p-1 h-6 w-6 bg-sidebar border border-sidebar-border hover:bg-sidebar-accent text-sidebar-foreground button-press rounded-full shadow-md"
+          >
+            <ChevronRight className="h-3 w-3" />
+          </Button>
+        )}
       </div>
 
       {/* Navigation */}
@@ -125,7 +139,9 @@ const PatientSidebar: React.FC<PatientSidebarProps> = ({
                   <span className="text-sm font-medium transition-all duration-200">{item.label}</span>
                 )}
                 {isActive && !isCollapsed && (
-                  <div className="ml-auto w-2 h-2 bg-sidebar-primary-foreground rounded-full animate-pulse-soft" />
+                  <div className="ml-auto">
+                    <GreenDotLogo size="sm" className="opacity-60" />
+                  </div>
                 )}
               </button>
             );

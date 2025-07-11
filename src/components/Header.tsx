@@ -24,10 +24,12 @@ const Header = () => {
           {/* Logo */}
           <div className="flex items-center">
             <div className="flex-shrink-0 flex items-center">
-              <div className="w-8 h-8 bg-healthcare-primary rounded-full flex items-center justify-center">
-                <div className="w-3 h-3 bg-white rounded-full"></div>
+              <div className="green-dot-logo green-dot-sm">
+                <div className="green-dot-rings">
+                  <div className="green-dot-center"></div>
+                </div>
               </div>
-              <span className="ml-3 text-xl font-bold text-gray-900">
+              <span className="ml-3 text-xl font-bold text-foreground">
                 Green Dot Health
               </span>
             </div>
