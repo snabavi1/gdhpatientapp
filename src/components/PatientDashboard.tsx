@@ -5,14 +5,15 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { getUserProfileData } from '../services/backendApi';
 import PersonalWelcomeHero from './PersonalWelcomeHero';
-import QuickActionsCard from './QuickActionsCard';
-import HealthStatusOverview from './HealthStatusOverview';
+import PatientSidebar from './PatientSidebar';
+import HowCanWeHelpSection from './HowCanWeHelpSection';
 import UpcomingCare from './UpcomingCare';
 import EmergencySupport from './EmergencySupport';
 import PersonalizedCareTips from './PersonalizedCareTips';
 import CareStatusCard from './CareStatusCard';
 import RecentCommunications from './RecentCommunications';
 import FamilyContactsSection from './FamilyContactsSection';
+import MedicationReminders from './MedicationReminders';
 
 export type CareStatus = 
   | 'consultation-scheduled'
@@ -47,6 +48,7 @@ const PatientDashboard: React.FC<PatientDashboardProps> = ({
   const { user } = useAuth();
   const [recentCommunications, setRecentCommunications] = useState<CommunicationLog[]>([]);
   const [profileData, setProfileData] = useState<any>(null);
+  const [activeSection, setActiveSection] = useState('dashboard');
 
   useEffect(() => {
     if (user) {
@@ -85,69 +87,166 @@ const PatientDashboard: React.FC<PatientDashboardProps> = ({
   // Extract first name for personalization
   const firstName = patientName.includes(' ') ? patientName.split(' ')[0] : patientName;
 
-  return (
-    <div className="max-w-7xl mx-auto p-4 space-y-8 bg-gray-50 min-h-screen">
-      {/* Personal Welcome Hero - Top Priority */}
-      <PersonalWelcomeHero firstName={firstName} />
-      
-      {/* Quick Actions - Most Important Feature */}
-      <QuickActionsCard />
-      
-      {/* Main Content - Organized in Priority Order */}
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-        {/* Primary Column - Most Important Information */}
-        <div className="xl:col-span-2 space-y-8">
-          {/* Health Status - Key Information */}
-          <HealthStatusOverview />
-          
-          {/* Care Status */}
-          <CareStatusCard
-            currentStatus={currentStatus}
-            lastUpdated={lastUpdated}
-          />
-          
-          {/* Recent Communications - Secondary Priority */}
-          <RecentCommunications communications={recentCommunications} />
-          
-          {/* Healthcare Profile - Unified Data */}
-          {profileData && (
-            <div className="bg-white p-6 rounded-lg shadow">
-              <h3 className="text-lg font-semibold mb-4">Your Healthcare Profile</h3>
-              <div className="space-y-2">
-                <p><strong>Name:</strong> {profileData.full_name || `${profileData.first_name || ''} ${profileData.last_name || ''}`.trim()}</p>
-                <p><strong>Email:</strong> {profileData.email}</p>
-                {profileData.phone && <p><strong>Phone:</strong> {profileData.phone}</p>}
-                {profileData.date_of_birth && <p><strong>Date of Birth:</strong> {new Date(profileData.date_of_birth).toLocaleDateString()}</p>}
-                <p><strong>Role:</strong> {profileData.role}</p>
-                {profileData.hint_patients?.[0]?.hint_patient_id && (
-                  <p><strong>Hint Patient ID:</strong> {profileData.hint_patients[0].hint_patient_id}</p>
+  const renderDashboardContent = () => {
+    switch (activeSection) {
+      case 'dashboard':
+        return (
+          <>
+            {/* Personal Welcome Hero */}
+            <PersonalWelcomeHero firstName={firstName} />
+            
+            {/* How Can We Help Today */}
+            <HowCanWeHelpSection />
+            
+            {/* Main Content Grid */}
+            <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+              {/* Primary Column */}
+              <div className="xl:col-span-2 space-y-8">
+                {/* Care Status */}
+                <CareStatusCard
+                  currentStatus={currentStatus}
+                  lastUpdated={lastUpdated}
+                />
+                
+                {/* Recent Communications */}
+                <RecentCommunications communications={recentCommunications} />
+                
+                {/* Healthcare Profile */}
+                {profileData && (
+                  <div className="bg-white p-6 rounded-lg shadow">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-lg font-semibold">Your Healthcare Profile</h3>
+                      <button 
+                        onClick={() => setActiveSection('support-network')}
+                        className="text-sm text-brand-primary hover:underline"
+                      >
+                        Update Family Contacts
+                      </button>
+                    </div>
+                    <div className="space-y-2">
+                      <p><strong>Name:</strong> {profileData.full_name || `${profileData.first_name || ''} ${profileData.last_name || ''}`.trim()}</p>
+                      <p><strong>Email:</strong> {profileData.email}</p>
+                      {profileData.phone && <p><strong>Phone:</strong> {profileData.phone}</p>}
+                      {profileData.date_of_birth && <p><strong>Date of Birth:</strong> {new Date(profileData.date_of_birth).toLocaleDateString()}</p>}
+                      <p><strong>Role:</strong> {profileData.role}</p>
+                      {profileData.hint_patients?.[0]?.hint_patient_id && (
+                        <p><strong>Hint Patient ID:</strong> {profileData.hint_patients[0].hint_patient_id}</p>
+                      )}
+                      {profileData.hint_patients?.[0]?.verification_status && (
+                        <p><strong>Verification Status:</strong> {profileData.hint_patients[0].verification_status}</p>
+                      )}
+                      <p><strong>Family Contacts:</strong> {profileData.family_contacts?.length || 0}</p>
+                      <p><strong>Profile Created:</strong> {new Date(profileData.created_at).toLocaleDateString()}</p>
+                    </div>
+                  </div>
                 )}
-                {profileData.hint_patients?.[0]?.verification_status && (
-                  <p><strong>Verification Status:</strong> {profileData.hint_patients[0].verification_status}</p>
-                )}
-                <p><strong>Family Contacts:</strong> {profileData.family_contacts?.length || 0}</p>
-                <p><strong>Profile Created:</strong> {new Date(profileData.created_at).toLocaleDateString()}</p>
+              </div>
+              
+              {/* Secondary Column */}
+              <div className="space-y-8">
+                {/* Upcoming Care */}
+                <UpcomingCare />
+                
+                {/* Medication Reminders */}
+                <MedicationReminders />
+                
+                {/* Personalized Tips */}
+                <PersonalizedCareTips firstName={firstName} />
               </div>
             </div>
-          )}
-        </div>
-        
-        {/* Secondary Column - Support and Additional Info */}
-        <div className="space-y-8">
-          {/* Upcoming Care - Important but Secondary */}
-          <UpcomingCare />
-          
-          {/* Personalized Tips - Helpful Content */}
-          <PersonalizedCareTips firstName={firstName} />
-          
-          {/* Family Contacts - Support Network */}
-          <FamilyContactsSection />
-        </div>
-      </div>
+          </>
+        );
       
-      {/* Emergency Support - Moved to Bottom */}
-      <div className="mt-8">
-        <EmergencySupport />
+      case 'care-status':
+        return (
+          <div className="space-y-6">
+            <h1 className="text-2xl font-bold text-brand-teal">Care Status</h1>
+            <CareStatusCard currentStatus={currentStatus} lastUpdated={lastUpdated} />
+            <RecentCommunications communications={recentCommunications} />
+          </div>
+        );
+      
+      case 'appointments':
+        return (
+          <div className="space-y-6">
+            <h1 className="text-2xl font-bold text-brand-teal">Appointments</h1>
+            <UpcomingCare />
+            <div className="bg-white p-6 rounded-lg shadow">
+              <p className="text-gray-500">Appointment scheduling integration coming soon...</p>
+            </div>
+          </div>
+        );
+      
+      case 'medical-records':
+        return (
+          <div className="space-y-6">
+            <h1 className="text-2xl font-bold text-brand-teal">Medical Records</h1>
+            <div className="grid gap-6">
+              <div className="bg-white p-6 rounded-lg shadow">
+                <h3 className="font-semibold mb-2">Lab Results</h3>
+                <p className="text-gray-500">No recent lab results available</p>
+              </div>
+              <div className="bg-white p-6 rounded-lg shadow">
+                <h3 className="font-semibold mb-2">Imaging Results</h3>
+                <p className="text-gray-500">No recent imaging results available</p>
+              </div>
+            </div>
+          </div>
+        );
+      
+      case 'updates':
+        return (
+          <div className="space-y-6">
+            <h1 className="text-2xl font-bold text-brand-teal">Green Dot Post Updates</h1>
+            <PersonalizedCareTips firstName={firstName} />
+            <div className="bg-white p-6 rounded-lg shadow">
+              <h3 className="font-semibold mb-2">Wellness Tips</h3>
+              <p className="text-gray-500">New physician advice and wellness updates coming soon...</p>
+            </div>
+          </div>
+        );
+      
+      case 'support-network':
+        return (
+          <div className="space-y-6">
+            <h1 className="text-2xl font-bold text-brand-teal">Your Support Network</h1>
+            <FamilyContactsSection />
+            <div className="bg-white p-6 rounded-lg shadow">
+              <h3 className="font-semibold mb-2">Emergency Consent Management</h3>
+              <p className="text-gray-500 mb-4">
+                Control who can be contacted and what information they can receive during medical emergencies.
+              </p>
+              <button className="text-brand-primary hover:underline text-sm">
+                Manage Emergency Contacts & Permissions
+              </button>
+            </div>
+          </div>
+        );
+      
+      default:
+        return <div>Section not found</div>;
+    }
+  };
+
+  return (
+    <div className="flex min-h-screen bg-gray-50">
+      {/* Sidebar Navigation */}
+      <PatientSidebar 
+        activeSection={activeSection}
+        onSectionChange={setActiveSection}
+        hasActiveVisit={currentStatus === 'visit-in-progress'}
+      />
+      
+      {/* Main Content */}
+      <div className="flex-1 p-6 space-y-8">
+        {renderDashboardContent()}
+        
+        {/* Emergency Support - Always Available */}
+        {activeSection === 'dashboard' && (
+          <div className="mt-8">
+            <EmergencySupport />
+          </div>
+        )}
       </div>
     </div>
   );
