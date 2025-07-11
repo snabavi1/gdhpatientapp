@@ -44,6 +44,7 @@ const PatientDashboard: React.FC<PatientDashboardProps> = ({
   lastUpdated,
   nextAppointment
 }) => {
+  console.log('PatientDashboard component initializing...');
   const { toast } = useToast();
   const { user } = useAuth();
   const [recentCommunications, setRecentCommunications] = useState<CommunicationLog[]>([]);
@@ -86,6 +87,7 @@ const PatientDashboard: React.FC<PatientDashboardProps> = ({
 
   // Extract first name for personalization
   const firstName = patientName.includes(' ') ? patientName.split(' ')[0] : patientName;
+  console.log('PatientDashboard rendering with firstName:', firstName);
 
   const renderDashboardContent = () => {
     switch (activeSection) {
