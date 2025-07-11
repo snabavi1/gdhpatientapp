@@ -62,13 +62,20 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				// New Green Dot Health brand colors
-				'brand-primary': '#18ae80',
-				'brand-secondary': '#47c69c',
-				'brand-light': '#d0f4e2',
-				'brand-pink': '#fde4ec',
-				'brand-blue': '#3c9fd3',
-				'brand-teal': '#00282d',
+				// Enhanced Green Dot Health brand colors with HSL values
+				'brand-primary': 'hsl(162 82% 40%)',
+				'brand-secondary': 'hsl(157 64% 56%)',
+				'brand-light': 'hsl(150 60% 85%)',
+				'brand-pink': 'hsl(340 67% 94%)',
+				'brand-blue': 'hsl(199 68% 53%)',
+				'brand-teal': 'hsl(180 100% 8%)',
+				// Additional healthcare semantic colors
+				'healthcare-success': 'hsl(var(--healthcare-success))',
+				'healthcare-warning': 'hsl(var(--healthcare-warning))',
+				'healthcare-info': 'hsl(var(--healthcare-info))',
+				'healthcare-calm': 'hsl(var(--healthcare-calm))',
+				'healthcare-warm': 'hsl(var(--healthcare-warm))',
+				'healthcare-cool': 'hsl(var(--healthcare-cool))',
 				// Keep existing healthcare colors for backward compatibility
 				mint: {
 					50: '#f0fdf9',
@@ -147,6 +154,16 @@ export default {
 						transform: 'translateY(0)'
 					}
 				},
+				'fade-in-up': {
+					'0%': {
+						opacity: '0',
+						transform: 'translateY(20px)'
+					},
+					'100%': {
+						opacity: '1',
+						transform: 'translateY(0)'
+					}
+				},
 				'scale-in': {
 					'0%': {
 						transform: 'scale(0.95)',
@@ -156,13 +173,43 @@ export default {
 						transform: 'scale(1)',
 						opacity: '1'
 					}
+				},
+				'slide-in-right': {
+					'0%': {
+						transform: 'translateX(100%)',
+						opacity: '0'
+					},
+					'100%': {
+						transform: 'translateX(0)',
+						opacity: '1'
+					}
+				},
+				'bounce-gentle': {
+					'0%, 100%': {
+						transform: 'translateY(0)'
+					},
+					'50%': {
+						transform: 'translateY(-4px)'
+					}
+				},
+				'pulse-soft': {
+					'0%, 100%': {
+						opacity: '1'
+					},
+					'50%': {
+						opacity: '0.8'
+					}
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'fade-in': 'fade-in 0.3s ease-out',
-				'scale-in': 'scale-in 0.2s ease-out'
+				'fade-in-up': 'fade-in-up 0.4s ease-out',
+				'scale-in': 'scale-in 0.2s ease-out',
+				'slide-in-right': 'slide-in-right 0.3s ease-out',
+				'bounce-gentle': 'bounce-gentle 2s ease-in-out infinite',
+				'pulse-soft': 'pulse-soft 2s ease-in-out infinite'
 			}
 		}
 	},

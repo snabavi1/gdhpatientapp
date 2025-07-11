@@ -37,16 +37,18 @@ const PersonalWelcomeHero: React.FC<PersonalWelcomeHeroProps> = ({
   const capitalizedFirstName = firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
 
   return (
-    <Card className="bg-gradient-to-r from-brand-light to-white border-brand-secondary/20 p-8 mb-6">
+    <Card className="calm-gradient border-0 p-8 mb-6 card-hover shadow-lg animate-fade-in">
       <div className="text-center">
-        <h1 className="text-3xl md:text-4xl font-bold text-brand-teal mb-4">
+        <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4 animate-fade-in-up">
           🌟 {getGreeting()}, {capitalizedFirstName}!
         </h1>
         
         {/* Weather Widget */}
-        <div className="inline-flex items-center gap-2 bg-white/60 rounded-full px-4 py-2 text-sm text-brand-teal">
-          {getWeatherIcon(mockWeather.condition)}
-          <span>{mockWeather.temp}°F In {mockWeather.location}</span>
+        <div className="inline-flex items-center gap-3 bg-card/80 backdrop-blur-sm rounded-full px-6 py-3 text-sm text-foreground shadow-md hover-lift animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+          <div className="animate-bounce-gentle">
+            {getWeatherIcon(mockWeather.condition)}
+          </div>
+          <span className="font-medium">{mockWeather.temp}°F in {mockWeather.location}</span>
         </div>
       </div>
     </Card>
