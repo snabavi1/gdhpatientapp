@@ -1,17 +1,14 @@
 
 import { Button } from "@/components/ui/button";
-import { UserCircle, LogOut } from "lucide-react";
+import { UserCircle } from "lucide-react";
 import MobileNavigation from "./MobileNavigation";
+import ProfileDropdown from "./ProfileDropdown";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 const Header = () => {
-  const { user, signOut } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
-
-  const handleSignOut = () => {
-    signOut();
-  };
 
   const handleSignIn = () => {
     navigate('/auth');
@@ -41,25 +38,7 @@ const Header = () => {
           <div className="flex items-center space-x-2 sm:space-x-4">
             {user ? (
               <>
-                <div className="hidden sm:flex items-center space-x-3">
-                  <span className="text-sm text-gray-600">
-                    Welcome, {user.user_metadata?.full_name || user.email}
-                  </span>
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    onClick={handleSignOut}
-                    className="border-healthcare-primary text-healthcare-primary hover:bg-healthcare-primary hover:text-white"
-                  >
-                    <LogOut className="h-4 w-4 mr-2" />
-                    Sign Out
-                  </Button>
-                </div>
-                
-                {/* Mobile user button */}
-                <Button variant="ghost" size="icon" className="sm:hidden" onClick={handleSignOut}>
-                  <LogOut className="h-5 w-5" />
-                </Button>
+                <ProfileDropdown />
               </>
             ) : (
               <>
