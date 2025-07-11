@@ -9,7 +9,7 @@ import PatientSidebar from './PatientSidebar';
 import HowCanWeHelpSection from './HowCanWeHelpSection';
 import UpcomingCare from './UpcomingCare';
 import EmergencySupport from './EmergencySupport';
-import PersonalizedCareTips from './PersonalizedCareTips';
+
 import CareStatusCard from './CareStatusCard';
 import RecentCommunications from './RecentCommunications';
 import FamilyContactsSection from './FamilyContactsSection';
@@ -150,11 +150,8 @@ const PatientDashboard: React.FC<PatientDashboardProps> = ({
                 {/* Upcoming Care */}
                 <UpcomingCare />
                 
-                {/* Medication Reminders */}
+                {/* Smart Prescription Manager */}
                 <MedicationReminders />
-                
-                {/* Personalized Tips */}
-                <PersonalizedCareTips firstName={firstName} />
               </div>
             </div>
           </>
@@ -211,7 +208,6 @@ const PatientDashboard: React.FC<PatientDashboardProps> = ({
         return (
           <div className="space-y-6">
             <h1 className="text-2xl font-bold text-brand-teal">Green Dot Post Updates</h1>
-            <PersonalizedCareTips firstName={firstName} />
             <div className="bg-white p-6 rounded-lg shadow">
               <h3 className="font-semibold mb-2">Wellness Tips</h3>
               <p className="text-gray-500">New physician advice and wellness updates coming soon...</p>
