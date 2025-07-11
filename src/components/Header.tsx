@@ -33,23 +33,7 @@ const Header = () => {
             </div>
           </div>
 
-          {/* Desktop Navigation - Only show if authenticated */}
-          {user && (
-            <nav className="hidden md:flex space-x-8">
-              <a href="#" className="text-gray-700 hover:text-healthcare-primary transition-colors duration-200">
-                Dashboard
-              </a>
-              <a href="#" className="text-gray-700 hover:text-healthcare-primary transition-colors duration-200">
-                Care Status
-              </a>
-              <a href="#" className="text-gray-700 hover:text-healthcare-primary transition-colors duration-200">
-                Appointments
-              </a>
-              <a href="#" className="text-gray-700 hover:text-healthcare-primary transition-colors duration-200">
-                Concierge
-              </a>
-            </nav>
-          )}
+          {/* Desktop Navigation - Removed as requested */}
 
           {/* User Actions */}
           <div className="flex items-center space-x-2 sm:space-x-4">

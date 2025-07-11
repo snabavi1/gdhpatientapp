@@ -50,6 +50,7 @@ const PatientDashboard: React.FC<PatientDashboardProps> = ({
   const [recentCommunications, setRecentCommunications] = useState<CommunicationLog[]>([]);
   const [profileData, setProfileData] = useState<any>(null);
   const [activeSection, setActiveSection] = useState('dashboard');
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -163,7 +164,17 @@ const PatientDashboard: React.FC<PatientDashboardProps> = ({
         return (
           <div className="space-y-6">
             <h1 className="text-2xl font-bold text-brand-teal">Care Status</h1>
-            <CareStatusCard currentStatus={currentStatus} lastUpdated={lastUpdated} />
+            {currentStatus === 'visit-in-progress' ? (
+              <CareStatusCard currentStatus={currentStatus} lastUpdated={lastUpdated} />
+            ) : (
+              <div className="bg-white p-6 rounded-lg shadow">
+                <h3 className="font-semibold mb-2 text-brand-teal">Current Status</h3>
+                <p className="text-gray-600">You have no active visits with us right now.</p>
+                <p className="text-sm text-gray-500 mt-2">
+                  When you start a visit with us, your care status will appear here.
+                </p>
+              </div>
+            )}
             <RecentCommunications communications={recentCommunications} />
           </div>
         );
@@ -237,6 +248,8 @@ const PatientDashboard: React.FC<PatientDashboardProps> = ({
         activeSection={activeSection}
         onSectionChange={setActiveSection}
         hasActiveVisit={currentStatus === 'visit-in-progress'}
+        isCollapsed={sidebarCollapsed}
+        onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
       />
       
       {/* Main Content */}

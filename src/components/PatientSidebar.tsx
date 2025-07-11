@@ -5,20 +5,27 @@ import {
   Calendar, 
   FileText, 
   MessageSquare, 
-  Users 
+  Users,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 
 interface PatientSidebarProps {
   activeSection: string;
   onSectionChange: (section: string) => void;
   hasActiveVisit?: boolean;
+  isCollapsed: boolean;
+  onToggleCollapse: () => void;
 }
 
 const PatientSidebar: React.FC<PatientSidebarProps> = ({ 
   activeSection, 
   onSectionChange,
-  hasActiveVisit = false 
+  hasActiveVisit = false,
+  isCollapsed,
+  onToggleCollapse
 }) => {
   const navigationItems = [
     {
@@ -31,8 +38,8 @@ const PatientSidebar: React.FC<PatientSidebarProps> = ({
       id: 'care-status',
       label: 'Care Status',
       icon: Activity,
-      alwaysVisible: false,
-      requiresActiveVisit: true
+      alwaysVisible: true,
+      requiresActiveVisit: false
     },
     {
       id: 'appointments',
@@ -65,9 +72,31 @@ const PatientSidebar: React.FC<PatientSidebarProps> = ({
   );
 
   return (
-    <div className="w-64 bg-white border-r border-gray-200 h-full">
-      <div className="p-6">
-        <h2 className="text-lg font-semibold text-brand-teal mb-6">Your Health Hub</h2>
+    <div className={cn(
+      "bg-white border-r border-gray-200 h-full transition-all duration-300 flex flex-col",
+      isCollapsed ? "w-16" : "w-64"
+    )}>
+      {/* Header with toggle */}
+      <div className="p-4 flex items-center justify-between border-b">
+        {!isCollapsed && (
+          <h2 className="text-lg font-semibold text-brand-teal">Your Health Hub</h2>
+        )}
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={onToggleCollapse}
+          className="p-1 h-8 w-8"
+        >
+          {isCollapsed ? (
+            <ChevronRight className="h-4 w-4" />
+          ) : (
+            <ChevronLeft className="h-4 w-4" />
+          )}
+        </Button>
+      </div>
+
+      {/* Navigation */}
+      <div className="flex-1 p-4">
         <nav className="space-y-2">
           {visibleItems.map((item) => {
             const Icon = item.icon;
@@ -81,11 +110,13 @@ const PatientSidebar: React.FC<PatientSidebarProps> = ({
                   "w-full flex items-center px-3 py-2 text-left rounded-lg transition-colors",
                   isActive 
                     ? "bg-brand-light text-brand-primary font-medium" 
-                    : "text-gray-600 hover:bg-gray-50 hover:text-brand-primary"
+                    : "text-gray-600 hover:bg-gray-50 hover:text-brand-primary",
+                  isCollapsed && "justify-center"
                 )}
+                title={isCollapsed ? item.label : undefined}
               >
-                <Icon className="h-5 w-5 mr-3" />
-                <span className="text-sm">{item.label}</span>
+                <Icon className={cn("h-5 w-5", !isCollapsed && "mr-3")} />
+                {!isCollapsed && <span className="text-sm">{item.label}</span>}
               </button>
             );
           })}
