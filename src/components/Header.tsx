@@ -20,7 +20,10 @@ const Header = () => {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex items-center">
-            <div className="flex-shrink-0 flex items-center">
+            <div 
+              className="flex-shrink-0 flex items-center cursor-pointer" 
+              onClick={() => navigate('/')}
+            >
               <div className="green-dot-logo green-dot-sm">
                 <div className="green-dot-rings">
                   <div className="green-dot-center"></div>
