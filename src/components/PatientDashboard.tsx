@@ -14,7 +14,7 @@ import CareStatusCard from './CareStatusCard';
 import RecentCommunications from './RecentCommunications';
 import FamilyContactsSection from './FamilyContactsSection';
 import MedicationReminders from './MedicationReminders';
-import BackendTest from './BackendTest';
+import ProfileSync from './ProfileSync';
 
 export type CareStatus = 
   | 'consultation-scheduled'
@@ -125,8 +125,8 @@ const PatientDashboard: React.FC<PatientDashboardProps> = ({
                 {/* Smart Prescription Manager */}
                 <MedicationReminders />
                 
-                {/* Backend Connection Test */}
-                <BackendTest />
+                {/* Unified Profile Data */}
+                <ProfileSync />
               </div>
             </div>
           </>
