@@ -7,8 +7,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const Header = () => {
-  console.log('🚀 Header component rendered'); // Step 2: Verify component rendering
-  
   const { user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -18,13 +16,13 @@ const Header = () => {
   };
 
   const handleLogoClick = () => {
-    console.log('🔥 STEP 1: Click detected');
-    console.log('🔥 STEP 2: Current location:', location.pathname);
-    console.log('🔥 STEP 3: About to navigate');
-    
-    navigate('/');
-    
-    console.log('🔥 STEP 4: Navigate called successfully');
+    if (location.pathname !== '/') {
+      // Navigate to dashboard if not already there
+      navigate('/');
+    } else {
+      // Already on dashboard, scroll to top smoothly
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   return (
@@ -36,12 +34,6 @@ const Header = () => {
             <div 
               className="flex-shrink-0 flex items-center cursor-pointer" 
               onClick={handleLogoClick}
-              style={{ 
-                pointerEvents: 'auto', 
-                zIndex: 1000,
-                position: 'relative',
-                backgroundColor: 'rgba(255,0,0,0.1)' // Temporary visual indicator
-              }}
             >
               <div className="green-dot-logo green-dot-sm">
                 <div className="green-dot-rings">
