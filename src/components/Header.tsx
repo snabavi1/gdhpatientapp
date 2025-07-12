@@ -15,7 +15,12 @@ const Header = () => {
     navigate('/auth');
   };
 
+  // Only enable logo navigation on patient-facing routes (not physician routes)
+  const isPatientRoute = !location.pathname.startsWith('/physician');
+  
   const handleLogoClick = () => {
+    if (!isPatientRoute) return; // Disable on physician routes
+    
     if (location.pathname !== '/') {
       // Navigate to dashboard if not already there
       navigate('/');
@@ -32,7 +37,7 @@ const Header = () => {
           {/* Logo */}
           <div className="flex items-center">
             <div 
-              className="flex-shrink-0 flex items-center cursor-pointer" 
+              className={`flex-shrink-0 flex items-center ${isPatientRoute ? 'cursor-pointer' : 'cursor-default'}`}
               onClick={handleLogoClick}
             >
               <div className="green-dot-logo green-dot-sm">
