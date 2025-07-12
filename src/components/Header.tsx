@@ -25,14 +25,12 @@ const Header = () => {
     e.stopPropagation();
     
     console.log('Logo clicked, current location:', location.pathname);
-    if (location.pathname !== '/') {
-      console.log('Navigating to dashboard');
-      navigate('/');
-    } else {
-      console.log('Already on dashboard, no navigation needed');
-      // Scroll to top if already on dashboard
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+    console.log('About to navigate to /');
+    
+    // Always navigate to home, regardless of current location
+    navigate('/');
+    
+    console.log('Navigate function called');
   };
 
   return (
