@@ -9,15 +9,28 @@ import { useState } from "react";
 const Index = () => {
   const { user, loading } = useAuth();
   
+  // Extract user name reactively based on current user metadata
+  const getUserName = () => {
+    if (!user) return "Patient";
+    
+    if (user.user_metadata?.first_name && user.user_metadata?.last_name) {
+      return `${user.user_metadata.first_name} ${user.user_metadata.last_name}`;
+    }
+    
+    if (user.user_metadata?.full_name) {
+      return user.user_metadata.full_name;
+    }
+    
+    return user.email || "Patient";
+  };
+
   // Mock patient data - in a real app this would come from Supabase
-  const [patientData] = useState({
-    name: user?.user_metadata?.first_name && user?.user_metadata?.last_name 
-      ? `${user.user_metadata.first_name} ${user.user_metadata.last_name}`
-      : user?.user_metadata?.full_name || user?.email || "Patient",
+  const patientData = {
+    name: getUserName(),
     currentStatus: 'care-plan-updated' as const,
     lastUpdated: new Date('2024-01-15T10:30:00'),
     nextAppointment: new Date('2024-01-20T14:00:00')
-  });
+  };
 
   if (loading) {
     return (
