@@ -7,6 +7,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const Header = () => {
+  console.log('🚀 Header component rendered'); // Step 2: Verify component rendering
+  
   const { user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -16,6 +18,9 @@ const Header = () => {
   };
 
   const handleLogoClick = (e: React.MouseEvent) => {
+    console.log('🔥 CLICK DETECTED!'); // Step 1: Verify click handler
+    alert('Click working!'); // Step 1: Immediate feedback
+    
     e.preventDefault();
     e.stopPropagation();
     
@@ -39,6 +44,12 @@ const Header = () => {
             <div 
               className="flex-shrink-0 flex items-center cursor-pointer" 
               onClick={handleLogoClick}
+              style={{ 
+                pointerEvents: 'auto', 
+                zIndex: 1000,
+                position: 'relative',
+                backgroundColor: 'rgba(255,0,0,0.1)' // Temporary visual indicator
+              }}
             >
               <div className="green-dot-logo green-dot-sm">
                 <div className="green-dot-rings">
