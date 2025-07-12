@@ -11,7 +11,9 @@ const Index = () => {
   
   // Mock patient data - in a real app this would come from Supabase
   const [patientData] = useState({
-    name: user?.user_metadata?.full_name || user?.email || "Patient",
+    name: user?.user_metadata?.first_name && user?.user_metadata?.last_name 
+      ? `${user.user_metadata.first_name} ${user.user_metadata.last_name}`
+      : user?.user_metadata?.full_name || user?.email || "Patient",
     currentStatus: 'care-plan-updated' as const,
     lastUpdated: new Date('2024-01-15T10:30:00'),
     nextAppointment: new Date('2024-01-20T14:00:00')

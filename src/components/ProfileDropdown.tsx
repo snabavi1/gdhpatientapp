@@ -120,7 +120,10 @@ const ProfileDropdown = () => {
           >
             <UserCircle className="h-5 w-5 text-brand-primary" />
             <span className="hidden sm:inline text-sm">
-              {profile?.full_name || user?.user_metadata?.full_name || user?.email}
+              {profile?.full_name || 
+               (user?.user_metadata?.first_name && user?.user_metadata?.last_name 
+                 ? `${user.user_metadata.first_name} ${user.user_metadata.last_name}` 
+                 : user?.user_metadata?.full_name || user?.email)}
             </span>
           </Button>
         </DropdownMenuTrigger>
@@ -128,7 +131,10 @@ const ProfileDropdown = () => {
         <DropdownMenuContent align="end" className="w-64 bg-white border border-accent shadow-lg">
           <div className="px-3 py-2 border-b border-accent">
             <p className="font-medium text-sm text-foreground">
-              {profile?.full_name || user?.user_metadata?.full_name || 'Patient'}
+              {profile?.full_name || 
+               (user?.user_metadata?.first_name && user?.user_metadata?.last_name 
+                 ? `${user.user_metadata.first_name} ${user.user_metadata.last_name}` 
+                 : user?.user_metadata?.full_name || 'Patient')}
             </p>
             <p className="text-xs text-muted-foreground">{user?.email}</p>
           </div>
