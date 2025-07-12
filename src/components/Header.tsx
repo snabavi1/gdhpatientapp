@@ -17,20 +17,14 @@ const Header = () => {
     navigate('/auth');
   };
 
-  const handleLogoClick = (e: React.MouseEvent) => {
-    console.log('🔥 CLICK DETECTED!'); // Step 1: Verify click handler
-    alert('Click working!'); // Step 1: Immediate feedback
+  const handleLogoClick = () => {
+    console.log('🔥 STEP 1: Click detected');
+    console.log('🔥 STEP 2: Current location:', location.pathname);
+    console.log('🔥 STEP 3: About to navigate');
     
-    e.preventDefault();
-    e.stopPropagation();
-    
-    console.log('Logo clicked, current location:', location.pathname);
-    console.log('About to navigate to /');
-    
-    // Always navigate to home, regardless of current location
     navigate('/');
     
-    console.log('Navigate function called');
+    console.log('🔥 STEP 4: Navigate called successfully');
   };
 
   return (
