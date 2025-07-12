@@ -15,13 +15,18 @@ const Header = () => {
     navigate('/auth');
   };
 
-  const handleLogoClick = () => {
+  const handleLogoClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
     console.log('Logo clicked, current location:', location.pathname);
     if (location.pathname !== '/') {
       console.log('Navigating to dashboard');
       navigate('/');
     } else {
       console.log('Already on dashboard, no navigation needed');
+      // Scroll to top if already on dashboard
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
