@@ -7,6 +7,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
 import { Loader2, Stethoscope, UserPlus, LogIn } from 'lucide-react';
+import Header from '@/components/Header';
 
 type AuthMode = 'signin' | 'signup';
 
@@ -110,7 +111,9 @@ const PhysicianAuth = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4">
+    <>
+      <Header />
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4 pt-16">{/* Added pt-16 to account for header */}
       <div className="max-w-md w-full">
         <div className="text-center mb-8">
           <div className="flex items-center justify-center mb-4">
@@ -279,6 +282,7 @@ const PhysicianAuth = () => {
         </Card>
       </div>
     </div>
+    </>
   );
 };
 
