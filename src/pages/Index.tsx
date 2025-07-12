@@ -11,16 +11,32 @@ const Index = () => {
   
   // Extract user name reactively based on current user metadata
   const getUserName = () => {
-    if (!user) return "Patient";
+    console.log('getUserName called, user:', user);
+    console.log('user metadata:', user?.user_metadata);
     
-    if (user.user_metadata?.first_name && user.user_metadata?.last_name) {
-      return `${user.user_metadata.first_name} ${user.user_metadata.last_name}`;
+    if (!user) {
+      console.log('No user, returning Patient');
+      return "Patient";
     }
     
-    if (user.user_metadata?.full_name) {
-      return user.user_metadata.full_name;
+    const firstName = user.user_metadata?.first_name;
+    const lastName = user.user_metadata?.last_name;
+    const fullName = user.user_metadata?.full_name;
+    
+    console.log('firstName:', firstName, 'lastName:', lastName, 'fullName:', fullName);
+    
+    if (firstName && lastName) {
+      const result = `${firstName} ${lastName}`;
+      console.log('Using first + last name:', result);
+      return result;
     }
     
+    if (fullName) {
+      console.log('Using full name:', fullName);
+      return fullName;
+    }
+    
+    console.log('Falling back to email:', user.email);
     return user.email || "Patient";
   };
 
