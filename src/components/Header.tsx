@@ -4,14 +4,25 @@ import { UserCircle } from "lucide-react";
 import MobileNavigation from "./MobileNavigation";
 import ProfileDropdown from "./ProfileDropdown";
 import { useAuth } from "@/contexts/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const Header = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleSignIn = () => {
     navigate('/auth');
+  };
+
+  const handleLogoClick = () => {
+    console.log('Logo clicked, current location:', location.pathname);
+    if (location.pathname !== '/') {
+      console.log('Navigating to dashboard');
+      navigate('/');
+    } else {
+      console.log('Already on dashboard, no navigation needed');
+    }
   };
 
   return (
@@ -22,7 +33,7 @@ const Header = () => {
           <div className="flex items-center">
             <div 
               className="flex-shrink-0 flex items-center cursor-pointer" 
-              onClick={() => navigate('/')}
+              onClick={handleLogoClick}
             >
               <div className="green-dot-logo green-dot-sm">
                 <div className="green-dot-rings">
