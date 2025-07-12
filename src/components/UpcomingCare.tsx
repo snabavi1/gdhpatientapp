@@ -71,39 +71,6 @@ const UpcomingCare: React.FC = () => {
         </div>
       </div>
 
-      {/* Prescription Reminders */}
-      <div className="mb-6">
-        <div className="flex items-center gap-2 mb-3">
-          <Pill className="h-5 w-5 text-brand-primary" />
-          <h4 className="font-medium text-brand-teal">Prescription reminders:</h4>
-        </div>
-        
-        <div className="space-y-3 ml-7">
-          <div className="p-3 bg-gray-50 rounded-lg">
-            <p className="text-brand-teal font-medium">• Metformin - Take with breakfast</p>
-            <Button 
-              variant="link" 
-              size="sm" 
-              className="text-brand-blue p-0 h-auto text-sm"
-              onClick={handleSetReminders}
-            >
-              📱 Set up automatic refill reminders
-            </Button>
-          </div>
-          
-          <div className="p-3 bg-yellow-50 rounded-lg border-l-4 border-yellow-400">
-            <p className="text-brand-teal font-medium">• Lisinopril - Refill needed by March 20</p>
-            <Button 
-              variant="link" 
-              size="sm" 
-              className="text-brand-blue p-0 h-auto text-sm"
-              onClick={handleRefillRequest}
-            >
-              [Request refill through Concierge]
-            </Button>
-          </div>
-        </div>
-      </div>
 
       <div className="text-center p-3 bg-brand-light/20 rounded-lg">
         <p className="text-brand-teal/80 text-sm">

@@ -114,35 +114,6 @@ const PatientDashboard: React.FC<PatientDashboardProps> = ({
                 {/* Recent Communications */}
                 <RecentCommunications communications={recentCommunications} />
                 
-                {/* Healthcare Profile */}
-                {profileData && (
-                  <div className="bg-white p-6 rounded-lg shadow">
-                    <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-lg font-semibold">Your Healthcare Profile</h3>
-                      <button 
-                        onClick={() => setActiveSection('support-network')}
-                        className="text-sm text-brand-primary hover:underline"
-                      >
-                        Update Family Contacts
-                      </button>
-                    </div>
-                    <div className="space-y-2">
-                      <p><strong>Name:</strong> {profileData.full_name || `${profileData.first_name || ''} ${profileData.last_name || ''}`.trim()}</p>
-                      <p><strong>Email:</strong> {profileData.email}</p>
-                      {profileData.phone && <p><strong>Phone:</strong> {profileData.phone}</p>}
-                      {profileData.date_of_birth && <p><strong>Date of Birth:</strong> {new Date(profileData.date_of_birth).toLocaleDateString()}</p>}
-                      <p><strong>Role:</strong> {profileData.role}</p>
-                      {profileData.hint_patients?.[0]?.hint_patient_id && (
-                        <p><strong>Hint Patient ID:</strong> {profileData.hint_patients[0].hint_patient_id}</p>
-                      )}
-                      {profileData.hint_patients?.[0]?.verification_status && (
-                        <p><strong>Verification Status:</strong> {profileData.hint_patients[0].verification_status}</p>
-                      )}
-                      <p><strong>Family Contacts:</strong> {profileData.family_contacts?.length || 0}</p>
-                      <p><strong>Profile Created:</strong> {new Date(profileData.created_at).toLocaleDateString()}</p>
-                    </div>
-                  </div>
-                )}
               </div>
               
               {/* Secondary Column */}

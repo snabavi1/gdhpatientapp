@@ -34,8 +34,11 @@ const PersonalWelcomeHero: React.FC<PersonalWelcomeHeroProps> = ({
     }
   };
 
-  // Capitalize the first name
-  const capitalizedFirstName = firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
+  // Capitalize the first name and debug
+  console.log('PersonalWelcomeHero received firstName:', firstName);
+  const capitalizedFirstName = firstName && firstName !== 'Patient' 
+    ? firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase()
+    : firstName;
 
   return (
     <Card className="brand-mixed-gradient border-0 p-8 mb-6 card-hover shadow-xl animate-fade-in relative overflow-hidden">
