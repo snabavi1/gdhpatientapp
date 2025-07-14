@@ -10,6 +10,7 @@ import Auth from "./pages/Auth";
 import PhysicianDashboard from "./pages/PhysicianDashboard";
 import PhysicianAuth from "./components/PhysicianAuth";
 import EnhancedSignup from "./components/enhanced-signup/EnhancedSignup";
+import TrackingBoard from "./components/physician/TrackingBoard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,7 +31,7 @@ const App = () => (
             {/* Physician-facing routes */}
             <Route path="/physician/auth" element={<PhysicianAuth />} />
             <Route path="/physician" element={<PhysicianDashboard />} />
-            <Route path="/physician/dashboard" element={<PhysicianDashboard />} />
+            <Route path="/physician/trackingboard" element={<TrackingBoard darkMode={false} />} />
             
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />

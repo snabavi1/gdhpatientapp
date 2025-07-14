@@ -2,7 +2,9 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Bell, User, Sun, Moon, Clock, Users, ArrowLeft } from 'lucide-react';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { Bell, User, Sun, Moon, Clock, Users, ArrowLeft, LogOut } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface TopNavigationProps {
   physicianName: string;
@@ -29,6 +31,12 @@ const TopNavigation: React.FC<TopNavigationProps> = ({
   onToggleNotifications,
   onBackToDashboard
 }) => {
+  const { signOut } = useAuth();
+
+  const handleSignOut = async () => {
+    await signOut();
+    window.location.href = '/physician/auth';
+  };
   return (
     <div className={`sticky top-0 z-50 border-b transition-all duration-300 backdrop-blur-sm ${
       darkMode ? 'bg-gray-800/95 border-gray-700' : 'bg-white/95 border-slate-200'
@@ -63,14 +71,29 @@ const TopNavigation: React.FC<TopNavigationProps> = ({
 
           {/* Center Stats */}
           <div className="hidden md:flex items-center space-x-8">
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center">
-                <User className="w-4 h-4 text-emerald-600" />
-              </div>
-              <span className={`text-sm font-medium ${darkMode ? 'text-white' : 'text-slate-900'}`}>
-                {physicianName}
-              </span>
-            </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="flex items-center space-x-3 hover:bg-slate-100">
+                  <div className="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center">
+                    <User className="w-4 h-4 text-emerald-600" />
+                  </div>
+                  <span className={`text-sm font-medium ${darkMode ? 'text-white' : 'text-slate-900'}`}>
+                    {physicianName}
+                  </span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="center" className="w-48">
+                <DropdownMenuItem disabled>
+                  <User className="w-4 h-4 mr-2" />
+                  {physicianName}
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleSignOut} className="text-red-600 focus:text-red-600">
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Sign Out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
                 <Users className="w-4 h-4 text-red-600" />
