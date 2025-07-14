@@ -89,21 +89,11 @@ const PhysicianAuth = () => {
       <Header />
       <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4 pt-16">{/* Added pt-16 to account for header */}
       <div className="max-w-md w-full">
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center mb-4">
-            <div className="w-12 h-12 bg-healthcare-primary rounded-full flex items-center justify-center">
-              <div className="w-5 h-5 bg-white rounded-full"></div>
-            </div>
-          </div>
-          <h1 className="text-2xl font-bold text-gray-900">Green Dot Health</h1>
-        </div>
-
-
         <Card>
           <CardHeader>
-            <CardTitle className="text-center">Welcome Back, Doc</CardTitle>
+            <CardTitle className="text-center">Welcome Back!</CardTitle>
             <p className="text-center text-gray-600">
-              Sign in to Your Physician Dashboard
+              Sign into your Physician Dashboard. May the Force Be With You.
             </p>
           </CardHeader>
           <CardContent>
