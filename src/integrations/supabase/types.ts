@@ -755,17 +755,43 @@ export type Database = {
       }
     }
     Functions: {
-      create_physician_account: {
+      add_physician_state_license: {
         Args: {
-          p_email: string
-          p_full_name: string
-          p_medical_license: string
-          p_specialty: string
+          p_physician_id: string
+          p_state_code: string
+          p_state_name: string
+          p_license_number: string
+          p_expiration_date: string
+          p_issue_date?: string
         }
+        Returns: Json
+      }
+      create_physician_account: {
+        Args:
+          | {
+              p_email: string
+              p_full_name: string
+              p_medical_license: string
+              p_specialty: string
+            }
+          | {
+              p_email: string
+              p_full_name: string
+              p_medical_license: string
+              p_specialty: string
+              p_phone_number?: string
+              p_emergency_contact_name?: string
+              p_emergency_contact_relationship?: string
+              p_emergency_contact_phone?: string
+            }
         Returns: Json
       }
       enable_physician_2fa: {
         Args: { p_user_id: string; p_secret: string }
+        Returns: Json
+      }
+      get_expiring_physician_licenses: {
+        Args: { p_days_ahead?: number }
         Returns: Json
       }
     }
