@@ -12,14 +12,15 @@ import { ConsentStep } from "./steps/ConsentStep";
 import { InsurancePaymentStep } from "./steps/InsurancePaymentStep";
 import { ConfirmationStep } from "./steps/ConfirmationStep";
 import { ProgressSidebar } from "./ProgressSidebar";
+import Header from "../Header";
 
 const STEPS: EnrollmentStep[] = [
   'enrollment-type',
   'personal-info',
-  'medical-authority',
   'plan-selection',
-  'consent',
-  'insurance-payment',
+  'payment-info',
+  'consent-documents',
+  'insurance-info',
   'confirmation'
 ];
 
@@ -53,24 +54,14 @@ const EnhancedSignup: React.FC = () => {
   const handleNext = () => {
     const nextIndex = currentStepIndex + 1;
     if (nextIndex < STEPS.length) {
-      // Skip medical authority step for self-enrollment
-      if (STEPS[nextIndex] === 'medical-authority' && formData.enrollmentType === 'self') {
-        setCurrentStep(STEPS[nextIndex + 1]);
-      } else {
-        setCurrentStep(STEPS[nextIndex]);
-      }
+      setCurrentStep(STEPS[nextIndex]);
     }
   };
 
   const handlePrevious = () => {
     const prevIndex = currentStepIndex - 1;
     if (prevIndex >= 0) {
-      // Skip medical authority step for self-enrollment when going back
-      if (STEPS[prevIndex] === 'medical-authority' && formData.enrollmentType === 'self') {
-        setCurrentStep(STEPS[prevIndex - 1]);
-      } else {
-        setCurrentStep(STEPS[prevIndex]);
-      }
+      setCurrentStep(STEPS[prevIndex]);
     }
   };
 
@@ -93,15 +84,6 @@ const EnhancedSignup: React.FC = () => {
             onPrevious={handlePrevious}
           />
         );
-      case 'medical-authority':
-        return (
-          <MedicalAuthorityStep
-            data={formData}
-            onUpdate={updateFormData}
-            onNext={handleNext}
-            onPrevious={handlePrevious}
-          />
-        );
       case 'plan-selection':
         return (
           <PlanSelectionStep
@@ -111,7 +93,16 @@ const EnhancedSignup: React.FC = () => {
             onPrevious={handlePrevious}
           />
         );
-      case 'consent':
+      case 'payment-info':
+        return (
+          <InsurancePaymentStep
+            data={formData}
+            onUpdate={updateFormData}
+            onNext={handleNext}
+            onPrevious={handlePrevious}
+          />
+        );
+      case 'consent-documents':
         return (
           <ConsentStep
             data={formData}
@@ -120,14 +111,26 @@ const EnhancedSignup: React.FC = () => {
             onPrevious={handlePrevious}
           />
         );
-      case 'insurance-payment':
+      case 'insurance-info':
         return (
-          <InsurancePaymentStep
-            data={formData}
-            onUpdate={updateFormData}
-            onNext={handleNext}
-            onPrevious={handlePrevious}
-          />
+          <div className="space-y-6">
+            <div className="text-center">
+              <h2 className="text-2xl font-bold mb-2">Insurance Information</h2>
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                <p className="text-blue-800 text-sm">
+                  <strong>Important:</strong> We do not bill your insurance. If we order testing like labs and imaging or order services, you may use your insurance. Include your information here.
+                </p>
+              </div>
+            </div>
+            
+            <InsurancePaymentStep
+              data={formData}
+              onUpdate={updateFormData}
+              onNext={handleNext}
+              onPrevious={handlePrevious}
+              isInsuranceOnly={true}
+            />
+          </div>
         );
       case 'confirmation':
         return (
@@ -142,8 +145,11 @@ const EnhancedSignup: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-muted/20">
-      <div className="flex min-h-screen">
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <Header />
+      
+      <div className="flex min-h-screen bg-gray-50">
         {/* Progress Sidebar */}
         <ProgressSidebar
           currentStep={currentStep}
@@ -152,7 +158,7 @@ const EnhancedSignup: React.FC = () => {
         />
 
         {/* Main Content */}
-        <div className="flex-1 p-6 lg:p-8">
+        <div className="flex-1 p-6 space-y-8">
           <div className="max-w-3xl mx-auto">
             {/* Header */}
             <div className="text-center mb-8">

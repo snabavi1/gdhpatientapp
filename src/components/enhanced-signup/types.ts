@@ -7,10 +7,10 @@ export type ConsentType = 'hipaa' | 'consent-to-treat' | 'telemedicine' | 'minor
 export type EnrollmentStep = 
   | 'enrollment-type'
   | 'personal-info'
-  | 'medical-authority'
   | 'plan-selection'
-  | 'consent'
-  | 'insurance-payment'
+  | 'payment-info'
+  | 'consent-documents'
+  | 'insurance-info'
   | 'confirmation';
 
 // Data Interfaces
@@ -124,40 +124,45 @@ export const SELF_ENROLLMENT_PLANS: PlanDetails[] = [
   {
     id: 'individual',
     name: 'Individual Plan',
-    description: 'Perfect for individuals seeking comprehensive virtual emergency care',
-    price: 89,
+    description: 'Complete virtual emergency care for one person',
+    price: 129,
     features: [
-      '24/7 Virtual Emergency Room',
+      '24/7 Virtual Emergency Room Access',
+      'Emergency Physician Consultations',
       'Prescription Management',
-      'Care Coordination',
-      'Mental Health Support'
+      'Care Coordination with Local Providers',
+      'Digital Health Records'
     ],
     category: 'self'
   },
   {
-    id: 'premium',
-    name: 'Premium Plan',
-    description: 'Enhanced coverage with additional wellness features',
-    price: 149,
+    id: 'couple',
+    name: 'Couple Plan',
+    description: 'Virtual emergency care for two people',
+    price: 169,
     features: [
-      'Everything in Individual Plan',
-      'Preventive Care Guidance',
-      'Chronic Condition Management',
-      'Priority Support',
-      'Wellness Coaching'
+      'Coverage for 2 people',
+      '24/7 Virtual Emergency Room Access',
+      'Emergency Physician Consultations',
+      'Prescription Management for both members',
+      'Shared Digital Health Records',
+      'Care Coordination'
     ],
     category: 'self'
   },
   {
     id: 'family',
     name: 'Family Plan',
-    description: 'Comprehensive coverage for your entire family',
-    price: 249,
+    description: 'Comprehensive care for your entire family',
+    price: 199,
     features: [
       'Coverage for up to 6 family members',
-      'Pediatric Emergency Care',
-      'Family Health Coordination',
-      'All Premium Plan features'
+      '24/7 Virtual Emergency Room Access',
+      'Emergency Physician Consultations',
+      'Prescription Management for all members',
+      'Family Care Coordination',
+      'Shared Digital Health Records',
+      'Pediatric Emergency Care'
     ],
     category: 'self'
   }
@@ -167,43 +172,32 @@ export const BYSTANDER_ENROLLMENT_PLANS: PlanDetails[] = [
   {
     id: 'student-safe',
     name: 'Student Safe Start',
-    description: 'Specialized care for college students and young adults',
-    price: 89,
+    description: 'Specialized care for full-time students',
+    price: 75,
     features: [
-      '24/7 Virtual ER Access',
-      'Mental Health Support',
+      '24/7 Virtual Emergency Room Access',
+      'Mental Health Crisis Support',
       'Prescription Management',
-      'Campus Health Coordination'
+      'Campus Health Integration',
+      'Parent/Guardian Communication Portal'
     ],
-    ageRange: 'Ages 18-26, Full-time Students',
+    ageRange: 'Ages 18-26',
     category: 'bystander'
   },
   {
     id: 'senior-safe',
     name: 'Senior Safe Start',
-    description: 'Specialized care for seniors with comprehensive support',
-    price: 149,
+    description: 'Comprehensive care designed for seniors',
+    price: 299,
     features: [
+      '24/7 Virtual Emergency Room Access',
       'Chronic Condition Management',
       'Medication Reconciliation',
-      'Fall Prevention Support',
-      '24/7 Emergency Access'
+      'Fall Prevention Assessment',
+      'Family Caregiver Support',
+      'Medicare Coordination'
     ],
     ageRange: 'Ages 65+',
-    category: 'bystander'
-  },
-  {
-    id: 'green-dot-individual',
-    name: 'Green Dot Individual',
-    description: 'Comprehensive virtual emergency care for all ages',
-    price: 119,
-    features: [
-      'Full Virtual ER Services',
-      'Care Coordination',
-      'Family Communication',
-      'Emergency Response'
-    ],
-    ageRange: 'All Ages',
     category: 'bystander'
   }
 ];

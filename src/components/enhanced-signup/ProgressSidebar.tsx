@@ -66,10 +66,7 @@ export const ProgressSidebar: React.FC<ProgressSidebarProps> = ({
   };
 
   const shouldShowStep = (step: EnrollmentStep): boolean => {
-    // Hide medical authority step for self-enrollment
-    if (step === 'medical-authority' && formData.enrollmentType === 'self') {
-      return false;
-    }
+    // All steps are shown in the new flow
     return true;
   };
 

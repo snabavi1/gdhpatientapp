@@ -14,13 +14,15 @@ interface InsurancePaymentStepProps {
   onUpdate: (updates: Partial<EnrollmentFormData>) => void;
   onNext: () => void;
   onPrevious: () => void;
+  isInsuranceOnly?: boolean;
 }
 
 export const InsurancePaymentStep: React.FC<InsurancePaymentStepProps> = ({
   data,
   onUpdate,
   onNext,
-  onPrevious
+  onPrevious,
+  isInsuranceOnly = false
 }) => {
   const [hasInsurance, setHasInsurance] = useState(data.insuranceInfo?.hasInsurance ?? false);
   const [paymentType, setPaymentType] = useState<PaymentMethod['type']>('credit-card');
