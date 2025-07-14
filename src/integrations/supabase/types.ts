@@ -500,16 +500,74 @@ export type Database = {
           },
         ]
       }
+      physician_state_licenses: {
+        Row: {
+          created_at: string | null
+          expiration_date: string
+          id: string
+          issue_date: string | null
+          license_number: string
+          license_status: string | null
+          physician_id: string
+          state_code: string
+          state_name: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          expiration_date: string
+          id?: string
+          issue_date?: string | null
+          license_number: string
+          license_status?: string | null
+          physician_id: string
+          state_code: string
+          state_name: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          expiration_date?: string
+          id?: string
+          issue_date?: string | null
+          license_number?: string
+          license_status?: string | null
+          physician_id?: string
+          state_code?: string
+          state_name?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "physician_state_licenses_physician_id_fkey"
+            columns: ["physician_id"]
+            isOneToOne: false
+            referencedRelation: "physician_management"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "physician_state_licenses_physician_id_fkey"
+            columns: ["physician_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           backup_codes: string[] | null
           created_at: string
           date_of_birth: string | null
           email: string
+          emergency_contact_name: string | null
+          emergency_contact_phone: string | null
+          emergency_contact_relationship: string | null
           full_name: string | null
           id: string
           medical_license_number: string | null
           phone: string | null
+          phone_number: string | null
           role: string
           specialty: string | null
           two_factor_enabled: boolean | null
@@ -522,10 +580,14 @@ export type Database = {
           created_at?: string
           date_of_birth?: string | null
           email: string
+          emergency_contact_name?: string | null
+          emergency_contact_phone?: string | null
+          emergency_contact_relationship?: string | null
           full_name?: string | null
           id: string
           medical_license_number?: string | null
           phone?: string | null
+          phone_number?: string | null
           role?: string
           specialty?: string | null
           two_factor_enabled?: boolean | null
@@ -538,10 +600,14 @@ export type Database = {
           created_at?: string
           date_of_birth?: string | null
           email?: string
+          emergency_contact_name?: string | null
+          emergency_contact_phone?: string | null
+          emergency_contact_relationship?: string | null
           full_name?: string | null
           id?: string
           medical_license_number?: string | null
           phone?: string | null
+          phone_number?: string | null
           role?: string
           specialty?: string | null
           two_factor_enabled?: boolean | null
