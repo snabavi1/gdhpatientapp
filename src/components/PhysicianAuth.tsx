@@ -98,28 +98,6 @@ const PhysicianAuth = () => {
           <h1 className="text-2xl font-bold text-gray-900">Green Dot Health</h1>
         </div>
 
-        {/* Test Credentials Section */}
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle className="text-center text-lg">Quick Test Access</CardTitle>
-            <p className="text-center text-sm text-gray-600">
-              Use test credentials for easy access
-            </p>
-          </CardHeader>
-          <CardContent>
-            <Button
-              onClick={handleTestLogin}
-              disabled={loading}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white"
-            >
-              <Stethoscope className="w-4 h-4 mr-2" />
-              Sign in as Test Physician
-            </Button>
-            <div className="text-xs text-gray-500 text-center mt-2">
-              <p><strong>Test Physician:</strong> physician@test.com / testpass123</p>
-            </div>
-          </CardContent>
-        </Card>
 
         <Card>
           <CardHeader>
