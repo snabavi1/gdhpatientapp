@@ -72,6 +72,13 @@ export type Database = {
             foreignKeyName: "communication_logs_profile_id_fkey"
             columns: ["profile_id"]
             isOneToOne: false
+            referencedRelation: "physician_management"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "communication_logs_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -118,6 +125,13 @@ export type Database = {
           witness_info?: Json | null
         }
         Relationships: [
+          {
+            foreignKeyName: "consents_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "physician_management"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "consents_profile_id_fkey"
             columns: ["profile_id"]
@@ -175,6 +189,13 @@ export type Database = {
             foreignKeyName: "documents_profile_id_fkey"
             columns: ["profile_id"]
             isOneToOne: false
+            referencedRelation: "physician_management"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "documents_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -222,6 +243,13 @@ export type Database = {
             foreignKeyName: "enrollments_profile_id_fkey"
             columns: ["profile_id"]
             isOneToOne: false
+            referencedRelation: "physician_management"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "enrollments_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -265,6 +293,13 @@ export type Database = {
           verification_status?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "family_contacts_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "physician_management"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "family_contacts_profile_id_fkey"
             columns: ["profile_id"]
@@ -325,6 +360,13 @@ export type Database = {
             foreignKeyName: "hint_patients_profile_id_fkey"
             columns: ["profile_id"]
             isOneToOne: false
+            referencedRelation: "physician_management"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "hint_patients_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -378,6 +420,13 @@ export type Database = {
             foreignKeyName: "insurance_info_profile_id_fkey"
             columns: ["profile_id"]
             isOneToOne: false
+            referencedRelation: "physician_management"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "insurance_info_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -425,7 +474,21 @@ export type Database = {
             foreignKeyName: "medical_authority_enrolling_profile_id_fkey"
             columns: ["enrolling_profile_id"]
             isOneToOne: false
+            referencedRelation: "physician_management"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "medical_authority_enrolling_profile_id_fkey"
+            columns: ["enrolling_profile_id"]
+            isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "medical_authority_patient_profile_id_fkey"
+            columns: ["patient_profile_id"]
+            isOneToOne: false
+            referencedRelation: "physician_management"
             referencedColumns: ["id"]
           },
           {
@@ -439,34 +502,52 @@ export type Database = {
       }
       profiles: {
         Row: {
+          backup_codes: string[] | null
           created_at: string
           date_of_birth: string | null
           email: string
           full_name: string | null
           id: string
+          medical_license_number: string | null
           phone: string | null
           role: string
+          specialty: string | null
+          two_factor_enabled: boolean | null
+          two_factor_secret: string | null
           updated_at: string
+          verified_physician: boolean | null
         }
         Insert: {
+          backup_codes?: string[] | null
           created_at?: string
           date_of_birth?: string | null
           email: string
           full_name?: string | null
           id: string
+          medical_license_number?: string | null
           phone?: string | null
           role?: string
+          specialty?: string | null
+          two_factor_enabled?: boolean | null
+          two_factor_secret?: string | null
           updated_at?: string
+          verified_physician?: boolean | null
         }
         Update: {
+          backup_codes?: string[] | null
           created_at?: string
           date_of_birth?: string | null
           email?: string
           full_name?: string | null
           id?: string
+          medical_license_number?: string | null
           phone?: string | null
           role?: string
+          specialty?: string | null
+          two_factor_enabled?: boolean | null
+          two_factor_secret?: string | null
           updated_at?: string
+          verified_physician?: boolean | null
         }
         Relationships: []
       }
@@ -505,6 +586,13 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "sms_conversations_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "physician_management"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "sms_conversations_profile_id_fkey"
             columns: ["profile_id"]
@@ -563,10 +651,57 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      physician_management: {
+        Row: {
+          created_at: string | null
+          email: string | null
+          full_name: string | null
+          id: string | null
+          medical_license_number: string | null
+          specialty: string | null
+          two_factor_enabled: boolean | null
+          updated_at: string | null
+          verified_physician: boolean | null
+        }
+        Insert: {
+          created_at?: string | null
+          email?: string | null
+          full_name?: string | null
+          id?: string | null
+          medical_license_number?: string | null
+          specialty?: string | null
+          two_factor_enabled?: boolean | null
+          updated_at?: string | null
+          verified_physician?: boolean | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string | null
+          full_name?: string | null
+          id?: string | null
+          medical_license_number?: string | null
+          specialty?: string | null
+          two_factor_enabled?: boolean | null
+          updated_at?: string | null
+          verified_physician?: boolean | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
-      [_ in never]: never
+      create_physician_account: {
+        Args: {
+          p_email: string
+          p_full_name: string
+          p_medical_license: string
+          p_specialty: string
+        }
+        Returns: Json
+      }
+      enable_physician_2fa: {
+        Args: { p_user_id: string; p_secret: string }
+        Returns: Json
+      }
     }
     Enums: {
       [_ in never]: never
