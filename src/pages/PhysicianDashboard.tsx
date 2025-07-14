@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import TrackingBoard from '@/components/physician/TrackingBoard';
 import NotificationCenter from '@/components/physician/NotificationCenter';
@@ -8,6 +9,7 @@ import WelcomeView from '@/components/physician/WelcomeView';
 
 const PhysicianDashboard: React.FC = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [currentTime, setCurrentTime] = useState(new Date());
   const [darkMode, setDarkMode] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
@@ -53,7 +55,7 @@ const PhysicianDashboard: React.FC = () => {
   const physicianName = user?.user_metadata?.full_name || 'Dr. Taylor';
 
   const handleCardClick = (cardType: string) => {
-    setActiveView('tracking');
+    navigate('/physician/trackingboard');
   };
 
   return (
