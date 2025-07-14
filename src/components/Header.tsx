@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { UserCircle } from "lucide-react";
 import MobileNavigation from "./MobileNavigation";
