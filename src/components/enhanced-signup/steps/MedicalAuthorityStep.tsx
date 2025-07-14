@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { ChevronLeft, ChevronRight, Upload, Shield, AlertCircle } from "lucide-react";
+import { ChevronLeft, ChevronRight, Upload, Shield, AlertCircle, Info } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { EnrollmentFormData, AuthorityType, MedicalAuthority } from "../types";
 
@@ -49,11 +50,15 @@ export const MedicalAuthorityStep: React.FC<MedicalAuthorityStepProps> = ({
   onNext,
   onPrevious
 }) => {
+  const [skipDocuments, setSkipDocuments] = useState(false);
+  
   const medicalAuthority = data.medicalAuthority || {
+    hasPoA: false,
     authorityType: 'power-of-attorney' as AuthorityType,
     description: '',
     documents: [],
-    verificationNotes: ''
+    verificationNotes: '',
+    skipForNow: false
   };
 
   const updateMedicalAuthority = (updates: Partial<MedicalAuthority>) => {
@@ -77,8 +82,17 @@ export const MedicalAuthorityStep: React.FC<MedicalAuthorityStepProps> = ({
     updateMedicalAuthority({ documents: updatedDocs });
   };
 
+  const handleSkipDocuments = (checked: boolean) => {
+    setSkipDocuments(checked);
+    updateMedicalAuthority({ skipForNow: checked });
+  };
+
   const isValid = () => {
-    return medicalAuthority.authorityType && medicalAuthority.documents.length > 0;
+    // Authority type is always required
+    if (!medicalAuthority.authorityType) return false;
+    
+    // Documents are optional - either upload them or check "skip for now"
+    return medicalAuthority.documents.length > 0 || skipDocuments || medicalAuthority.skipForNow;
   };
 
   return (
@@ -93,6 +107,23 @@ export const MedicalAuthorityStep: React.FC<MedicalAuthorityStepProps> = ({
         </p>
       </div>
 
+      {/* Info Card - Optional Documentation */}
+      <Card className="bg-blue-50 border-blue-200">
+        <CardContent className="pt-6">
+          <div className="flex items-start space-x-3">
+            <Info className="w-5 h-5 text-blue-600 mt-0.5" />
+            <div>
+              <h3 className="font-medium text-blue-900 mb-1">Documentation Requirements</h3>
+              <p className="text-sm text-blue-800">
+                <strong>Document upload is optional</strong> and can be completed later in your account. 
+                We will verify authority as part of our enrollment process. This information will be 
+                accessible to physicians for proper care coordination.
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       <Alert>
         <AlertCircle className="h-4 w-4" />
         <AlertDescription>
@@ -102,7 +133,7 @@ export const MedicalAuthorityStep: React.FC<MedicalAuthorityStepProps> = ({
 
       <Card>
         <CardHeader>
-          <CardTitle>Authority Type</CardTitle>
+          <CardTitle>Authority Type *</CardTitle>
         </CardHeader>
         <CardContent>
           <RadioGroup
@@ -130,7 +161,7 @@ export const MedicalAuthorityStep: React.FC<MedicalAuthorityStepProps> = ({
       {medicalAuthority.authorityType === 'other' && (
         <Card>
           <CardHeader>
-            <CardTitle>Authority Description</CardTitle>
+            <CardTitle>Authority Description *</CardTitle>
           </CardHeader>
           <CardContent>
             <Textarea
@@ -145,59 +176,78 @@ export const MedicalAuthorityStep: React.FC<MedicalAuthorityStepProps> = ({
 
       <Card>
         <CardHeader>
-          <CardTitle>Supporting Documentation</CardTitle>
+          <CardTitle>Supporting Documentation (Optional)</CardTitle>
+          <p className="text-sm text-muted-foreground">
+            Upload documents now or add them later in your account dashboard
+          </p>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="border-dashed border-2 border-muted-foreground/25 rounded-lg p-6 text-center">
-            <Upload className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-            <div className="space-y-2">
-              <p className="font-medium">Upload Supporting Documents</p>
-              <p className="text-sm text-muted-foreground">
-                Upload documents that verify your authority (PDF, JPG, PNG up to 10MB each)
-              </p>
-              <Label htmlFor="authority-docs" className="cursor-pointer">
-                <Button variant="outline" className="mt-2">
-                  Choose Files
-                </Button>
-                <input
-                  id="authority-docs"
-                  type="file"
-                  multiple
-                  accept=".pdf,.jpg,.jpeg,.png"
-                  onChange={handleFileUpload}
-                  className="hidden"
-                />
-              </Label>
-            </div>
+          {/* Skip Option */}
+          <div className="flex items-center space-x-2 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+            <Checkbox
+              id="skipDocs"
+              checked={skipDocuments}
+              onCheckedChange={handleSkipDocuments}
+            />
+            <Label htmlFor="skipDocs" className="cursor-pointer text-sm">
+              Skip document upload for now (can be added later in account dashboard)
+            </Label>
           </div>
 
-          {medicalAuthority.documents.length > 0 && (
-            <div className="space-y-2">
-              <h4 className="font-medium">Uploaded Documents:</h4>
-              {medicalAuthority.documents.map((file, index) => (
-                <div key={index} className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-8 h-8 bg-blue-100 rounded flex items-center justify-center">
-                      <Upload className="w-4 h-4 text-blue-600" />
-                    </div>
-                    <div>
-                      <p className="font-medium text-sm">{file.name}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {(file.size / 1024 / 1024).toFixed(2)} MB
-                      </p>
-                    </div>
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => removeDocument(index)}
-                    className="text-red-600 hover:text-red-700"
-                  >
-                    Remove
-                  </Button>
+          {!skipDocuments && (
+            <>
+              <div className="border-dashed border-2 border-muted-foreground/25 rounded-lg p-6 text-center">
+                <Upload className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+                <div className="space-y-2">
+                  <p className="font-medium">Upload Supporting Documents</p>
+                  <p className="text-sm text-muted-foreground">
+                    Upload documents that verify your authority (PDF, JPG, PNG up to 10MB each)
+                  </p>
+                  <Label htmlFor="authority-docs" className="cursor-pointer">
+                    <Button variant="outline" className="mt-2">
+                      Choose Files
+                    </Button>
+                    <input
+                      id="authority-docs"
+                      type="file"
+                      multiple
+                      accept=".pdf,.jpg,.jpeg,.png"
+                      onChange={handleFileUpload}
+                      className="hidden"
+                    />
+                  </Label>
                 </div>
-              ))}
-            </div>
+              </div>
+
+              {medicalAuthority.documents.length > 0 && (
+                <div className="space-y-2">
+                  <h4 className="font-medium">Uploaded Documents:</h4>
+                  {medicalAuthority.documents.map((file, index) => (
+                    <div key={index} className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                      <div className="flex items-center space-x-2">
+                        <div className="w-8 h-8 bg-blue-100 rounded flex items-center justify-center">
+                          <Upload className="w-4 h-4 text-blue-600" />
+                        </div>
+                        <div>
+                          <p className="font-medium text-sm">{file.name}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {(file.size / 1024 / 1024).toFixed(2)} MB
+                          </p>
+                        </div>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => removeDocument(index)}
+                        className="text-red-600 hover:text-red-700"
+                      >
+                        Remove
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </>
           )}
         </CardContent>
       </Card>

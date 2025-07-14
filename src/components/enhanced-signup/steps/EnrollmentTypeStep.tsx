@@ -71,14 +71,14 @@ export const EnrollmentTypeStep: React.FC<EnrollmentTypeStepProps> = ({
           </CardContent>
         </Card>
 
-        {/* Bystander Enrollment Option */}
+        {/* Care Family Enrollment Option */}
         <Card 
           className={`cursor-pointer transition-all duration-200 hover:shadow-lg border-2 ${
-            data.enrollmentType === 'bystander' 
+            data.enrollmentType === 'Care Family' 
               ? 'border-primary bg-primary/5' 
               : 'border-border hover:border-primary/50'
           }`}
-          onClick={() => handleTypeSelect('bystander')}
+          onClick={() => handleTypeSelect('Care Family')}
         >
           <CardContent className="p-8 text-center space-y-4">
             <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
@@ -102,7 +102,7 @@ export const EnrollmentTypeStep: React.FC<EnrollmentTypeStepProps> = ({
               </div>
             </div>
 
-            {data.enrollmentType === 'bystander' && (
+            {data.enrollmentType === 'Care Family' && (
               <div className="flex items-center justify-center text-primary font-medium">
                 <span>Selected</span>
                 <ArrowRight className="w-4 h-4 ml-2" />

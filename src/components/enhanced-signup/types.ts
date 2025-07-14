@@ -1,5 +1,5 @@
 // Enrollment Types
-export type EnrollmentType = 'self' | 'bystander';
+export type EnrollmentType = 'self' | 'Care Family';
 export type PlanType = 'individual' | 'premium' | 'family' | 'student-safe' | 'senior-safe' | 'green-dot-individual';
 export type AuthorityType = 'power-of-attorney' | 'guardian' | 'healthcare-proxy' | 'parent-guardian' | 'other';
 export type ConsentType = 'hipaa' | 'consent-to-treat' | 'telemedicine' | 'minor-consent' | 'medical-release' | 'emergency-contact';
@@ -7,6 +7,7 @@ export type ConsentType = 'hipaa' | 'consent-to-treat' | 'telemedicine' | 'minor
 export type EnrollmentStep = 
   | 'enrollment-type'
   | 'personal-info'
+  | 'medical-authority'  // Added this step
   | 'plan-selection'
   | 'payment-info'
   | 'consent-documents'
@@ -27,7 +28,14 @@ export interface PatientInfo {
   lastName: string;
   dateOfBirth: string;
   relationship: string;
-  emergencyContact?: string;
+  emergencyContact?: EmergencyContact;  // Updated to use EmergencyContact interface
+}
+
+export interface EmergencyContact {
+  isSelf: boolean;  // New: checkbox for "I am the emergency contact"
+  name: string;
+  relationship: string;
+  phone: string;
 }
 
 export interface FamilyMember {
@@ -38,9 +46,13 @@ export interface FamilyMember {
 }
 
 export interface MedicalAuthority {
-  authorityType: AuthorityType;
-  description?: string;
+  hasPoA: boolean;
+  poaName?: string;
+  relationship?: string;
   documents: File[];
+  skipForNow: boolean;
+  authorityType?: AuthorityType;
+  description?: string;
   verificationNotes?: string;
 }
 
@@ -51,7 +63,12 @@ export interface PlanDetails {
   price: number;
   features: string[];
   ageRange?: string;
-  category: 'self' | 'bystander';
+  category: 'self' | 'Care Family';
+  summary?: {
+    title: string;
+    description: string;
+    billing: string;
+  };
 }
 
 export interface ConsentItem {
@@ -119,7 +136,7 @@ export interface EnrollmentFormData {
   paymentMethod: PaymentMethod | null;
 }
 
-// Plan Data
+// Updated Plan Data
 export const SELF_ENROLLMENT_PLANS: PlanDetails[] = [
   {
     id: 'individual',
@@ -127,7 +144,7 @@ export const SELF_ENROLLMENT_PLANS: PlanDetails[] = [
     description: 'Complete virtual emergency care for one person',
     price: 129,
     features: [
-      '24/7 Virtual Emergency Room Access',
+      '24/7 Virtual Emergency Physician Access via call, text, or app',
       'Emergency Physician Consultations',
       'Prescription Management',
       'Care Coordination with Local Providers',
@@ -142,7 +159,7 @@ export const SELF_ENROLLMENT_PLANS: PlanDetails[] = [
     price: 169,
     features: [
       'Coverage for 2 people',
-      '24/7 Virtual Emergency Room Access',
+      '24/7 Virtual Emergency Physician Access via call, text, or app',
       'Emergency Physician Consultations',
       'Prescription Management for both members',
       'Shared Digital Health Records',
@@ -157,7 +174,7 @@ export const SELF_ENROLLMENT_PLANS: PlanDetails[] = [
     price: 199,
     features: [
       'Coverage for up to 6 family members',
-      '24/7 Virtual Emergency Room Access',
+      '24/7 Virtual Emergency Physician Access via call, text, or app',
       'Emergency Physician Consultations',
       'Prescription Management for all members',
       'Family Care Coordination',
@@ -165,40 +182,68 @@ export const SELF_ENROLLMENT_PLANS: PlanDetails[] = [
       'Pediatric Emergency Care'
     ],
     category: 'self'
+  },
+  // Add senior plan to self enrollment too
+  {
+    id: 'senior-safe',
+    name: 'Senior Safe Start',
+    description: 'Comprehensive care designed for transitioning into a Senior Living Community',
+    price: 299,
+    features: [
+      '24/7 Virtual Emergency Physician Access via call, text, or app',
+      'Physician Medical Evaluation',
+      'In-Home TB testing coordination (included)',
+      'Medication Reconciliation',
+      'Necessary Orders for Continuity of Care',
+      'Referrals to local PCP and specialists as needed',
+      'Family Caregiver Communication Portal-requires senior consent'
+    ],
+    ageRange: 'Ages 55+',
+    category: 'self',
+    summary: {
+      title: 'Plan Summary',
+      description: 'You\'ve selected **Senior Safe Start** for **$299 for first month of move-in.** You may continue at a discounted rate of $85/month thereafter- cancel anytime.',
+      billing: 'Billing will begin after enrollment completion and can be cancelled anytime'
+    }
   }
 ];
 
-export const BYSTANDER_ENROLLMENT_PLANS: PlanDetails[] = [
+export const CARE_FAMILY_ENROLLMENT_PLANS: PlanDetails[] = [
   {
     id: 'student-safe',
     name: 'Student Safe Start',
     description: 'Specialized care for full-time students',
     price: 75,
     features: [
-      '24/7 Virtual Emergency Room Access',
-      'Mental Health Crisis Support',
+      '24/7 Virtual Emergency Physician Access via call, text, or app',
+      'Mental Health Crisis Support & Referrals',
       'Prescription Management',
-      'Campus Health Integration',
-      'Parent/Guardian Communication Portal'
+      'Parent/Guardian Communication Portal-requires student consent'
     ],
     ageRange: 'Ages 18-26',
-    category: 'bystander'
+    category: 'Care Family'
   },
   {
     id: 'senior-safe',
     name: 'Senior Safe Start',
-    description: 'Comprehensive care designed for seniors',
+    description: 'Comprehensive care designed for transitioning into a Senior Living Community',
     price: 299,
     features: [
-      '24/7 Virtual Emergency Room Access',
-      'Chronic Condition Management',
+      '24/7 Virtual Emergency Physician Access via call, text, or app',
+      'Physician Medical Evaluation',
+      'In-Home TB testing coordination (included)',
       'Medication Reconciliation',
-      'Fall Prevention Assessment',
-      'Family Caregiver Support',
-      'Medicare Coordination'
+      'Necessary Orders for Continuity of Care',
+      'Referrals to local PCP and specialists as needed',
+      'Family Caregiver Communication Portal-requires senior consent'
     ],
-    ageRange: 'Ages 65+',
-    category: 'bystander'
+    ageRange: 'Ages 55+',
+    category: 'Care Family',
+    summary: {
+      title: 'Plan Summary',
+      description: 'You\'ve selected **Senior Safe Start** for **$299 for first month of move-in.** You may continue at a discounted rate of $85/month thereafter- cancel anytime.',
+      billing: 'Billing will begin after enrollment completion and can be cancelled anytime'
+    }
   }
 ];
 
@@ -249,14 +294,14 @@ export const CONSENT_TEMPLATES: { [key in ConsentType]: Omit<ConsentItem, 'agree
 };
 
 // Helper Functions
-export const getRequiredConsents = (enrollmentType: EnrollmentType, hasMinors: boolean, isBystander: boolean): ConsentType[] => {
+export const getRequiredConsents = (enrollmentType: EnrollmentType, hasMinors: boolean, isCareFamlySignup: boolean): ConsentType[] => {
   const base: ConsentType[] = ['hipaa', 'consent-to-treat', 'telemedicine', 'emergency-contact'];
   
   if (hasMinors) {
     base.push('minor-consent');
   }
   
-  if (isBystander) {
+  if (isCareFamlySignup) {
     base.push('medical-release');
   }
   

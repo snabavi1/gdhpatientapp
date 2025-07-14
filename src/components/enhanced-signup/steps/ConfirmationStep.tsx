@@ -8,6 +8,7 @@ import { EnrollmentFormData } from "../types";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import api from "@/lib/api"; // Import your API helper
 
 interface ConfirmationStepProps {
   data: EnrollmentFormData;
@@ -21,51 +22,100 @@ export const ConfirmationStep: React.FC<ConfirmationStepProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { signUpWithUnifiedBackend } = useAuth();
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
     
     try {
-      // Prepare enrollment data
+      console.log('🚀 Starting enrollment submission...');
+      
+      // Prepare enrollment data for your backend
       const enrollmentData = {
         // Basic user info
         email: data.personalInfo.email,
-        password: 'TempPassword123!', // In real implementation, user would set this
+        password: 'TempPassword123!', // You may want to collect this in an earlier step
         firstName: data.personalInfo.firstName,
         lastName: data.personalInfo.lastName,
         dateOfBirth: data.personalInfo.dateOfBirth,
         phone: data.personalInfo.phone,
-        planId: data.selectedPlan?.id || '',
-        userType: 'patient' as const,
+        planId: data.selectedPlan?.id || 'basic',
         
-        // Additional enrollment data
+        // Enhanced enrollment data
         enrollmentType: data.enrollmentType,
+        signupType: data.enrollmentType === 'self' ? 'self' : 'family_member',
+        programType: data.selectedPlan?.id || 'basic',
+        
+        // Patient info (for bystander enrollment)
         patientInfo: data.patientInfo,
+        
+        // Family members
         familyMembers: data.familyMembers,
+        
+        // Medical authority (for bystander)
         medicalAuthority: data.medicalAuthority,
-        selectedPlan: data.selectedPlan,
-        consents: data.consents,
+        relationship: data.patientInfo ? {
+          type: data.patientInfo.relationship,
+          permissions: {
+            viewMedical: true,
+            makeAppointments: true,
+            receiveUpdates: true,
+            emergencyContact: true
+          }
+        } : null,
+        
+        // Consents
+        consents: data.consents.reduce((acc, consent) => {
+          acc[consent.type] = {
+            given: consent.agreed,
+            signatureName: consent.signatureName,
+            signatureDate: consent.signatureDate,
+            viewed: true
+          };
+          return acc;
+        }, {} as any),
+        
+        // Communication preferences  
+        communicationPrefs: {
+          virtualER: true,
+          concierge: true,
+          textUpdates: true,
+          emailUpdates: true
+        },
+        
+        // Insurance and payment info
         insuranceInfo: data.insuranceInfo,
-        paymentMethod: data.paymentMethod
+        paymentMethod: data.paymentMethod,
+        
+        // Selected plan details
+        selectedPlan: data.selectedPlan
       };
 
-      // Create account and enrollment
-      await signUpWithUnifiedBackend(enrollmentData);
+      console.log('📤 Sending enrollment data:', enrollmentData);
 
-      toast({
-        title: "Enrollment Complete! 🎉",
-        description: "Your account has been created and enrollment is being processed.",
-      });
-
-      // Redirect to dashboard
-      navigate('/');
+      // Submit to your backend
+      const result = await api.completeSignup(enrollmentData);
       
-    } catch (error) {
-      console.error('Enrollment failed:', error);
+      console.log('✅ Backend response:', result);
+
+      if (result.success) {
+        toast({
+          title: "🎉 Enrollment Complete!",
+          description: "Welcome to Green Dot Health! Your account has been created successfully.",
+        });
+
+        // Redirect to success page or dashboard
+        navigate('/'); // Go to dashboard instead
+        
+      } else {
+        throw new Error(result.error || 'Enrollment failed');
+      }
+      
+    } catch (error: any) {
+      console.error('❌ Enrollment failed:', error);
+      
       toast({
         title: "Enrollment Failed",
-        description: "There was an error processing your enrollment. Please try again.",
+        description: error.message || "There was an error processing your enrollment. Please try again.",
         variant: "destructive",
       });
     } finally {

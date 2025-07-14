@@ -17,10 +17,10 @@ import Header from "../Header";
 const STEPS: EnrollmentStep[] = [
   'enrollment-type',
   'personal-info',
+  'medical-authority',
   'plan-selection',
   'payment-info',
   'consent-documents',
-  'insurance-info',
   'confirmation'
 ];
 
@@ -53,6 +53,16 @@ const EnhancedSignup: React.FC = () => {
 
   const handleNext = () => {
     const nextIndex = currentStepIndex + 1;
+    
+    // Skip medical-authority for self enrollment
+    if (currentStep === 'personal-info' && formData.enrollmentType === 'self') {
+      const medicalAuthorityIndex = STEPS.indexOf('medical-authority');
+      if (nextIndex === medicalAuthorityIndex) {
+        setCurrentStep(STEPS[nextIndex + 1]); // Skip to plan-selection
+        return;
+      }
+    }
+    
     if (nextIndex < STEPS.length) {
       setCurrentStep(STEPS[nextIndex]);
     }
@@ -60,6 +70,16 @@ const EnhancedSignup: React.FC = () => {
 
   const handlePrevious = () => {
     const prevIndex = currentStepIndex - 1;
+    
+    // Skip medical-authority when going back from plan-selection for self enrollment
+    if (currentStep === 'plan-selection' && formData.enrollmentType === 'self') {
+      const medicalAuthorityIndex = STEPS.indexOf('medical-authority');
+      if (prevIndex === medicalAuthorityIndex) {
+        setCurrentStep(STEPS[prevIndex - 1]); // Go back to personal-info
+        return;
+      }
+    }
+    
     if (prevIndex >= 0) {
       setCurrentStep(STEPS[prevIndex]);
     }
@@ -84,6 +104,15 @@ const EnhancedSignup: React.FC = () => {
             onPrevious={handlePrevious}
           />
         );
+      case 'medical-authority':
+        return (
+          <MedicalAuthorityStep
+            data={formData}
+            onUpdate={updateFormData}
+            onNext={handleNext}
+            onPrevious={handlePrevious}
+          />
+        );
       case 'plan-selection':
         return (
           <PlanSelectionStep
@@ -95,27 +124,9 @@ const EnhancedSignup: React.FC = () => {
         );
       case 'payment-info':
         return (
-          <InsurancePaymentStep
-            data={formData}
-            onUpdate={updateFormData}
-            onNext={handleNext}
-            onPrevious={handlePrevious}
-          />
-        );
-      case 'consent-documents':
-        return (
-          <ConsentStep
-            data={formData}
-            onUpdate={updateFormData}
-            onNext={handleNext}
-            onPrevious={handlePrevious}
-          />
-        );
-      case 'insurance-info':
-        return (
           <div className="space-y-6">
             <div className="text-center">
-              <h2 className="text-2xl font-bold mb-2">Insurance Information</h2>
+              <h2 className="text-2xl font-bold mb-2">Payment & Insurance Information</h2>
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
                 <p className="text-blue-800 text-sm">
                   <strong>Important:</strong> We do not bill your insurance. If we order testing like labs and imaging or order services, you may use your insurance. Include your information here.
@@ -128,9 +139,17 @@ const EnhancedSignup: React.FC = () => {
               onUpdate={updateFormData}
               onNext={handleNext}
               onPrevious={handlePrevious}
-              isInsuranceOnly={true}
             />
           </div>
+        );
+      case 'consent-documents':
+        return (
+          <ConsentStep
+            data={formData}
+            onUpdate={updateFormData}
+            onNext={handleNext}
+            onPrevious={handlePrevious}
+          />
         );
       case 'confirmation':
         return (

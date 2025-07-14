@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { UserCircle } from "lucide-react";
 import MobileNavigation from "./MobileNavigation";
@@ -13,6 +12,10 @@ const Header = () => {
 
   const handleSignIn = () => {
     navigate('/auth');
+  };
+
+  const handleSignUp = () => {
+    navigate('/signup'); // Route to enhanced signup
   };
 
   // Only enable logo navigation on patient-facing routes (not physician routes)
@@ -51,8 +54,6 @@ const Header = () => {
             </div>
           </div>
 
-          {/* Desktop Navigation - Removed as requested */}
-
           {/* User Actions */}
           <div className="flex items-center space-x-2 sm:space-x-4">
             {user ? (
@@ -70,7 +71,7 @@ const Header = () => {
                 </Button>
                 <Button 
                   className="hidden sm:inline-flex bg-healthcare-primary hover:bg-healthcare-primary/90"
-                  onClick={handleSignIn}
+                  onClick={handleSignUp}
                 >
                   Sign Up
                 </Button>

@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ChevronLeft, ChevronRight, Check, Heart, User, Users } from "lucide-react";
-import { EnrollmentFormData, PlanDetails, SELF_ENROLLMENT_PLANS, BYSTANDER_ENROLLMENT_PLANS } from "../types";
+import { EnrollmentFormData, PlanDetails, SELF_ENROLLMENT_PLANS, CARE_FAMILY_ENROLLMENT_PLANS } from "../types";
 import { cn } from "@/lib/utils";
 
 interface PlanSelectionStepProps {
@@ -19,7 +19,7 @@ export const PlanSelectionStep: React.FC<PlanSelectionStepProps> = ({
   onNext,
   onPrevious
 }) => {
-  const availablePlans = data.enrollmentType === 'self' ? SELF_ENROLLMENT_PLANS : BYSTANDER_ENROLLMENT_PLANS;
+  const availablePlans = data.enrollmentType === 'self' ? SELF_ENROLLMENT_PLANS : CARE_FAMILY_ENROLLMENT_PLANS;
 
   const handlePlanSelect = (plan: PlanDetails) => {
     onUpdate({ selectedPlan: plan });
@@ -42,6 +42,35 @@ export const PlanSelectionStep: React.FC<PlanSelectionStepProps> = ({
 
   const isValid = () => {
     return !!data.selectedPlan;
+  };
+
+  const renderPlanSummary = (plan: PlanDetails) => {
+    if (plan.summary) {
+      return (
+        <div className="space-y-2">
+          <h4 className="font-medium text-sm">{plan.summary.title}</h4>
+          <p className="text-sm text-muted-foreground">
+            {plan.summary.description}
+          </p>
+          <p className="text-xs text-muted-foreground">
+            {plan.summary.billing}
+          </p>
+        </div>
+      );
+    }
+
+    return (
+      <div className="space-y-2">
+        <h3 className="font-semibold">Plan Summary</h3>
+        <p className="text-sm text-muted-foreground">
+          You've selected <strong>{plan.name}</strong> for{" "}
+          <strong>${plan.price}/month</strong>
+        </p>
+        <p className="text-xs text-muted-foreground">
+          Billing will begin after enrollment completion and can be cancelled anytime
+        </p>
+      </div>
+    );
   };
 
   return (
@@ -92,6 +121,11 @@ export const PlanSelectionStep: React.FC<PlanSelectionStepProps> = ({
                   ${plan.price}
                   <span className="text-lg font-normal text-muted-foreground">/month</span>
                 </div>
+                {plan.id === 'senior-safe' && (
+                  <p className="text-xs text-muted-foreground mt-1">
+                    First month of move-in, then $85/month
+                  </p>
+                )}
               </div>
 
               <p className="text-sm text-muted-foreground text-center">
@@ -124,14 +158,7 @@ export const PlanSelectionStep: React.FC<PlanSelectionStepProps> = ({
         <Card className="bg-muted/50">
           <CardContent className="pt-6">
             <div className="text-center space-y-2">
-              <h3 className="font-semibold">Plan Summary</h3>
-              <p className="text-sm text-muted-foreground">
-                You've selected <strong>{data.selectedPlan.name}</strong> for{" "}
-                <strong>${data.selectedPlan.price}/month</strong>
-              </p>
-              <p className="text-xs text-muted-foreground">
-                Billing will begin after enrollment completion and can be cancelled anytime
-              </p>
+              {renderPlanSummary(data.selectedPlan)}
             </div>
           </CardContent>
         </Card>
@@ -145,7 +172,7 @@ export const PlanSelectionStep: React.FC<PlanSelectionStepProps> = ({
         </Button>
         
         <Button onClick={onNext} disabled={!isValid()}>
-          Next: Consent & Documentation
+          Next: Payment & Insurance
           <ChevronRight className="w-4 h-4 ml-2" />
         </Button>
       </div>

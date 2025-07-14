@@ -4,9 +4,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ChevronLeft, ChevronRight, Plus, Trash2 } from "lucide-react";
-import { EnrollmentFormData, PersonalInfo, PatientInfo, FamilyMember } from "../types";
+import { EnrollmentFormData, PersonalInfo, PatientInfo, FamilyMember, EmergencyContact } from "../types";
 
 interface PersonalInfoStepProps {
   data: EnrollmentFormData;
@@ -42,6 +43,34 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
       patientInfo: {
         ...data.patientInfo!,
         [field]: value
+      }
+    });
+  };
+
+  const updateEmergencyContact = (updates: Partial<EmergencyContact>) => {
+    const currentEmergencyContact = data.patientInfo?.emergencyContact || {
+      isSelf: false,
+      name: '',
+      relationship: '',
+      phone: ''
+    };
+
+    const updatedEmergencyContact = {
+      ...currentEmergencyContact,
+      ...updates
+    };
+
+    // If "I am the emergency contact" is checked, populate with personal info
+    if (updates.isSelf) {
+      updatedEmergencyContact.name = `${data.personalInfo.firstName} ${data.personalInfo.lastName}`;
+      updatedEmergencyContact.phone = data.personalInfo.phone;
+      updatedEmergencyContact.relationship = data.patientInfo?.relationship || '';
+    }
+
+    onUpdate({
+      patientInfo: {
+        ...data.patientInfo!,
+        emergencyContact: updatedEmergencyContact
       }
     });
   };
@@ -86,27 +115,40 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
                          data.personalInfo.phone && 
                          data.personalInfo.dateOfBirth;
 
-    if (data.enrollmentType === 'bystander') {
+    if (data.enrollmentType === 'Care Family') {
       const patientValid = data.patientInfo?.firstName && 
                           data.patientInfo?.lastName && 
                           data.patientInfo?.dateOfBirth && 
                           data.patientInfo?.relationship;
-      return personalValid && patientValid;
+      
+      // Emergency contact validation
+      const emergencyContactValid = data.patientInfo?.emergencyContact && 
+        (data.patientInfo.emergencyContact.isSelf || 
+         (data.patientInfo.emergencyContact.name && 
+          data.patientInfo.emergencyContact.relationship && 
+          data.patientInfo.emergencyContact.phone));
+
+      return personalValid && patientValid && emergencyContactValid;
     }
 
     return personalValid;
   };
 
-  // Initialize patient info for bystander enrollment
+  // Initialize patient info for Care Family enrollment
   React.useEffect(() => {
-    if (data.enrollmentType === 'bystander' && !data.patientInfo) {
+    if (data.enrollmentType === 'Care Family' && !data.patientInfo) {
       onUpdate({
         patientInfo: {
           firstName: '',
           lastName: '',
           dateOfBirth: '',
           relationship: 'child',
-          emergencyContact: ''
+          emergencyContact: {
+            isSelf: false,
+            name: '',
+            relationship: '',
+            phone: ''
+          }
         }
       });
     }
@@ -188,8 +230,8 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
         </CardContent>
       </Card>
 
-      {/* Patient Information for Bystander Enrollment */}
-      {data.enrollmentType === 'bystander' && (
+      {/* Patient Information for Care Family Enrollment */}
+      {data.enrollmentType === 'Care Family' && (
         <Card>
           <CardHeader>
             <CardTitle>Patient Information</CardTitle>
@@ -246,14 +288,76 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
               </div>
             </div>
 
-            <div>
-              <Label htmlFor="emergencyContact">Emergency Contact (optional)</Label>
-              <Input
-                id="emergencyContact"
-                value={data.patientInfo?.emergencyContact || ''}
-                onChange={(e) => updatePatientInfo('emergencyContact', e.target.value)}
-                placeholder="Backup emergency contact"
-              />
+            {/* Emergency Contact Section */}
+            <div className="border-t pt-4">
+              <h4 className="font-medium mb-3">Emergency Contact *</h4>
+              
+              {/* Self as Emergency Contact Checkbox */}
+              <div className="flex items-center space-x-2 mb-4">
+                <Checkbox
+                  id="selfEmergencyContact"
+                  checked={data.patientInfo?.emergencyContact?.isSelf || false}
+                  onCheckedChange={(checked) => updateEmergencyContact({ isSelf: !!checked })}
+                />
+                <Label htmlFor="selfEmergencyContact" className="cursor-pointer">
+                  I am the emergency contact
+                </Label>
+              </div>
+
+              {/* Emergency Contact Details - Only show if not self */}
+              {!data.patientInfo?.emergencyContact?.isSelf && (
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="emergencyContactName">Emergency Contact Name *</Label>
+                    <Input
+                      id="emergencyContactName"
+                      value={data.patientInfo?.emergencyContact?.name || ''}
+                      onChange={(e) => updateEmergencyContact({ name: e.target.value })}
+                      placeholder="Full name of emergency contact"
+                    />
+                  </div>
+                  
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="emergencyContactRelationship">Relationship to Patient *</Label>
+                      <Select 
+                        value={data.patientInfo?.emergencyContact?.relationship || ''} 
+                        onValueChange={(value) => updateEmergencyContact({ relationship: value })}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select relationship" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {RELATIONSHIPS.map(rel => (
+                            <SelectItem key={rel} value={rel}>
+                              {rel.charAt(0).toUpperCase() + rel.slice(1)}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label htmlFor="emergencyContactPhone">Phone Number *</Label>
+                      <Input
+                        id="emergencyContactPhone"
+                        type="tel"
+                        value={data.patientInfo?.emergencyContact?.phone || ''}
+                        onChange={(e) => updateEmergencyContact({ phone: e.target.value })}
+                        placeholder="(555) 123-4567"
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Show confirmation when self is selected */}
+              {data.patientInfo?.emergencyContact?.isSelf && (
+                <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                  <p className="text-sm text-green-800">
+                    ✓ You will be listed as the emergency contact: {data.personalInfo.firstName} {data.personalInfo.lastName} - {data.personalInfo.phone}
+                  </p>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -367,7 +471,7 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
         </Button>
         
         <Button onClick={onNext} disabled={!isValid()}>
-          Next: {data.enrollmentType === 'bystander' ? 'Medical Authority' : 'Plan Selection'}
+          Next: {data.enrollmentType === 'Care Family' ? 'Medical Authority' : 'Plan Selection'}
           <ChevronRight className="w-4 h-4 ml-2" />
         </Button>
       </div>
