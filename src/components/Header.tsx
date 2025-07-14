@@ -62,24 +62,29 @@ const Header = () => {
               </>
             ) : (
               <>
-                <Button 
-                  variant="outline" 
-                  className="hidden sm:inline-flex border-healthcare-primary text-healthcare-primary hover:bg-healthcare-primary hover:text-white"
-                  onClick={handleSignIn}
-                >
-                  Sign In
-                </Button>
-                <Button 
-                  className="hidden sm:inline-flex bg-healthcare-primary hover:bg-healthcare-primary/90"
-                  onClick={handleSignUp}
-                >
-                  Sign Up
-                </Button>
-                
-                {/* Mobile user button */}
-                <Button variant="ghost" size="icon" className="sm:hidden" onClick={handleSignIn}>
-                  <UserCircle className="h-5 w-5" />
-                </Button>
+                {/* Only show patient auth buttons on patient routes */}
+                {isPatientRoute && (
+                  <>
+                    <Button 
+                      variant="outline" 
+                      className="hidden sm:inline-flex border-healthcare-primary text-healthcare-primary hover:bg-healthcare-primary hover:text-white"
+                      onClick={handleSignIn}
+                    >
+                      Sign In
+                    </Button>
+                    <Button 
+                      className="hidden sm:inline-flex bg-healthcare-primary hover:bg-healthcare-primary/90"
+                      onClick={handleSignUp}
+                    >
+                      Sign Up
+                    </Button>
+                    
+                    {/* Mobile user button */}
+                    <Button variant="ghost" size="icon" className="sm:hidden" onClick={handleSignIn}>
+                      <UserCircle className="h-5 w-5" />
+                    </Button>
+                  </>
+                )}
               </>
             )}
             

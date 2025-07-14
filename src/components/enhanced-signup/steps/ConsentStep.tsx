@@ -38,7 +38,7 @@ export const ConsentStep: React.FC<ConsentStepProps> = ({
   const requiredConsentTypes = getRequiredConsents(
     data.enrollmentType,
     hasMinors,
-    data.enrollmentType === 'bystander'
+    data.enrollmentType === 'Care Family'
   );
 
   // Initialize consents if not already done
