@@ -721,35 +721,19 @@ export type Database = {
         Row: {
           created_at: string | null
           email: string | null
+          emergency_contact_name: string | null
+          emergency_contact_phone: string | null
+          emergency_contact_relationship: string | null
           full_name: string | null
           id: string | null
+          licensed_states: string | null
           medical_license_number: string | null
+          phone_number: string | null
           specialty: string | null
+          state_license_count: number | null
           two_factor_enabled: boolean | null
           updated_at: string | null
           verified_physician: boolean | null
-        }
-        Insert: {
-          created_at?: string | null
-          email?: string | null
-          full_name?: string | null
-          id?: string | null
-          medical_license_number?: string | null
-          specialty?: string | null
-          two_factor_enabled?: boolean | null
-          updated_at?: string | null
-          verified_physician?: boolean | null
-        }
-        Update: {
-          created_at?: string | null
-          email?: string | null
-          full_name?: string | null
-          id?: string | null
-          medical_license_number?: string | null
-          specialty?: string | null
-          two_factor_enabled?: boolean | null
-          updated_at?: string | null
-          verified_physician?: boolean | null
         }
         Relationships: []
       }

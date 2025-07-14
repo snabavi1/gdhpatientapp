@@ -10,6 +10,19 @@ interface CreatePhysicianRequest {
   fullName: string
   medicalLicense: string
   specialty: string
+  phoneNumber?: string
+  emergencyContactName?: string
+  emergencyContactRelationship?: string
+  emergencyContactPhone?: string
+}
+
+interface AddStateLicenseRequest {
+  physicianId: string
+  stateCode: string
+  stateName: string
+  licenseNumber: string
+  expirationDate: string
+  issueDate?: string
 }
 
 interface Enable2FARequest {
@@ -41,7 +54,16 @@ Deno.serve(async (req) => {
         }
 
         const body: CreatePhysicianRequest = await req.json()
-        const { email, fullName, medicalLicense, specialty } = body
+        const { 
+          email, 
+          fullName, 
+          medicalLicense, 
+          specialty, 
+          phoneNumber, 
+          emergencyContactName, 
+          emergencyContactRelationship, 
+          emergencyContactPhone 
+        } = body
 
         if (!email || !fullName || !medicalLicense || !specialty) {
           throw new Error('Missing required fields: email, fullName, medicalLicense, specialty')
@@ -55,7 +77,11 @@ Deno.serve(async (req) => {
             p_email: email,
             p_full_name: fullName,
             p_medical_license: medicalLicense,
-            p_specialty: specialty
+            p_specialty: specialty,
+            p_phone_number: phoneNumber,
+            p_emergency_contact_name: emergencyContactName,
+            p_emergency_contact_relationship: emergencyContactRelationship,
+            p_emergency_contact_phone: emergencyContactPhone
           })
 
         if (profileError) {
@@ -179,6 +205,85 @@ Deno.serve(async (req) => {
           JSON.stringify({
             success: true,
             physicians: physicians || []
+          }),
+          {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            status: 200,
+          }
+        )
+      }
+
+      case 'add_state_license': {
+        if (req.method !== 'POST') {
+          throw new Error('Method not allowed for add_state_license')
+        }
+
+        const body: AddStateLicenseRequest = await req.json()
+        const { physicianId, stateCode, stateName, licenseNumber, expirationDate, issueDate } = body
+
+        if (!physicianId || !stateCode || !stateName || !licenseNumber || !expirationDate) {
+          throw new Error('Missing required fields: physicianId, stateCode, stateName, licenseNumber, expirationDate')
+        }
+
+        console.log(`Adding state license for physician: ${physicianId}, state: ${stateCode}`)
+
+        // Call the database function to add state license
+        const { data: result, error } = await supabaseClient
+          .rpc('add_physician_state_license', {
+            p_physician_id: physicianId,
+            p_state_code: stateCode,
+            p_state_name: stateName,
+            p_license_number: licenseNumber,
+            p_expiration_date: expirationDate,
+            p_issue_date: issueDate || null
+          })
+
+        if (error) {
+          console.error('State license addition error:', error)
+          throw error
+        }
+
+        if (result.error) {
+          throw new Error(result.message)
+        }
+
+        console.log(`State license added successfully for physician: ${physicianId}`)
+
+        return new Response(
+          JSON.stringify({
+            success: true,
+            message: result.message
+          }),
+          {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            status: 200,
+          }
+        )
+      }
+
+      case 'get_expiring_licenses': {
+        if (req.method !== 'GET') {
+          throw new Error('Method not allowed for get_expiring_licenses')
+        }
+
+        const daysAhead = parseInt(url.searchParams.get('days') || '30')
+
+        console.log(`Getting licenses expiring in ${daysAhead} days`)
+
+        const { data: result, error } = await supabaseClient
+          .rpc('get_expiring_physician_licenses', {
+            p_days_ahead: daysAhead
+          })
+
+        if (error) {
+          console.error('Expiring licenses error:', error)
+          throw error
+        }
+
+        return new Response(
+          JSON.stringify({
+            success: true,
+            expiring_licenses: result.expiring_licenses || []
           }),
           {
             headers: { ...corsHeaders, 'Content-Type': 'application/json' },
