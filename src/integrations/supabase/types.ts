@@ -77,6 +77,156 @@ export type Database = {
           },
         ]
       }
+      consents: {
+        Row: {
+          agreed_at: string
+          consent_type: string
+          created_at: string
+          document_url: string | null
+          id: string
+          profile_id: string
+          signature_data: Json | null
+          status: string
+          updated_at: string
+          version: string
+          witness_info: Json | null
+        }
+        Insert: {
+          agreed_at?: string
+          consent_type: string
+          created_at?: string
+          document_url?: string | null
+          id?: string
+          profile_id: string
+          signature_data?: Json | null
+          status?: string
+          updated_at?: string
+          version?: string
+          witness_info?: Json | null
+        }
+        Update: {
+          agreed_at?: string
+          consent_type?: string
+          created_at?: string
+          document_url?: string | null
+          id?: string
+          profile_id?: string
+          signature_data?: Json | null
+          status?: string
+          updated_at?: string
+          version?: string
+          witness_info?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "consents_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      documents: {
+        Row: {
+          created_at: string
+          document_type: string
+          expiration_date: string | null
+          file_name: string
+          file_size: number | null
+          file_url: string
+          id: string
+          metadata: Json | null
+          profile_id: string
+          updated_at: string
+          upload_date: string
+          verification_status: string
+        }
+        Insert: {
+          created_at?: string
+          document_type: string
+          expiration_date?: string | null
+          file_name: string
+          file_size?: number | null
+          file_url: string
+          id?: string
+          metadata?: Json | null
+          profile_id: string
+          updated_at?: string
+          upload_date?: string
+          verification_status?: string
+        }
+        Update: {
+          created_at?: string
+          document_type?: string
+          expiration_date?: string | null
+          file_name?: string
+          file_size?: number | null
+          file_url?: string
+          id?: string
+          metadata?: Json | null
+          profile_id?: string
+          updated_at?: string
+          upload_date?: string
+          verification_status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "documents_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      enrollments: {
+        Row: {
+          created_at: string
+          enrolling_user_id: string | null
+          enrollment_status: string
+          enrollment_type: string
+          family_group_id: string | null
+          id: string
+          metadata: Json | null
+          plan_type: string
+          profile_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          enrolling_user_id?: string | null
+          enrollment_status?: string
+          enrollment_type: string
+          family_group_id?: string | null
+          id?: string
+          metadata?: Json | null
+          plan_type: string
+          profile_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          enrolling_user_id?: string | null
+          enrollment_status?: string
+          enrollment_type?: string
+          family_group_id?: string | null
+          id?: string
+          metadata?: Json | null
+          plan_type?: string
+          profile_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "enrollments_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       family_contacts: {
         Row: {
           created_at: string
@@ -174,6 +324,113 @@ export type Database = {
           {
             foreignKeyName: "hint_patients_profile_id_fkey"
             columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      insurance_info: {
+        Row: {
+          card_images: Json | null
+          company_name: string
+          created_at: string
+          group_number: string | null
+          id: string
+          insurance_type: string
+          policy_holder_dob: string | null
+          policy_holder_name: string
+          policy_number: string
+          profile_id: string
+          relationship_to_patient: string
+          updated_at: string
+        }
+        Insert: {
+          card_images?: Json | null
+          company_name: string
+          created_at?: string
+          group_number?: string | null
+          id?: string
+          insurance_type?: string
+          policy_holder_dob?: string | null
+          policy_holder_name: string
+          policy_number: string
+          profile_id: string
+          relationship_to_patient?: string
+          updated_at?: string
+        }
+        Update: {
+          card_images?: Json | null
+          company_name?: string
+          created_at?: string
+          group_number?: string | null
+          id?: string
+          insurance_type?: string
+          policy_holder_dob?: string | null
+          policy_holder_name?: string
+          policy_number?: string
+          profile_id?: string
+          relationship_to_patient?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "insurance_info_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      medical_authority: {
+        Row: {
+          authority_type: string
+          created_at: string
+          documents: Json | null
+          enrolling_profile_id: string
+          id: string
+          patient_profile_id: string
+          relationship: string
+          updated_at: string
+          verification_status: string
+          verified_at: string | null
+        }
+        Insert: {
+          authority_type: string
+          created_at?: string
+          documents?: Json | null
+          enrolling_profile_id: string
+          id?: string
+          patient_profile_id: string
+          relationship: string
+          updated_at?: string
+          verification_status?: string
+          verified_at?: string | null
+        }
+        Update: {
+          authority_type?: string
+          created_at?: string
+          documents?: Json | null
+          enrolling_profile_id?: string
+          id?: string
+          patient_profile_id?: string
+          relationship?: string
+          updated_at?: string
+          verification_status?: string
+          verified_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "medical_authority_enrolling_profile_id_fkey"
+            columns: ["enrolling_profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "medical_authority_patient_profile_id_fkey"
+            columns: ["patient_profile_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]

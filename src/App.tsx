@@ -9,6 +9,7 @@ import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import PhysicianDashboard from "./pages/PhysicianDashboard";
 import PhysicianAuth from "./components/PhysicianAuth";
+import EnhancedSignup from "./components/enhanced-signup/EnhancedSignup";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +25,7 @@ const App = () => (
             {/* Patient-facing routes */}
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/signup" element={<EnhancedSignup />} />
             
             {/* Physician-facing routes */}
             <Route path="/physician/auth" element={<PhysicianAuth />} />
