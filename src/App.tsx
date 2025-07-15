@@ -31,6 +31,7 @@ const App = () => (
             {/* Physician-facing routes */}
             <Route path="/physician/auth" element={<PhysicianAuth />} />
             <Route path="/physician" element={<PhysicianDashboard />} />
+            <Route path="/physician/profile" element={<PhysicianDashboard />} />
             <Route path="/physician/trackingboard" element={<TrackingBoard darkMode={false} />} />
             
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
