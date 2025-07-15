@@ -50,9 +50,11 @@ const SimplifiedTopNavigation: React.FC<SimplifiedTopNavigationProps> = ({
               </Button>
             )}
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center shadow-lg">
-                <div className="w-5 h-5 bg-white rounded-full"></div>
-              </div>
+              <img 
+                src="/lovable-uploads/92af9136-a76a-4635-a03c-4f8172481747.png" 
+                alt="Green Dot Health Logo" 
+                className="w-10 h-10"
+              />
               <h1 className={`text-xl font-bold tracking-tight ${darkMode ? 'text-white' : 'text-slate-900'}`}>
                 Green Dot Health
               </h1>
