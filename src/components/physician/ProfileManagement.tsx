@@ -102,6 +102,7 @@ const ProfileManagement: React.FC<ProfileManagementProps> = ({ darkMode }) => {
       const { data, error } = await supabase
         .from('profiles')
         .select(`
+          full_name,
           email,
           phone_number,
           phone,
@@ -118,7 +119,7 @@ const ProfileManagement: React.FC<ProfileManagementProps> = ({ darkMode }) => {
 
       if (data) {
         const userMetadata = user?.user_metadata || {};
-        const fullName = userMetadata.full_name || `${userMetadata.first_name || ''} ${userMetadata.last_name || ''}`.trim();
+        const fullName = data.full_name || userMetadata.full_name || `${userMetadata.first_name || ''} ${userMetadata.last_name || ''}`.trim();
         
         setProfileData({
           full_name: fullName,
@@ -244,10 +245,11 @@ const ProfileManagement: React.FC<ProfileManagementProps> = ({ darkMode }) => {
         .maybeSingle();
 
       if (existingProfile) {
-        // Profile exists, update it - only use columns that exist
+        // Profile exists, update it
         const { error: updateError } = await supabase
           .from('profiles')
           .update({
+            full_name: profileData.full_name,
             email: profileData.email,
             phone_number: profileData.phone_number,
             medical_license_number: profileData.medical_license_number,
@@ -257,11 +259,12 @@ const ProfileManagement: React.FC<ProfileManagementProps> = ({ darkMode }) => {
 
         if (updateError) throw updateError;
       } else {
-        // Profile doesn't exist, create it - only use columns that exist
+        // Profile doesn't exist, create it
         const { error: insertError } = await supabase
           .from('profiles')
           .insert({
             id: user?.id,
+            full_name: profileData.full_name,
             email: profileData.email,
             phone_number: profileData.phone_number,
             medical_license_number: profileData.medical_license_number,
