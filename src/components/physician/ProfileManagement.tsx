@@ -98,19 +98,15 @@ const ProfileManagement: React.FC<ProfileManagementProps> = ({ darkMode }) => {
 
   const fetchProfileData = async () => {
     try {
-      // Use a simple select to avoid cache issues
+      // Use only the columns that exist in the database
       const { data, error } = await supabase
         .from('profiles')
         .select(`
-          full_name,
           email,
           phone_number,
           phone,
           medical_license_number,
-          specialty,
-          emergency_contact_name,
-          emergency_contact_phone,
-          emergency_contact_relationship
+          specialty
         `)
         .eq('id', user?.id)
         .maybeSingle();
@@ -121,15 +117,18 @@ const ProfileManagement: React.FC<ProfileManagementProps> = ({ darkMode }) => {
       }
 
       if (data) {
+        const userMetadata = user?.user_metadata || {};
+        const fullName = userMetadata.full_name || `${userMetadata.first_name || ''} ${userMetadata.last_name || ''}`.trim();
+        
         setProfileData({
-          full_name: data.full_name || '',
-          email: data.email || '',
+          full_name: fullName,
+          email: data.email || user?.email || '',
           phone_number: data.phone_number || data.phone || '',
           medical_license_number: data.medical_license_number || '',
           specialty: data.specialty || '',
-          emergency_contact_name: data.emergency_contact_name || '',
-          emergency_contact_phone: data.emergency_contact_phone || '',
-          emergency_contact_relationship: data.emergency_contact_relationship || ''
+          emergency_contact_name: '',
+          emergency_contact_phone: '',
+          emergency_contact_relationship: ''
         });
       } else {
         // No profile exists, use auth metadata
@@ -245,36 +244,28 @@ const ProfileManagement: React.FC<ProfileManagementProps> = ({ darkMode }) => {
         .maybeSingle();
 
       if (existingProfile) {
-        // Profile exists, update it
+        // Profile exists, update it - only use columns that exist
         const { error: updateError } = await supabase
           .from('profiles')
           .update({
-            full_name: profileData.full_name,
             email: profileData.email,
             phone_number: profileData.phone_number,
             medical_license_number: profileData.medical_license_number,
-            specialty: profileData.specialty,
-            emergency_contact_name: profileData.emergency_contact_name,
-            emergency_contact_phone: profileData.emergency_contact_phone,
-            emergency_contact_relationship: profileData.emergency_contact_relationship
+            specialty: profileData.specialty
           })
           .eq('id', user?.id);
 
         if (updateError) throw updateError;
       } else {
-        // Profile doesn't exist, create it
+        // Profile doesn't exist, create it - only use columns that exist
         const { error: insertError } = await supabase
           .from('profiles')
           .insert({
             id: user?.id,
-            full_name: profileData.full_name,
             email: profileData.email,
             phone_number: profileData.phone_number,
             medical_license_number: profileData.medical_license_number,
             specialty: profileData.specialty,
-            emergency_contact_name: profileData.emergency_contact_name,
-            emergency_contact_phone: profileData.emergency_contact_phone,
-            emergency_contact_relationship: profileData.emergency_contact_relationship,
             role: 'physician',
             verified_physician: true
           });
