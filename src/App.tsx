@@ -8,6 +8,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import PhysicianDashboard from "./pages/PhysicianDashboard";
+import PhysicianProfile from "./pages/PhysicianProfile";
 import PhysicianAuth from "./components/PhysicianAuth";
 import EnhancedSignup from "./components/enhanced-signup/EnhancedSignup";
 import TrackingBoard from "./components/physician/TrackingBoard";
@@ -31,7 +32,7 @@ const App = () => (
             {/* Physician-facing routes */}
             <Route path="/physician/auth" element={<PhysicianAuth />} />
             <Route path="/physician" element={<PhysicianDashboard />} />
-            <Route path="/physician/profile" element={<PhysicianDashboard />} />
+            <Route path="/physician/profile" element={<PhysicianProfile />} />
             <Route path="/physician/trackingboard" element={<TrackingBoard darkMode={false} />} />
             
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
