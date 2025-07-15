@@ -102,28 +102,85 @@ const ProfileManagement: React.FC<ProfileManagementProps> = ({ darkMode }) => {
         .from('profiles')
         .select('*')
         .eq('id', user?.id)
-        .single();
+        .maybeSingle();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching profile:', error);
+        throw error;
+      }
 
       if (data) {
         setProfileData({
           full_name: data.full_name || '',
           email: data.email || '',
-          phone_number: data.phone_number || '',
+          phone_number: data.phone_number || data.phone || '',
           medical_license_number: data.medical_license_number || '',
           specialty: data.specialty || '',
           emergency_contact_name: data.emergency_contact_name || '',
           emergency_contact_phone: data.emergency_contact_phone || '',
           emergency_contact_relationship: data.emergency_contact_relationship || ''
         });
+      } else {
+        // No profile exists, create one with basic info from auth
+        const userMetadata = user?.user_metadata || {};
+        const email = user?.email || '';
+        const fullName = userMetadata.full_name || `${userMetadata.first_name || ''} ${userMetadata.last_name || ''}`.trim();
+        
+        const newProfileData = {
+          full_name: fullName,
+          email: email,
+          phone_number: '',
+          medical_license_number: '',
+          specialty: '',
+          emergency_contact_name: '',
+          emergency_contact_phone: '',
+          emergency_contact_relationship: ''
+        };
+        
+        setProfileData(newProfileData);
+        
+        // Try to create the profile in the database
+        const { error: insertError } = await supabase
+          .from('profiles')
+          .insert({
+            id: user?.id,
+            email: email,
+            full_name: fullName,
+            role: 'physician',
+            verified_physician: true
+          });
+        
+        if (insertError) {
+          console.error('Error creating profile:', insertError);
+          toast({
+            title: "Info",
+            description: "Profile loaded from authentication data. Some features may be limited until profile is saved.",
+            variant: "default"
+          });
+        }
       }
     } catch (error) {
-      console.error('Error fetching profile:', error);
+      console.error('Error in fetchProfileData:', error);
+      // Fallback to auth metadata if database fetch fails
+      const userMetadata = user?.user_metadata || {};
+      const email = user?.email || '';
+      const fullName = userMetadata.full_name || `${userMetadata.first_name || ''} ${userMetadata.last_name || ''}`.trim();
+      
+      setProfileData({
+        full_name: fullName,
+        email: email,
+        phone_number: '',
+        medical_license_number: '',
+        specialty: '',
+        emergency_contact_name: '',
+        emergency_contact_phone: '',
+        emergency_contact_relationship: ''
+      });
+      
       toast({
-        title: "Error",
-        description: "Failed to load profile data",
-        variant: "destructive"
+        title: "Notice",
+        description: "Loaded basic profile information. Please complete your profile details.",
+        variant: "default"
       });
     } finally {
       setLoading(false);
@@ -138,11 +195,17 @@ const ProfileManagement: React.FC<ProfileManagementProps> = ({ darkMode }) => {
         .eq('physician_id', user?.id)
         .order('expiration_date', { ascending: true });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching state licenses:', error);
+        // Don't throw error for state licenses - they're optional
+        setStateLicenses([]);
+        return;
+      }
 
       setStateLicenses(data || []);
     } catch (error) {
-      console.error('Error fetching state licenses:', error);
+      console.error('Error in fetchStateLicenses:', error);
+      setStateLicenses([]);
     }
   };
 
@@ -185,12 +248,28 @@ const ProfileManagement: React.FC<ProfileManagementProps> = ({ darkMode }) => {
 
     setSaving(true);
     try {
-      const { error } = await supabase
+      // Try to update existing profile first
+      const { data: updateData, error: updateError } = await supabase
         .from('profiles')
         .update(profileData)
-        .eq('id', user?.id);
+        .eq('id', user?.id)
+        .select();
 
-      if (error) throw error;
+      if (updateError && updateError.code === 'PGRST116') {
+        // Profile doesn't exist, try to insert it
+        const { error: insertError } = await supabase
+          .from('profiles')
+          .insert({
+            id: user?.id,
+            ...profileData,
+            role: 'physician',
+            verified_physician: true
+          });
+
+        if (insertError) throw insertError;
+      } else if (updateError) {
+        throw updateError;
+      }
 
       setIsEditing(false);
       setValidationErrors({});
@@ -203,7 +282,7 @@ const ProfileManagement: React.FC<ProfileManagementProps> = ({ darkMode }) => {
       console.error('Error updating profile:', error);
       toast({
         title: "Error",
-        description: "Failed to update profile",
+        description: "Failed to update profile. Please try again.",
         variant: "destructive"
       });
     } finally {
