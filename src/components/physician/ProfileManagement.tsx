@@ -98,15 +98,26 @@ const ProfileManagement: React.FC<ProfileManagementProps> = ({ darkMode }) => {
 
   const fetchProfileData = async () => {
     try {
+      // Use a simple select to avoid cache issues
       const { data, error } = await supabase
         .from('profiles')
-        .select('*')
+        .select(`
+          full_name,
+          email,
+          phone_number,
+          phone,
+          medical_license_number,
+          specialty,
+          emergency_contact_name,
+          emergency_contact_phone,
+          emergency_contact_relationship
+        `)
         .eq('id', user?.id)
         .maybeSingle();
 
       if (error) {
         console.error('Error fetching profile:', error);
-        throw error;
+        // Don't throw error, fallback to auth data
       }
 
       if (data) {
@@ -121,12 +132,12 @@ const ProfileManagement: React.FC<ProfileManagementProps> = ({ darkMode }) => {
           emergency_contact_relationship: data.emergency_contact_relationship || ''
         });
       } else {
-        // No profile exists, create one with basic info from auth
+        // No profile exists, use auth metadata
         const userMetadata = user?.user_metadata || {};
         const email = user?.email || '';
         const fullName = userMetadata.full_name || `${userMetadata.first_name || ''} ${userMetadata.last_name || ''}`.trim();
         
-        const newProfileData = {
+        setProfileData({
           full_name: fullName,
           email: email,
           phone_number: '',
@@ -135,33 +146,17 @@ const ProfileManagement: React.FC<ProfileManagementProps> = ({ darkMode }) => {
           emergency_contact_name: '',
           emergency_contact_phone: '',
           emergency_contact_relationship: ''
-        };
+        });
         
-        setProfileData(newProfileData);
-        
-        // Try to create the profile in the database
-        const { error: insertError } = await supabase
-          .from('profiles')
-          .insert({
-            id: user?.id,
-            email: email,
-            full_name: fullName,
-            role: 'physician',
-            verified_physician: true
-          });
-        
-        if (insertError) {
-          console.error('Error creating profile:', insertError);
-          toast({
-            title: "Info",
-            description: "Profile loaded from authentication data. Some features may be limited until profile is saved.",
-            variant: "default"
-          });
-        }
+        toast({
+          title: "Profile Loaded",
+          description: "Please complete your profile information below.",
+          variant: "default"
+        });
       }
     } catch (error) {
       console.error('Error in fetchProfileData:', error);
-      // Fallback to auth metadata if database fetch fails
+      // Fallback to auth metadata
       const userMetadata = user?.user_metadata || {};
       const email = user?.email || '';
       const fullName = userMetadata.full_name || `${userMetadata.first_name || ''} ${userMetadata.last_name || ''}`.trim();
@@ -175,12 +170,6 @@ const ProfileManagement: React.FC<ProfileManagementProps> = ({ darkMode }) => {
         emergency_contact_name: '',
         emergency_contact_phone: '',
         emergency_contact_relationship: ''
-      });
-      
-      toast({
-        title: "Notice",
-        description: "Loaded basic profile information. Please complete your profile details.",
-        variant: "default"
       });
     } finally {
       setLoading(false);
@@ -248,41 +237,63 @@ const ProfileManagement: React.FC<ProfileManagementProps> = ({ darkMode }) => {
 
     setSaving(true);
     try {
-      // Try to update existing profile first
-      const { data: updateData, error: updateError } = await supabase
+      // First try to check if profile exists with a simple query
+      const { data: existingProfile } = await supabase
         .from('profiles')
-        .update(profileData)
+        .select('id')
         .eq('id', user?.id)
-        .select();
+        .maybeSingle();
 
-      if (updateError && updateError.code === 'PGRST116') {
-        // Profile doesn't exist, try to insert it
+      if (existingProfile) {
+        // Profile exists, update it
+        const { error: updateError } = await supabase
+          .from('profiles')
+          .update({
+            full_name: profileData.full_name,
+            email: profileData.email,
+            phone_number: profileData.phone_number,
+            medical_license_number: profileData.medical_license_number,
+            specialty: profileData.specialty,
+            emergency_contact_name: profileData.emergency_contact_name,
+            emergency_contact_phone: profileData.emergency_contact_phone,
+            emergency_contact_relationship: profileData.emergency_contact_relationship
+          })
+          .eq('id', user?.id);
+
+        if (updateError) throw updateError;
+      } else {
+        // Profile doesn't exist, create it
         const { error: insertError } = await supabase
           .from('profiles')
           .insert({
             id: user?.id,
-            ...profileData,
+            full_name: profileData.full_name,
+            email: profileData.email,
+            phone_number: profileData.phone_number,
+            medical_license_number: profileData.medical_license_number,
+            specialty: profileData.specialty,
+            emergency_contact_name: profileData.emergency_contact_name,
+            emergency_contact_phone: profileData.emergency_contact_phone,
+            emergency_contact_relationship: profileData.emergency_contact_relationship,
             role: 'physician',
             verified_physician: true
           });
 
         if (insertError) throw insertError;
-      } else if (updateError) {
-        throw updateError;
       }
 
       setIsEditing(false);
       setValidationErrors({});
       toast({
         title: "Success",
-        description: "Profile updated successfully",
+        description: "Profile saved successfully!",
         duration: 3000
       });
     } catch (error) {
-      console.error('Error updating profile:', error);
+      console.error('Error saving profile:', error);
       toast({
         title: "Error",
-        description: "Failed to update profile. Please try again.",
+        description: "Failed to save profile. Please try again.",
         variant: "destructive"
       });
     } finally {
