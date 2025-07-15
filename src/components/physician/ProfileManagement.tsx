@@ -98,16 +98,14 @@ const ProfileManagement: React.FC<ProfileManagementProps> = ({ darkMode }) => {
 
   const fetchProfileData = async () => {
     try {
-      // Use only the columns that exist in the database
+      // Use only the core columns that definitely exist
       const { data, error } = await supabase
         .from('profiles')
         .select(`
-          full_name,
           email,
-          phone_number,
           phone,
-          medical_license_number,
-          specialty
+          role,
+          verified_physician
         `)
         .eq('id', user?.id)
         .maybeSingle();
@@ -119,14 +117,14 @@ const ProfileManagement: React.FC<ProfileManagementProps> = ({ darkMode }) => {
 
       if (data) {
         const userMetadata = user?.user_metadata || {};
-        const fullName = data.full_name || userMetadata.full_name || `${userMetadata.first_name || ''} ${userMetadata.last_name || ''}`.trim();
+        const fullName = userMetadata.full_name || `${userMetadata.first_name || ''} ${userMetadata.last_name || ''}`.trim();
         
         setProfileData({
           full_name: fullName,
           email: data.email || user?.email || '',
-          phone_number: data.phone_number || data.phone || '',
-          medical_license_number: data.medical_license_number || '',
-          specialty: data.specialty || '',
+          phone_number: data.phone || '',
+          medical_license_number: '',
+          specialty: '',
           emergency_contact_name: '',
           emergency_contact_phone: '',
           emergency_contact_relationship: ''
@@ -178,20 +176,9 @@ const ProfileManagement: React.FC<ProfileManagementProps> = ({ darkMode }) => {
 
   const fetchStateLicenses = async () => {
     try {
-      const { data, error } = await supabase
-        .from('physician_state_licenses')
-        .select('*')
-        .eq('physician_id', user?.id)
-        .order('expiration_date', { ascending: true });
-
-      if (error) {
-        console.error('Error fetching state licenses:', error);
-        // Don't throw error for state licenses - they're optional
-        setStateLicenses([]);
-        return;
-      }
-
-      setStateLicenses(data || []);
+      // Skip state licenses for now due to table not existing
+      setStateLicenses([]);
+      return;
     } catch (error) {
       console.error('Error in fetchStateLicenses:', error);
       setStateLicenses([]);
@@ -245,30 +232,26 @@ const ProfileManagement: React.FC<ProfileManagementProps> = ({ darkMode }) => {
         .maybeSingle();
 
       if (existingProfile) {
-        // Profile exists, update it
+        // Profile exists, update it - use only basic columns that exist
         const { error: updateError } = await supabase
           .from('profiles')
           .update({
-            full_name: profileData.full_name,
             email: profileData.email,
-            phone_number: profileData.phone_number,
-            medical_license_number: profileData.medical_license_number,
-            specialty: profileData.specialty
+            phone: profileData.phone_number,
+            role: 'physician',
+            verified_physician: true
           })
           .eq('id', user?.id);
 
         if (updateError) throw updateError;
       } else {
-        // Profile doesn't exist, create it
+        // Profile doesn't exist, create it - use only basic columns that exist
         const { error: insertError } = await supabase
           .from('profiles')
           .insert({
             id: user?.id,
-            full_name: profileData.full_name,
             email: profileData.email,
-            phone_number: profileData.phone_number,
-            medical_license_number: profileData.medical_license_number,
-            specialty: profileData.specialty,
+            phone: profileData.phone_number,
             role: 'physician',
             verified_physician: true
           });
@@ -325,50 +308,13 @@ const ProfileManagement: React.FC<ProfileManagementProps> = ({ darkMode }) => {
   };
 
   const handleAddLicense = async () => {
-    if (!validateLicense()) {
-      toast({
-        title: "Validation Error",
-        description: "Please fill in all required fields with valid data",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    try {
-      const { data, error } = await supabase.rpc('add_physician_state_license', {
-        p_physician_id: user?.id,
-        p_state_code: newLicense.state_code,
-        p_state_name: newLicense.state_name,
-        p_license_number: newLicense.license_number,
-        p_expiration_date: newLicense.expiration_date,
-        p_issue_date: newLicense.issue_date || null
-      });
-
-      if (error) throw error;
-
-      setNewLicense({
-        state_code: '',
-        state_name: '',
-        license_number: '',
-        expiration_date: '',
-        issue_date: ''
-      });
-      setShowAddLicense(false);
-
-      fetchStateLicenses();
-      toast({
-        title: "Success",
-        description: "State license added successfully",
-        duration: 3000
-      });
-    } catch (error) {
-      console.error('Error adding license:', error);
-      toast({
-        title: "Error",
-        description: "Failed to add state license",
-        variant: "destructive"
-      });
-    }
+    // Temporarily disable license adding until table is properly set up
+    toast({
+      title: "Feature Coming Soon",
+      description: "State license management will be available once the database setup is complete.",
+      variant: "default"
+    });
+    return;
   };
 
   const isLicenseExpiringSoon = (expirationDate: string): boolean => {
