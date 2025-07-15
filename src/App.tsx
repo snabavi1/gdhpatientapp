@@ -33,7 +33,7 @@ const App = () => (
             <Route path="/physician/auth" element={<PhysicianAuth />} />
             <Route path="/physician" element={<PhysicianDashboard />} />
             <Route path="/physician/profile" element={<PhysicianProfile />} />
-            <Route path="/physician/trackingboard" element={<TrackingBoard darkMode={false} />} />
+            <Route path="/physician/trackingboard" element={<RealDataTrackingBoard darkMode={false} />} />
             
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
