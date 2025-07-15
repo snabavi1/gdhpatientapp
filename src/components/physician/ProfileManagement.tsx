@@ -103,7 +103,7 @@ const ProfileManagement: React.FC<ProfileManagementProps> = ({ darkMode }) => {
         .from('profiles')
         .select(`
           email,
-          phone,
+          phone_number,
           role,
           verified_physician
         `)
@@ -122,7 +122,7 @@ const ProfileManagement: React.FC<ProfileManagementProps> = ({ darkMode }) => {
         setProfileData({
           full_name: fullName,
           email: data.email || user?.email || '',
-          phone_number: data.phone || '',
+          phone_number: data.phone_number || '',
           medical_license_number: '',
           specialty: '',
           emergency_contact_name: '',
@@ -233,15 +233,15 @@ const ProfileManagement: React.FC<ProfileManagementProps> = ({ darkMode }) => {
 
       if (existingProfile) {
         // Profile exists, update it - use only basic columns that exist
-        const { error: updateError } = await supabase
-          .from('profiles')
-          .update({
-            email: profileData.email,
-            phone: profileData.phone_number,
-            role: 'physician',
-            verified_physician: true
-          })
-          .eq('id', user?.id);
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({
+          email: profileData.email,
+          phone_number: profileData.phone_number,
+          role: 'physician',
+          verified_physician: true
+        })
+        .eq('id', user?.id);
 
         if (updateError) throw updateError;
       } else {
@@ -251,7 +251,7 @@ const ProfileManagement: React.FC<ProfileManagementProps> = ({ darkMode }) => {
           .insert({
             id: user?.id,
             email: profileData.email,
-            phone: profileData.phone_number,
+            phone_number: profileData.phone_number,
             role: 'physician',
             verified_physician: true
           });
